@@ -9,8 +9,10 @@ fn increment(pw: &mut Vec<u8>) {
     }
 }
 
+const INPUT: &'static [u8] = b"vzbxkghb";
+
 fn main() {
-    let mut pw = b"vzbxkghb".to_vec();
+    let mut pw = INPUT.to_vec();
     let mut found = 0;
     'outer: loop {
         increment(&mut pw);

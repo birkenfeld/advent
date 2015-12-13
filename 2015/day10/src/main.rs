@@ -1,7 +1,9 @@
 use std::fmt::Write;
 
+const INPUT: &'static str = "1321131112";
+
 fn main() {
-    let mut seq = String::from("1321131112");
+    let mut seq = String::from(INPUT);
     for i in 1..51 {
         let mut new_seq = String::new();
         let mut pch = '\n';

@@ -1,20 +1,15 @@
-use std::cmp::{min, max};
 use std::fs::File;
 use std::io::{BufReader, BufRead};
 
 fn main() {
-    let mut total_paper = 0;
-    let mut total_ribbon = 0;
-    for line in BufReader::new(File::open("input.txt").unwrap()).lines() {
+    let lines = BufReader::new(File::open("input.txt").unwrap()).lines();
+    let (total_paper, total_ribbon) = lines.fold((0, 0), |(paper, ribbon), line| {
         let line = line.unwrap();
-        let lens = line.split("x").map(|s| s.parse().unwrap()).collect::<Vec<usize>>();
-        let lw = lens[0] * lens[1];
-        let wh = lens[1] * lens[2];
-        let hl = lens[2] * lens[0];
-        total_paper += 2 * (lw + wh + hl) + min(min(lw, wh), hl);
-        total_ribbon += lens[0] * lens[1] * lens[2] +
-            2 * (lens[0] + lens[1] + lens[2] - max(max(lens[0], lens[1]), lens[2]));
-    }
+        let mut dims: Vec<usize> = line.split('x').map(|s| s.parse().unwrap()).collect();
+        dims.sort();
+        let (l, w, h) = (dims[0], dims[1], dims[2]);
+        (paper + 2 * (l*w + w*h + h*l) + l*w, ribbon + l*w*h + 2 * (l + w))
+    });
     println!("Paper: {}", total_paper);
     println!("Ribbon: {}", total_ribbon);
 }

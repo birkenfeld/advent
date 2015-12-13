@@ -1,27 +1,34 @@
+#![feature(io)]
+
+extern crate itertools;
+
 use std::collections::HashSet;
 use std::fs::File;
 use std::io::Read;
+use itertools::Itertools;
 
-fn main() {
-    let mut set = HashSet::new();
-    let mut xs = 0;
-    let mut ys = 0;
-    let mut xr = 0;
-    let mut yr = 0;
-    let mut robo = false;
+type Coords = HashSet<(usize, usize)>;
+
+fn walk<'a, I>(directions: I, mut set: Coords) -> Coords where I: IntoIterator<Item=&'a char> {
     set.insert((0, 0));
-    let mut input = String::new();
-    File::open("input.txt").unwrap().read_to_string(&mut input).unwrap();
-    for ch in input.chars() {
-        match ch {
-            '<' => if robo { xr -= 1 } else { xs -= 1 },
-            '>' => if robo { xr += 1 } else { xs += 1 },
-            'v' => if robo { yr -= 1 } else { ys -= 1 },
-            '^' => if robo { yr += 1 } else { ys += 1 },
+    set.extend(directions.into_iter().scan((0, 0), |xy, ch| {
+        match *ch {
+            '<' => xy.0 -= 1,
+            '>' => xy.0 += 1,
+            'v' => xy.1 -= 1,
+            '^' => xy.1 += 1,
             _ => ()
         }
-        set.insert(if robo { (xr, yr) } else { (xs, ys) });
-        robo = !robo;
-    }
-    println!("# houses: {}", set.len());
+        Some(*xy)
+    }));
+    set
+}
+
+fn main() {
+    let fp = File::open("input.txt").unwrap();
+    let directions = fp.chars().collect::<Result<Vec<char>, _>>().unwrap();
+    println!("# houses: {}", walk(&directions, HashSet::new()).len());
+    let set = walk(directions.iter().step(2), HashSet::new());
+    let set = walk(directions.iter().skip(1).step(2), set);
+    println!("# houses with robot: {}", set.len())
 }

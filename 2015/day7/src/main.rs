@@ -105,8 +105,7 @@ fn main() {
     let mut circuit = Circuit::new();
     for line in BufReader::new(File::open("input.txt").unwrap()).lines() {
         let line = line.unwrap();
-        let tok = line.split_whitespace().collect();
-        let (id, el) = parse_connection(tok);
+        let (id, el) = parse_connection(line.split_whitespace().collect());
         circuit.connect(id, el);
     }
     let signal_a = circuit.get_value(wire_id("a"));
