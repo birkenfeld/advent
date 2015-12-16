@@ -3,30 +3,19 @@ use std::io::{BufReader, BufRead, Read};
 use std::marker::PhantomData;
 use std::ops::Add;
 
-pub trait Input {
-    fn consumes(line: &str) -> usize { line.len() }
+pub trait Input where Self: Sized {
+    fn read(line: String) -> Self {
+        Self::read_token(&line)
+    }
     fn read_token(tok: &str) -> Self;
 }
 
-impl Input for char {
-    fn consumes(line: &str) -> usize {
-        let mut iter = line.char_indices();
-        match iter.next() {
-            None => 0,
-            Some(_) => match iter.next() {
-                None => line.len(),
-                Some((idx, _)) => idx
-            }
-        }
-    }
-    fn read_token(tok: &str) -> char {
-        tok.chars().next().unwrap()
-    }
-}
-
 impl Input for String {
+    fn read(line: String) -> String {
+        line
+    }
     fn read_token(tok: &str) -> String {
-        tok.into()
+        tok.to_owned()
     }
 }
 
@@ -54,6 +43,18 @@ simple_impl!(i8);
 simple_impl!(i16);
 simple_impl!(i32);
 simple_impl!(i64);
+
+impl Input for char {
+    fn read_token(tok: &str) -> char {
+        tok.chars().next().unwrap()
+    }
+}
+
+impl Input for () {
+    fn read_token(_tok: &str) -> () {
+        ()
+    }
+}
 
 impl<T: Input> Input for (T,) {
     fn read_token(tok: &str) -> (T,) {
@@ -87,25 +88,22 @@ tuple_impl!(T, U, V, W, Y, Z, T1, T2, T3, T4, T5);
 pub struct InputIterator<I: Input> {
     rdr: BufReader<File>,
     marker: PhantomData<I>,
-    line: String,
 }
 
 impl<I: Input> Iterator for InputIterator<I> {
     type Item = I;
 
     fn next(&mut self) -> Option<I> {
-        while self.line.is_empty() {
-            if self.rdr.read_line(&mut self.line).unwrap() == 0 {
+        let mut line = String::new();
+        while line.is_empty() {
+            if self.rdr.read_line(&mut line).unwrap() == 0 {
                 return None;
             }
-            while self.line.trim_right() != self.line {
-                self.line.pop();
+            while line.trim_right() != line {
+                line.pop();
             }
         }
-        let n = I::consumes(&self.line);
-        let res = I::read_token(&self.line[..n]);
-        self.line = self.line[n..].into();
-        Some(res)
+        Some(I::read(line))
     }
 }
 
@@ -113,7 +111,15 @@ impl<I: Input> Iterator for InputIterator<I> {
 pub fn iter_input<I: Input>() -> InputIterator<I> {
     let fp = File::open("input.txt").expect("input file \"input.txt\" not found in cwd");
     let rdr = BufReader::new(fp);
-    InputIterator { rdr: rdr, marker: PhantomData, line: String::new() }
+    InputIterator { rdr: rdr, marker: PhantomData }
+}
+
+
+pub fn input_string() -> String {
+    let mut fp = File::open("input.txt").expect("input file \"input.txt\" not found in cwd");
+    let mut contents = String::new();
+    fp.read_to_string(&mut contents).unwrap();
+    contents
 }
 
 

@@ -1,7 +1,7 @@
 extern crate advtools;
 
 fn main() {
-    let res = advtools::iter_input().enumerate().fold(
+    let res = advtools::input_string().chars().enumerate().fold(
         (0, None), |(level, basement), (i, ch)| {
             match ch {
                 '(' => (level + 1, basement),

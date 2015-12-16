@@ -22,7 +22,7 @@ fn walk<'a, I>(directions: I, mut set: Coords) -> Coords where I: IntoIterator<I
 }
 
 fn main() {
-    let directions: Vec<char> = advtools::iter_input().collect();
+    let directions: Vec<_> = advtools::input_string().chars().collect();
     println!("# houses: {}", walk(&directions, HashSet::new()).len());
     let set = walk(directions.iter().step(2), HashSet::new());
     let set = walk(directions.iter().skip(1).step(2), set);
