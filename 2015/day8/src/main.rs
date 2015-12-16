@@ -1,12 +1,10 @@
-use std::fs::File;
-use std::io::{BufReader, BufRead};
+extern crate advtools;
 
 fn main() {
     let mut literal_len = 0;
     let mut memory_len = 0;
     let mut reescaped_len = 0;
-    for line in BufReader::new(File::open("input.txt").unwrap()).lines() {
-        let line = line.unwrap();
+    for line in advtools::iter_input::<String>() {
         let mut esc = false;
         let mut skip = 0;
         let mut extra_len = 0;

@@ -1,14 +1,12 @@
+extern crate advtools;
+
 use std::cmp::min;
-use std::fs::File;
-use std::io::{BufReader, BufRead};
 
 const INPUT: u32 = 2503;
 
 fn main() {
     let mut deer = Vec::new();
-    for line in BufReader::new(File::open("input.txt").unwrap()).lines() {
-        let line = line.unwrap();
-        let tok = line.split_whitespace().collect::<Vec<_>>();
+    for tok in advtools::iter_input::<Vec<String>>() {
         let fly_time = tok[6].parse::<u32>().unwrap();
         deer.push((tok[0].to_owned(), tok[3].parse::<u32>().unwrap(),
                    fly_time, fly_time + tok[13].parse::<u32>().unwrap(),

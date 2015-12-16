@@ -1,13 +1,12 @@
-#![feature(iter_arith)]
+extern crate advtools;
 
 use std::cmp::max;
-use std::fs::File;
-use std::io::{BufReader, BufRead};
+use advtools::IterExt;
 
 type Values = (i32, i32, i32, i32, i32);
 
 fn add_up<F>(amounts: &[i32], v: &[Values], select: F) -> i32 where F: Fn(&Values) -> i32 {
-    amounts.iter().enumerate().map(|(i, a)| a*select(&v[i])).sum::<i32>()
+    amounts.iter().enumerate().map(|(i, a)| a*select(&v[i])).sum_from(0)
 }
 
 fn fom(amounts: &[i32], v: &[Values]) -> i32 {
@@ -41,9 +40,7 @@ fn find_best(goalcal: Option<i32>, v: &[Values]) -> Vec<i32> {
 
 fn main() {
     let mut v = Vec::new();
-    for line in BufReader::new(File::open("input.txt").unwrap()).lines() {
-        let line = line.unwrap();
-        let tok = line.split_whitespace().collect::<Vec<_>>();
+    for tok in advtools::iter_input::<Vec<String>>() {
         v.push((tok[2].trim_matches(',').parse::<i32>().unwrap(),
                 tok[4].trim_matches(',').parse::<i32>().unwrap(),
                 tok[6].trim_matches(',').parse::<i32>().unwrap(),

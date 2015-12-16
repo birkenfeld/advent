@@ -1,8 +1,7 @@
-#![feature(iter_arith)]
+extern crate advtools;
 
 use std::collections::HashMap;
-use std::fs::File;
-use std::io::{BufReader, BufRead};
+use advtools::IterExt;
 
 #[derive(Debug, Clone, Copy)]
 enum Source {
@@ -75,7 +74,7 @@ impl Circuit {
 }
 
 fn wire_id(name: &str) -> u16 {
-    name.chars().enumerate().map(|(i, c)| (c as u16) << (8 * i)).sum()
+    name.chars().enumerate().map(|(i, c)| (c as u16) << (8 * i)).sum_from(0)
 }
 
 fn parse_source(src: &str) -> Source {
@@ -103,9 +102,9 @@ fn parse_connection(tok: Vec<&str>) -> (u16, Element) {
 
 fn main() {
     let mut circuit = Circuit::new();
-    for line in BufReader::new(File::open("input.txt").unwrap()).lines() {
-        let line = line.unwrap();
-        let (id, el) = parse_connection(line.split_whitespace().collect());
+    for line in advtools::iter_input::<String>() {
+        let parts = line.split_whitespace().collect();
+        let (id, el) = parse_connection(parts);
         circuit.connect(id, el);
     }
     let signal_a = circuit.get_value(wire_id("a"));

@@ -1,7 +1,6 @@
 [package]
-name = "day7"
+name = "advtools"
 version = "0.1.0"
 authors = ["Georg Brandl <georg@python.org>"]
 
-[dependencies.advtools]
-path = "../advtools"
+[dependencies]

@@ -1,11 +1,11 @@
+extern crate advtools;
+
 use std::collections::HashSet;
-use std::fs::File;
-use std::io::{BufReader, BufRead};
 
 fn main() {
     let mut nice_rule1 = 0;
     let mut nice_rule2 = 0;
-    for line in BufReader::new(File::open("input.txt").unwrap()).lines() {
+    for line in advtools::iter_input::<String>() {
         let mut prev = '\n';
         let mut pprev = '\n';
         let mut vowels = 0;
@@ -14,7 +14,6 @@ fn main() {
         let mut pairs = HashSet::new();
         let mut has_doublepair = false;
         let mut has_repeated = false;
-        let line = line.unwrap();
         for ch in line.chars() {
             if ch == prev {
                 has_double = true;

@@ -1,6 +1,6 @@
+extern crate advtools;
+
 use std::collections::{HashSet, HashMap};
-use std::fs::File;
-use std::io::{BufReader, BufRead};
 
 const NEEDLE: &'static str = "\
 children: 3
@@ -26,9 +26,7 @@ fn main() {
         needle_map.insert(name, count);
     }
     let mut haystack = Vec::new();
-    for line in BufReader::new(File::open("input.txt").unwrap()).lines() {
-        let line = line.unwrap();
-        let tok = line.split_whitespace().collect::<Vec<_>>();
+    for tok in advtools::iter_input::<Vec<String>>() {
         let mut set = HashSet::new();
         for i in 1..4 {
             set.insert((tok[2*i].trim_matches(':').to_owned(),

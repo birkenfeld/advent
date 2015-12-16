@@ -1,13 +1,10 @@
-#![feature(io)]
-
+extern crate advtools;
 extern crate itertools;
 
 use std::collections::HashSet;
-use std::fs::File;
-use std::io::Read;
 use itertools::Itertools;
 
-type Coords = HashSet<(usize, usize)>;
+type Coords = HashSet<(isize, isize)>;
 
 fn walk<'a, I>(directions: I, mut set: Coords) -> Coords where I: IntoIterator<Item=&'a char> {
     set.insert((0, 0));
@@ -25,8 +22,7 @@ fn walk<'a, I>(directions: I, mut set: Coords) -> Coords where I: IntoIterator<I
 }
 
 fn main() {
-    let fp = File::open("input.txt").unwrap();
-    let directions = fp.chars().collect::<Result<Vec<char>, _>>().unwrap();
+    let directions: Vec<char> = advtools::iter_input().collect();
     println!("# houses: {}", walk(&directions, HashSet::new()).len());
     let set = walk(directions.iter().step(2), HashSet::new());
     let set = walk(directions.iter().skip(1).step(2), set);

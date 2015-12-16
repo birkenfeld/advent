@@ -6,3 +6,6 @@ authors = ["Georg Brandl <georg@python.org>"]
 [dependencies]
 rust-crypto = "*"
 rayon = "*"
+
+[dependencies.advtools]
+path = "../advtools"

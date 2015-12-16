@@ -1,26 +1,25 @@
-#![feature(iter_arith)]
-
+extern crate advtools;
 extern crate permutohedron;
-extern crate csv;
 
 use std::collections::HashMap;
 use std::iter::once;
+use advtools::IterExt;
 use permutohedron::Heap;
 
 fn most_happiness(n: usize, table: &[[i16; 9]; 9]) -> i16 {
     Heap::new(&mut (0..n).collect::<Vec<_>>()).map(|p|
         once(&p[n-1]).chain(p.iter()).zip(p.iter()).map(
-            |(&p1, &p2)| table[p1][p2] + table[p2][p1]).sum()).max().unwrap()
+            |(&p1, &p2)| table[p1][p2] + table[p2][p1]).sum_from(0)).max().unwrap()
 }
 
 type S = String;
-type InputLine = (S, S, S, i16, (S, S, S, S, S, S), S);
+type InputLine = (S, S, S, i16, S, S, S, S, S, S, S);
 
 fn main() {
     let mut table = [[0i16; 9]; 9];
     let mut map = HashMap::new();
-    for row in csv::Reader::from_file("input.txt").unwrap().delimiter(b' ').decode() {
-        let (p1, _, verb, mut val, _, p2): InputLine = row.unwrap();
+    for row in advtools::iter_input::<InputLine>() {
+        let (p1, _, verb, mut val, _, _, _, _, _, _, p2) = row;
         let p2 = p2.trim_matches('.').to_owned();
         if verb == "lose" {
             val = -val;
