@@ -1,7 +1,10 @@
 [package]
-name = "day7"
+name = "day09"
 version = "0.1.0"
 authors = ["Georg Brandl <georg@python.org>"]
+
+[dependencies]
+permutohedron = "*"
 
 [dependencies.advtools]
 path = "../advtools"
