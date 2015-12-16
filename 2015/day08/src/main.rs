@@ -32,9 +32,9 @@ fn main() {
         literal_len += line.len();
         reescaped_len += line.len() + extra_len + 4;
     }
-    println!("Literal length: {}", literal_len);
-    println!("In-memory length: {}", memory_len);
-    println!("Re-escaped length: {}", reescaped_len);
-    println!("Difference 1: {}", literal_len - memory_len);
-    println!("Difference 2: {}", reescaped_len - literal_len);
+    // println!("Literal length: {}", literal_len);
+    // println!("In-memory length: {}", memory_len);
+    // println!("Re-escaped length: {}", reescaped_len);
+    println!("Difference literal - memory: {}", literal_len - memory_len);
+    println!("Difference reescaped - literal: {}", reescaped_len - literal_len);
 }

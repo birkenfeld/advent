@@ -22,6 +22,6 @@ fn sum_up(val: Value, no_reds: bool) -> i64 {
 
 fn main() {
     let doc: Value = from_reader(File::open("input.txt").unwrap()).unwrap();
-    println!("{:?}", sum_up(doc.clone(), false));
-    println!("{:?}", sum_up(doc, true));
+    println!("Sum with reds: {:?}", sum_up(doc.clone(), false));
+    println!("Sum without reds: {:?}", sum_up(doc, true));
 }

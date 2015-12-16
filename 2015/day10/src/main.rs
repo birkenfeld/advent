@@ -20,7 +20,7 @@ fn main() {
         write!(new_seq, "{}", run).unwrap();
         new_seq.push(pch);
         seq = new_seq;
-        if i % 10 == 0 {
+        if i > 35 && i % 10 == 0 {
             println!("Resulting length after {} iterations: {}", i, seq.len());
         }
     }
