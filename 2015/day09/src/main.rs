@@ -6,7 +6,7 @@ use std::collections::HashMap;
 use advtools::IterExt;
 use permutohedron::Heap;
 
-type InputLine = (String, String, String, char, u16);
+type InputLine = (String, (), String, (), u16);
 
 fn main() {
     let mut table = [[0u16; 8]; 8];

@@ -12,14 +12,13 @@ fn most_happiness(n: usize, table: &[[i16; 9]; 9]) -> i16 {
             |(&p1, &p2)| table[p1][p2] + table[p2][p1]).sum_from(0)).max().unwrap()
 }
 
-type S = String;
-type InputLine = (S, S, S, i16, S, S, S, S, S, S, S);
+type InputLine = (String, (), String, i16, [(); 6], String);
 
 fn main() {
     let mut table = [[0i16; 9]; 9];
     let mut map = HashMap::new();
     for row in advtools::iter_input::<InputLine>() {
-        let (p1, _, verb, mut val, _, _, _, _, _, _, p2) = row;
+        let (p1, _, verb, mut val, _, p2) = row;
         let p2 = p2.trim_matches('.').to_owned();
         if verb == "lose" {
             val = -val;

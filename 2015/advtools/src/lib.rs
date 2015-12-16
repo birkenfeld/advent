@@ -3,33 +3,38 @@ use std::io::{BufReader, BufRead, Read};
 use std::marker::PhantomData;
 use std::ops::Add;
 
+pub type TokIter<'t> = std::str::SplitWhitespace<'t>;
+
 pub trait Input where Self: Sized {
     fn read(line: String) -> Self {
-        Self::read_token(&line)
+        Self::read_token(&mut line.split_whitespace())
     }
-    fn read_token(tok: &str) -> Self;
+    fn read_token(tok: &mut TokIter) -> Self;
 }
 
 impl Input for String {
     fn read(line: String) -> String {
         line
     }
-    fn read_token(tok: &str) -> String {
-        tok.to_owned()
+    fn read_token(tok: &mut TokIter) -> String {
+        tok.next().unwrap().to_owned()
     }
 }
 
 impl Input for Vec<String> {
-    fn read_token(tok: &str) -> Vec<String> {
-        tok.split_whitespace().map(String::from).collect()
+    fn read(line: String) -> Vec<String> {
+        line.split_whitespace().map(String::from).collect()
+    }
+    fn read_token(tok: &mut TokIter) -> Vec<String> {
+        tok.next().unwrap().split_whitespace().map(String::from).collect()
     }
 }
 
 macro_rules! simple_impl {
     ($ty:ty) => {
         impl Input for $ty {
-            fn read_token(tok: &str) -> $ty {
-                tok.parse().unwrap()
+            fn read_token(tok: &mut TokIter) -> $ty {
+                tok.next().unwrap().parse().unwrap()
             }
         }
     }
@@ -44,20 +49,40 @@ simple_impl!(i16);
 simple_impl!(i32);
 simple_impl!(i64);
 
+macro_rules! array_impl {
+    ($n:expr, $tok1:ident, $($tok:ident),+) => {
+        impl<T: Input> Input for [T; $n] {
+            fn read_token($tok1: &mut TokIter) -> [T; $n] {
+                [$(T::read_token($tok)),+]
+            }
+        }
+    }
+}
+
+array_impl!(1, tok, tok);
+array_impl!(2, tok, tok, tok);
+array_impl!(3, tok, tok, tok, tok);
+array_impl!(4, tok, tok, tok, tok, tok);
+array_impl!(5, tok, tok, tok, tok, tok, tok);
+array_impl!(6, tok, tok, tok, tok, tok, tok, tok);
+array_impl!(7, tok, tok, tok, tok, tok, tok, tok, tok);
+array_impl!(8, tok, tok, tok, tok, tok, tok, tok, tok, tok);
+
 impl Input for char {
-    fn read_token(tok: &str) -> char {
-        tok.chars().next().unwrap()
+    fn read_token(tok: &mut TokIter) -> char {
+        tok.next().unwrap().chars().next().unwrap()
     }
 }
 
 impl Input for () {
-    fn read_token(_tok: &str) -> () {
+    fn read_token(tok: &mut TokIter) -> () {
+        tok.next().unwrap();
         ()
     }
 }
 
 impl<T: Input> Input for (T,) {
-    fn read_token(tok: &str) -> (T,) {
+    fn read_token(tok: &mut TokIter) -> (T,) {
         (T::read_token(tok),)
     }
 }
@@ -65,9 +90,8 @@ impl<T: Input> Input for (T,) {
 macro_rules! tuple_impl {
     ($($tys:ident),+) => {
         impl<$($tys: Input),+> Input for ($($tys),+) {
-            fn read_token(tok: &str) -> ($($tys),+) {
-                let mut toks = tok.split_whitespace();
-                ($($tys::read_token(toks.next().unwrap())),+)
+            fn read_token(tok: &mut TokIter) -> ($($tys),+) {
+                ($($tys::read_token(tok)),+)
             }
         }
     }
@@ -83,6 +107,7 @@ tuple_impl!(T, U, V, W, Y, Z, T1, T2);
 tuple_impl!(T, U, V, W, Y, Z, T1, T2, T3);
 tuple_impl!(T, U, V, W, Y, Z, T1, T2, T3, T4);
 tuple_impl!(T, U, V, W, Y, Z, T1, T2, T3, T4, T5);
+tuple_impl!(T, U, V, W, Y, Z, T1, T2, T3, T4, T5, T6);
 
 
 pub struct InputIterator<I: Input> {
