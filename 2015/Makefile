@@ -3,4 +3,4 @@ all:
 build:
 	for d in day*; do (cd $$d; cargo build --release); done
 clean:
-	for d in *; do rm -f $$d/target; done
+	for d in *; do rm -rf $$d/target; done
