@@ -1,0 +1,10 @@
+[package]
+name = "day19"
+version = "0.1.0"
+authors = ["Georg Brandl <georg@python.org>"]
+
+[dependencies]
+rand = "*"
+
+[dependencies.advtools]
+path = "../advtools"
