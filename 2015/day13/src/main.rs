@@ -1,9 +1,8 @@
 extern crate advtools;
 extern crate permutohedron;
 
-use std::collections::HashMap;
 use std::iter::once;
-use advtools::IterExt;
+use advtools::{IterExt, Uids};
 use permutohedron::Heap;
 
 fn most_happiness(n: usize, table: &[[i16; 9]; 9]) -> i16 {
@@ -16,17 +15,15 @@ type InputLine = (String, (), String, i16, [(); 6], String);
 
 fn main() {
     let mut table = [[0i16; 9]; 9];
-    let mut map = HashMap::new();
+    let mut map = Uids::new();
     for row in advtools::iter_input::<InputLine>() {
         let (p1, _, verb, mut val, _, p2) = row;
         let p2 = p2.trim_matches('.').to_owned();
         if verb == "lose" {
             val = -val;
         }
-        let n = map.len();
-        let p1_id = *map.entry(p1).or_insert(n);
-        let n = map.len();
-        let p2_id = *map.entry(p2).or_insert(n);
+        let p1_id = map.get_id(p1);
+        let p2_id = map.get_id(p2);
         table[p1_id][p2_id] = val;
     }
     println!("Most happiness: {}", most_happiness(8, &table));

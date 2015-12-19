@@ -2,20 +2,17 @@ extern crate advtools;
 extern crate permutohedron;
 
 use std::cmp::{min, max};
-use std::collections::HashMap;
-use advtools::IterExt;
+use advtools::{IterExt, Uids};
 use permutohedron::Heap;
 
 type InputLine = (String, (), String, (), u16);
 
 fn main() {
     let mut table = [[0u16; 8]; 8];
-    let mut map = HashMap::new();
+    let mut map = Uids::new();
     for (from, _, to, _, dist) in advtools::iter_input::<InputLine>() {
-        let n = map.len();
-        let from_id = *map.entry(from).or_insert(n);
-        let n = map.len();
-        let to_id = *map.entry(to).or_insert(n);
+        let from_id = map.get_id(from);
+        let to_id = map.get_id(to);
         table[max(from_id, to_id)][min(from_id, to_id)] = dist;
         table[min(from_id, to_id)][max(from_id, to_id)] = dist;
     }

@@ -1,4 +1,6 @@
+use std::collections::HashMap;
 use std::fs::File;
+use std::hash::Hash;
 use std::io::{BufReader, BufRead, Read};
 use std::marker::PhantomData;
 use std::ops::Add;
@@ -157,3 +159,19 @@ pub trait IterExt: Iterator {
 }
 
 impl<I: Iterator> IterExt for I { }
+
+
+pub struct Uids<T> {
+    map: HashMap<T, usize>
+}
+
+impl<T: Hash + Eq> Uids<T> {
+    pub fn new() -> Uids<T> {
+        Uids { map: HashMap::new() }
+    }
+
+    pub fn get_id(&mut self, k: T) -> usize {
+        let n = self.map.len();
+        *self.map.entry(k).or_insert(n)
+    }
+}
