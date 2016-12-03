@@ -1,12 +1,11 @@
 extern crate advtools;
 
 use std::cmp::max;
-use advtools::IterExt;
 
 type Values = (i32, i32, i32, i32, i32);
 
 fn add_up<F>(amounts: &[i32], v: &[Values], select: F) -> i32 where F: Fn(&Values) -> i32 {
-    amounts.iter().enumerate().map(|(i, a)| a*select(&v[i])).sum_from(0)
+    amounts.iter().enumerate().map(|(i, a)| a*select(&v[i])).sum()
 }
 
 fn fom(amounts: &[i32], v: &[Values]) -> i32 {

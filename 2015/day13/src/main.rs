@@ -2,13 +2,13 @@ extern crate advtools;
 extern crate permutohedron;
 
 use std::iter::once;
-use advtools::{IterExt, Uids};
+use advtools::Uids;
 use permutohedron::Heap;
 
 fn most_happiness(n: usize, table: &[[i16; 9]; 9]) -> i16 {
     Heap::new(&mut (0..n).collect::<Vec<_>>()).map(|p|
         once(&p[n-1]).chain(p.iter()).zip(p.iter()).map(
-            |(&p1, &p2)| table[p1][p2] + table[p2][p1]).sum_from(0)).max().unwrap()
+            |(&p1, &p2)| table[p1][p2] + table[p2][p1]).sum()).max().unwrap()
 }
 
 type InputLine = (String, (), String, i16, [(); 6], String);

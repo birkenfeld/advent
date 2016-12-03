@@ -1,7 +1,6 @@
 extern crate advtools;
 
 use std::collections::HashMap;
-use advtools::IterExt;
 
 #[derive(Debug, Clone, Copy)]
 enum Source {
@@ -74,7 +73,7 @@ impl Circuit {
 }
 
 fn wire_id(name: &str) -> u16 {
-    name.chars().enumerate().map(|(i, c)| (c as u16) << (8 * i)).sum_from(0)
+    name.chars().enumerate().map(|(i, c)| (c as u16) << (8 * i)).sum()
 }
 
 fn parse_source(src: &str) -> Source {

@@ -2,7 +2,7 @@ extern crate advtools;
 extern crate permutohedron;
 
 use std::cmp::{min, max};
-use advtools::{IterExt, Uids};
+use advtools::Uids;
 use permutohedron::Heap;
 
 type InputLine = (String, (), String, (), u16);
@@ -20,7 +20,7 @@ fn main() {
     let mut longest = 0;
     let mut vec = (0..8).collect::<Vec<_>>();
     for p in Heap::new(&mut vec) {
-        let length = p.iter().zip(p.iter().skip(1)).map(|(p1, p2)| table[*p1][*p2]).sum_from(0);
+        let length = p.iter().zip(p.iter().skip(1)).map(|(p1, p2)| table[*p1][*p2]).sum();
         shortest = if shortest == 0 { length } else { min(shortest, length) };
         longest = if longest == 0 { length } else { max(longest, length) };
     }

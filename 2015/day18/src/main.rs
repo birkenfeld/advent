@@ -1,7 +1,6 @@
 extern crate advtools;
 
 use std::mem;
-use advtools::IterExt;
 
 const N: usize = 100;
 const STEPS: usize = 100;
@@ -52,7 +51,7 @@ fn main() {
         }
         step(&mut grid, stuck);
         let number_on: usize = grid.iter().map(
-            |row| row.iter().filter(|&&lamp| lamp).count()).sum_from(0);
+            |row| row.iter().filter(|&&lamp| lamp).count()).sum();
         println!("On after 100 steps{}: {}",
                  if stuck { " with stuck corners" } else { "" }, number_on);
     }

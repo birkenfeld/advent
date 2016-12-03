@@ -3,7 +3,6 @@ use std::fs::File;
 use std::hash::Hash;
 use std::io::{BufReader, BufRead, Read};
 use std::marker::PhantomData;
-use std::ops::Add;
 
 pub type TokIter<'t> = std::str::SplitWhitespace<'t>;
 
@@ -148,17 +147,6 @@ pub fn input_string() -> String {
     fp.read_to_string(&mut contents).unwrap();
     contents
 }
-
-
-pub trait IterExt: Iterator {
-    fn sum_from<S=<Self as Iterator>::Item>(self, start: S) -> S where
-        S: Add<Self::Item, Output=S>, Self: Sized,
-    {
-        self.fold(start, |s, e| s + e)
-    }
-}
-
-impl<I: Iterator> IterExt for I { }
 
 
 pub struct Uids<T> {
