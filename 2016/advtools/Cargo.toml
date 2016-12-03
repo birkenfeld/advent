@@ -1,0 +1,6 @@
+[package]
+name = "advtools"
+version = "0.1.0"
+authors = ["Georg Brandl <georg@python.org>"]
+
+[dependencies]
