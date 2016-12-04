@@ -1,0 +1,10 @@
+[package]
+name = "day03"
+version = "0.1.0"
+authors = ["Georg Brandl <georg@python.org>"]
+
+[dependencies]
+itertools = "*"
+
+[dependencies.advtools]
+path = "../advtools"
