@@ -16,8 +16,7 @@ fn main() {
         }
     }
     let collect_by_freq = |weight| all_maps.iter().map(|map| {
-        let mut freqs = map.into_iter().map(|(k, v)| (weight * v, k)).collect::<Vec<_>>();
-        freqs.sort();
+        let freqs = advtools::sorted(map.into_iter().map(|(k, v)| (weight * v, k)));
         *freqs[0].1
     }).collect::<String>();
     println!("Message (most common): {}", collect_by_freq(-1));

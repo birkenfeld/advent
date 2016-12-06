@@ -18,13 +18,10 @@ fn main() {
             *counts.entry(ch).or_insert(0) += 1;
         }
         // get letters sorted by count, then by alphabet
-        let mut sorted_counts = counts.into_iter().map(|(ch, count)| (-count, ch))
-                                                  .collect::<Vec<_>>();
-        sorted_counts.sort();
+        let counts = advtools::sorted(counts.into_iter().map(|(ch, count)| (-count, ch)));
 
         // determine checksum from letter counts
-        let real_checksum = sorted_counts.into_iter().take(5).map(|x| x.1)
-                                                             .collect::<String>();
+        let real_checksum = counts.into_iter().take(5).map(|x| x.1).collect::<String>();
         if real_checksum == caps[3] {
             let sector = caps[2].parse().unwrap();
             sector_sum += sector;
