@@ -1,22 +1,20 @@
 extern crate advtools;
 
+use std::iter;
 use std::collections::HashMap;
 
 fn main() {
     let mut lines = advtools::iter_input::<String>();
-    let mut all_maps = Vec::new();
-    for ch in lines.next().unwrap().chars() {
-        let mut map = HashMap::new();
-        map.insert(ch, 1);
-        all_maps.push(map);
-    }
+    let first_line = lines.next().unwrap();
+    let mut maps = first_line.chars().map(|ch| iter::once((ch, 1)).collect())
+                                     .collect::<Vec<HashMap<char, i32>>>();
     for line in lines {
-        for (map, ch) in all_maps.iter_mut().zip(line.chars()) {
+        for (map, ch) in maps.iter_mut().zip(line.chars()) {
             *map.entry(ch).or_insert(0) += 1;
         }
     }
-    let collect_by_freq = |weight| all_maps.iter().map(|map| {
-        let freqs = advtools::sorted(map.into_iter().map(|(k, v)| (weight * v, k)));
+    let collect_by_freq = |weight| maps.iter().map(|map| {
+        let freqs = advtools::sorted(map.iter().map(|(k, v)| (weight * v, k)));
         *freqs[0].1
     }).collect::<String>();
     println!("Message (most common): {}", collect_by_freq(-1));
