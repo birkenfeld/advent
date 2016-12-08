@@ -1,3 +1,4 @@
+SHELL = /bin/bash
 MODE = release
 ifeq ($(MODE),release)
 	MODEARG = --release
