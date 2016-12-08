@@ -1,0 +1,66 @@
+extern crate advtools;
+extern crate itertools;
+
+use itertools::Itertools;
+
+const WIDTH: usize = 50;
+const HEIGHT: usize = 6;
+
+struct Screen {
+    pixels: [[bool; WIDTH]; HEIGHT]
+}
+
+impl Screen {
+    fn new() -> Self {
+        Screen { pixels: [[false; WIDTH]; HEIGHT] }
+    }
+    fn light_rect(&mut self, (nx, ny): (usize, usize)) {
+        for y in 0..ny {
+            for x in 0..nx {
+                self.pixels[y][x] = true;
+            }
+        }
+    }
+    fn rotate_row(&mut self, (y, by): (usize, usize)) {
+        let initial = self.pixels[y].to_vec();
+        for i in 0..WIDTH {
+            self.pixels[y][i] = initial[(i+WIDTH-by) % WIDTH];
+        }
+    }
+    fn rotate_col(&mut self, (x, by): (usize, usize)) {
+        let initial = (0..HEIGHT).map(|i| self.pixels[i][x]).collect_vec();
+        for i in 0..HEIGHT {
+            self.pixels[i][x] = initial[(i+HEIGHT-by) % HEIGHT];
+        }
+    }
+    fn lit(&self) -> u32 {
+        self.pixels.iter().map(|col| col.iter().map(|&x| x as u32).sum::<u32>()).sum()
+    }
+    fn print(&self) {
+        for row in &self.pixels {
+            for pixel in &row[..] {
+                print!("{}", if *pixel { '#' } else { ' ' });
+            }
+            println!();
+        }
+    }
+}
+
+fn main() {
+    let mut screen = Screen::new();
+    for line in advtools::iter_input::<String>() {
+        if line.starts_with("rect") {
+            let xy = line[5..].split('x').map(|x| x.parse().unwrap()).tuples().next().unwrap();
+            screen.light_rect(xy);
+        } else if line.starts_with("rotate row") {
+            let yby = line[13..].split(" by ").map(|x| x.parse().unwrap()).tuples().next().unwrap();
+            screen.rotate_row(yby);
+        } else if line.starts_with("rotate column") {
+            let xby = line[16..].split(" by ").map(|x| x.parse().unwrap()).tuples().next().unwrap();
+            screen.rotate_col(xby);
+        }
+    }
+    println!("Lit pixels: {}", screen.lit());
+    println!("Code:");
+    screen.print();
+}
