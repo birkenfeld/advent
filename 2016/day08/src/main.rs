@@ -33,8 +33,8 @@ impl Screen {
             self.pixels[i][x] = initial[(i+HEIGHT-by) % HEIGHT];
         }
     }
-    fn lit(&self) -> u32 {
-        self.pixels.iter().map(|col| col.iter().map(|&x| x as u32).sum::<u32>()).sum()
+    fn lit(&self) -> usize {
+        self.pixels.iter().map(|col| col.iter().filter(|&&x| x).count()).sum()
     }
     fn print(&self) {
         for row in &self.pixels {
