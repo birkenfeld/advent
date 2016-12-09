@@ -22,10 +22,9 @@ impl Screen {
         }
     }
     fn rotate_row(&mut self, (y, by): (usize, usize)) {
-        let initial = self.pixels[y].to_vec();
-        for i in 0..WIDTH {
-            self.pixels[y][i] = initial[(i+WIDTH-by) % WIDTH];
-        }
+        self.pixels[y][..WIDTH-by].reverse();
+        self.pixels[y][WIDTH-by..].reverse();
+        self.pixels[y].reverse();
     }
     fn rotate_col(&mut self, (x, by): (usize, usize)) {
         let initial = (0..HEIGHT).map(|i| self.pixels[i][x]).collect_vec();
