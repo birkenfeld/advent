@@ -33,10 +33,7 @@ fn main() {
     // (pass_door1 is long done by then)
     while pass_door2.iter().any(|v| v.is_none()) {
         // get every candidate digit (with 00000 MD5 prefix) in the next batch
-        let mut digits = (n..n + BATCH).into_par_iter()
-                                       .filter_map(check)
-                                       .fold(|| vec![], |mut v, x| { v.push(x); v })
-                                       .reduce(|| vec![], |mut v, x| { v.extend(x); v });
+        let mut digits: Vec<_> = (n..n + BATCH).into_par_iter().filter_map(check).collect();
         digits.sort();  // by n, then d6, then d7
         // update passcode for first door, just by order of number
         pass_door1.extend(digits.iter().map(|d| char::from_digit(d.1 as u32, 16).unwrap()));
@@ -50,7 +47,7 @@ fn main() {
         }
         n += BATCH;
     }
-    let pass_door1 = &pass_door1[..8];
+    let pass_door1 = &pass_door1[..LEN];
     let pass_door2 = pass_door2.into_iter().map(|x| x.unwrap()).collect::<String>();
     println!("First door: {}", pass_door1);
     println!("Second door: {}", pass_door2);

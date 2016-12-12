@@ -5,7 +5,7 @@ authors = ["Georg Brandl <georg@python.org>"]
 
 [dependencies]
 rust-crypto = "*"
-rayon = "*"
+rayon = { git = "https://github.com/nikomatsakis/rayon" }
 
 [dependencies.advtools]
 path = "../advtools"
