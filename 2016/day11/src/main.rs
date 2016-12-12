@@ -120,13 +120,12 @@ fn find_steps(initial: State) -> Option<usize> {
         for state in new_states {
             // need to check here again to weed out duplicates from the parallel
             // determination of new states (since we can't insert in next_level)
-            if seen.contains(&state) {
+            if !seen.insert(state) {
                 continue;
             }
             if state.is_done() {
                 return Some(generation);
             }
-            seen.insert(state);
             states.push(state);
         }
         if states.is_empty() {
