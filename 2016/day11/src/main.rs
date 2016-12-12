@@ -1,4 +1,4 @@
-use std::collections::{VecDeque, HashMap};
+use std::collections::{VecDeque, HashSet};
 
 #[derive(Clone, Copy, Hash, PartialEq, Eq)]
 struct State(u64);
@@ -66,7 +66,7 @@ impl State {
 
 fn find_steps(initial: State) -> Option<usize> {
     let mut queue = VecDeque::with_capacity(20000);
-    let mut queued = HashMap::with_capacity(1000000);
+    let mut queued = HashSet::with_capacity(1000000);
     queue.push_back((initial, 0));
     while let Some((state, i)) = queue.pop_front() {
         // check for found solution
@@ -78,8 +78,8 @@ fn find_steps(initial: State) -> Option<usize> {
             new_state.set_floor(new_floor);
             new_state.set_thing(j1, new_floor);
             new_state.set_thing(j2, new_floor);
-            if new_state.canonicalize_and_check() && !queued.contains_key(&new_state) {
-                queued.insert(new_state, i+1);
+            if new_state.canonicalize_and_check() && !queued.contains(&new_state) {
+                queued.insert(new_state);
                 queue.push_back((new_state, i+1));
             }
         };
