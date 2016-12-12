@@ -3,42 +3,43 @@ extern crate rayon;
 use std::collections::HashSet;
 use rayon::prelude::*;
 
-#[derive(Clone, Copy, Hash, PartialEq, Eq)]
-struct State(u64);
+const MAX: usize = 7;
+
+#[derive(Clone, Copy, Hash, PartialEq, Eq, Default)]
+struct State([u8; 2*MAX+2]);
 
 impl State {
-    fn new(gens: &[u64], chips: &[u64]) -> Self {
+    fn new(mut gens: Vec<u8>, mut chips: Vec<u8>) -> Self {
+        assert!(gens.len() <= MAX);
         assert_eq!(gens.len(), chips.len());
-        let n = gens.len();
-        let mut num = (n as u64) << 58;
-        for (i, &gen) in gens.iter().enumerate() {
-            num |= gen << (i << 2);
+        let mut state = State::default();
+        state.set_n(gens.len());
+        gens.append(&mut chips);
+        for (i, floor) in gens.into_iter().enumerate() {
+            state.set_thing(i, floor);
         }
-        for (i, &chip) in chips.iter().enumerate() {
-            num |= chip << ((i + n) << 2);
-        }
-        State(num)
+        state
     }
     fn n(&self) -> usize {
-        (self.0 >> 58) as usize
+        self.0[0] as usize
     }
-    fn thing(&self, i: usize) -> u64 {
-        (self.0 >> (i << 2)) & 0x3
+    fn set_n(&mut self, n: usize) {
+        self.0[0] = n as u8;
     }
-    fn set_thing(&mut self, i: usize, f: u64) {
-        self.0 = (self.0 & !(3 << (i << 2))) | (f << (i << 2));
+    fn floor(&self) -> u8 {
+        self.0[1]
     }
-    fn floor(&self) -> u64 {
-        self.thing(14)
+    fn set_floor(&mut self, f: u8) {
+        self.0[1] = f;
     }
-    fn set_floor(&mut self, f: u64) {
-        self.set_thing(14, f);
+    fn thing(&self, i: usize) -> u8 {
+        self.0[2+i]
+    }
+    fn set_thing(&mut self, i: usize, f: u8) {
+        self.0[2+i] = f;
     }
     fn swap_things(&mut self, i: usize, j: usize) {
-        let a = self.thing(i);
-        let b = self.thing(j);
-        self.set_thing(i, b);
-        self.set_thing(j, a);
+        self.0.swap(2+i, 2+j);
     }
     fn all_above(&self) -> bool {
         (0..self.n()*2).all(|i| self.thing(i) >= self.floor())
@@ -136,8 +137,8 @@ fn find_steps(initial: State) -> Option<usize> {
 
 fn main() {
     rayon::initialize(rayon::Configuration::new().set_num_threads(4)).unwrap();
-    let state1 = State::new(&[0, 0, 0, 0, 0], &[1, 1, 0, 0, 0]);
+    let state1 = State::new(vec![0, 0, 0, 0, 0], vec![1, 1, 0, 0, 0]);
     println!("Min. # steps (5 chips): {:?}", find_steps(state1).unwrap());
-    let state2 = State::new(&[0, 0, 0, 0, 0, 0, 0], &[1, 1, 0, 0, 0, 0, 0]);
+    let state2 = State::new(vec![0, 0, 0, 0, 0, 0, 0], vec![1, 1, 0, 0, 0, 0, 0]);
     println!("Min. # steps (7 chips): {:?}", find_steps(state2).unwrap());
 }
