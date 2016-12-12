@@ -1,4 +1,7 @@
-use std::collections::{VecDeque, HashSet};
+extern crate rayon;
+
+use std::collections::HashSet;
+use rayon::prelude::*;
 
 #[derive(Clone, Copy, Hash, PartialEq, Eq)]
 struct State(u64);
@@ -64,49 +67,72 @@ impl State {
     }
 }
 
-fn find_steps(initial: State) -> Option<usize> {
-    let mut queue = VecDeque::with_capacity(20000);
-    let mut queued = HashSet::with_capacity(1000000);
-    queue.push_back((initial, 0));
-    while let Some((state, i)) = queue.pop_front() {
-        // check for found solution
-        if state.is_done() {
-            return Some(i);
-        }
-        // determine and maybe queue all new states
-        let mut try_state = |mut new_state: State, new_floor, j1, j2| {
-            new_state.set_floor(new_floor);
-            new_state.set_thing(j1, new_floor);
-            new_state.set_thing(j2, new_floor);
-            if new_state.canonicalize_and_check() && !queued.contains(&new_state) {
-                queued.insert(new_state);
-                queue.push_back((new_state, i+1));
-            }
-        };
-        for new_floor in 0..4 {
-            // only move to adjacent floors
-            if !(new_floor + 1 == state.floor() || new_floor == state.floor() + 1) {
-                continue;
-            }
-            // don't move down if all floors below are empty
-            if new_floor < state.floor() && state.all_above() {
-                continue;
-            }
-            for j1 in 0..2*state.n() {
-                if state.thing(j1) == state.floor() {
-                    // one-thing moves
-                    try_state(state, new_floor, j1, j1);
-                    // two-thing moves
-                    for j2 in 0..j1 {
-                        if state.thing(j2) == state.floor() {
-                            try_state(state, new_floor, j1, j2);
+fn next_states(states: Vec<State>, seen: &HashSet<State>) -> Vec<State> {
+    states
+        .into_par_iter()
+        .map(|state| {
+            let mut res = Vec::with_capacity(200);
+            // determine and maybe queue all new states
+            for new_floor in 0..4 {
+                let mut try_state = |mut new_state: State, new_floor, j1, j2| {
+                    new_state.set_floor(new_floor);
+                    new_state.set_thing(j1, new_floor);
+                    new_state.set_thing(j2, new_floor);
+                    if new_state.canonicalize_and_check() && !seen.contains(&new_state) {
+                        res.push(new_state);
+                    }
+                };
+                // only move to adjacent floors
+                if !(new_floor + 1 == state.floor() || new_floor == state.floor() + 1) {
+                    continue;
+                }
+                // don't move down if all floors below are empty
+                if new_floor < state.floor() && state.all_above() {
+                    continue;
+                }
+                for j1 in 0..2*state.n() {
+                    if state.thing(j1) == state.floor() {
+                        // one-thing moves
+                        try_state(state, new_floor, j1, j1);
+                        // two-thing moves
+                        for j2 in 0..j1 {
+                            if state.thing(j2) == state.floor() {
+                                try_state(state, new_floor, j1, j2);
+                            }
                         }
                     }
                 }
             }
+            res
+        })
+        .reduce(|| Vec::with_capacity(2000), |mut v, mut x| { v.append(&mut x); v })
+}
+
+fn find_steps(initial: State) -> Option<usize> {
+    let mut seen = HashSet::with_capacity(1000000);
+    let mut states = vec![initial];
+    let mut generation = 0;
+
+    loop {
+        let new_states = next_states(states, &seen);
+        generation += 1;
+        states = Vec::with_capacity(new_states.len());
+        for state in new_states {
+            // need to check here again to weed out duplicates from the parallel
+            // determination of new states (since we can't insert in next_level)
+            if seen.contains(&state) {
+                continue;
+            }
+            if state.is_done() {
+                return Some(generation);
+            }
+            seen.insert(state);
+            states.push(state);
+        }
+        if states.is_empty() {
+            return None;
         }
     }
-    None
 }
 
 fn main() {
