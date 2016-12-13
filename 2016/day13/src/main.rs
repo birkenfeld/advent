@@ -6,7 +6,7 @@ const DIRECTIONS: [(i32, i32); 4] = [(-1, 0), (0, -1), (1, 0), (0, 1)];
 type Pos = (i32, i32);
 
 fn is_open_space((x, y): Pos) -> bool {
-    (x*x + 3*x + 2*x*y + y + y*y + INPUT).count_ones() % 2 == 0
+    x >= 0 && y >= 0 && (x*x + 3*x + 2*x*y + y + y*y + INPUT).count_ones() % 2 == 0
 }
 
 fn find_steps(initial: Pos, final_: Option<Pos>, limit: usize) -> (Option<usize>, usize) {
@@ -22,9 +22,7 @@ fn find_steps(initial: Pos, final_: Option<Pos>, limit: usize) -> (Option<usize>
             .flat_map(|(x, y)| {
                 DIRECTIONS.iter().filter_map(|&(dx, dy)| {
                     let pos = (x + dx, y + dy);
-                    if pos.0 >= 0 && pos.1 >= 0 &&
-                        is_open_space(pos) && !seen.contains(&pos)
-                    {
+                    if is_open_space(pos) && !seen.contains(&pos) {
                         seen.insert(pos);
                         if Some(pos) == final_ {
                             reached = Some(generation);
