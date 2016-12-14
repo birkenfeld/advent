@@ -1,0 +1,8 @@
+[package]
+name = "day14"
+version = "0.1.0"
+authors = ["Georg Brandl <georg@python.org>"]
+
+[dependencies]
+rust-crypto = "*"
+rayon = { git = "https://github.com/nikomatsakis/rayon" }
