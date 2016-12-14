@@ -3,6 +3,10 @@ name = "day05"
 version = "0.1.0"
 authors = ["Georg Brandl <georg@python.org>"]
 
+[[bin]]
+name = "day05"
+path = "main.rs"
+
 [dependencies]
 arrayvec = "*"
 rust-crypto = "*"

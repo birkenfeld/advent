@@ -3,6 +3,10 @@ name = "day08"
 version = "0.1.0"
 authors = ["Georg Brandl <georg@python.org>"]
 
+[[bin]]
+name = "day08"
+path = "main.rs"
+
 [dependencies]
 itertools = "*"
 

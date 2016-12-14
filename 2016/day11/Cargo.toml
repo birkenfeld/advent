@@ -3,5 +3,9 @@ name = "day11"
 version = "0.1.0"
 authors = ["Georg Brandl <georg@python.org>"]
 
+[[bin]]
+name = "day11"
+path = "main.rs"
+
 [dependencies]
 rayon = { git = "https://github.com/nikomatsakis/rayon" }
