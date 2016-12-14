@@ -1,6 +1,9 @@
+extern crate arrayvec;
 extern crate crypto;
 extern crate rayon;
 
+use std::io::Write;
+use arrayvec::ArrayVec;
 use crypto::md5::Md5;
 use crypto::digest::Digest;
 use rayon::prelude::*;
@@ -25,10 +28,12 @@ fn digit(ch: u8) -> u8 {
 }
 
 fn find_multiples(i: usize, n: usize) -> Option<(usize, u32)> {
+    let mut buf = ArrayVec::<[u8; 16]>::new();
     let mut sbuf = [0u8; 32];
     let mut hash = Md5::new();
     hash.input(INPUT);
-    hash.input(format!("{}", i).as_bytes());
+    write!(&mut buf, "{}", i).unwrap();
+    hash.input(&buf);
     hash_to_hex(&mut hash, &mut sbuf);
     for _ in 0..n {
         hash.reset();
