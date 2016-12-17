@@ -8,6 +8,5 @@ name = "day17"
 path = "main.rs"
 
 [dependencies]
-arrayvec = "*"
 rust-crypto = "*"
 rayon = { git = "https://github.com/nikomatsakis/rayon" }

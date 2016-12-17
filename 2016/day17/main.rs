@@ -1,17 +1,39 @@
-extern crate arrayvec;
 extern crate crypto;
 extern crate rayon;
 
 use std::fmt;
-use arrayvec::ArrayVec;
 use crypto::md5::Md5;
 use crypto::digest::Digest;
 use rayon::prelude::*;
 
 const INPUT: &'static [u8] = b"edjrjqaa";
 
-#[derive(Clone)]
-struct State(usize, ArrayVec<[u64; 32]>);
+#[derive(Clone, Copy)]
+enum Dir { U, D, L, R }
+use Dir::*;
+
+impl Dir {
+    fn from_int(i: u64) -> Self {
+        match i {
+            0 => U,
+            1 => D,
+            2 => L,
+            3 => R,
+            _ => unreachable!()
+        }
+    }
+    fn as_bytes(&self) -> &'static [u8] {
+        match *self {
+            U => b"U",
+            D => b"D",
+            L => b"L",
+            R => b"R",
+        }
+    }
+}
+
+#[derive(Clone, Default)]
+struct State(usize, Vec<u64>);
 
 impl State {
     fn len(&self) -> usize {
@@ -20,34 +42,24 @@ impl State {
     fn pos(&self) -> usize {
         self.0 & 0xf
     }
-    fn dir(&self, mut idx: usize) -> u8 {
-        let mut ai = 0;
-        while idx >= 16 {
-            ai += 1;
-            idx -= 16;
-        }
-        (self.1[ai] >> (idx * 4)) as u8 & 0x3
+    fn dir(&self, idx: usize) -> Dir {
+        let (ai, idx) = (idx / 32, idx % 32);
+        Dir::from_int((self.1[ai] >> (idx * 2)) & 0x3)
     }
-    fn move_dir(&self, dir: u64) -> State {
+    fn move_dir(&self, dir: Dir) -> State {
         let len = self.len();
-        let mut idx = len;
-        let mut ai = 0;
+        let (ai, idx) = (len / 32, len % 32);
         let mut new = self.clone();
-        while idx >= 16 {
-            ai += 1;
-            idx -= 16;
-        }
         if idx == 0 {
-            new.1.push(dir);
+            new.1.push(dir as u64);
         } else {
-            new.1[ai] |= dir << (idx * 4);
+            new.1[ai] |= (dir as u64) << (idx * 2);
         }
         new.0 = ((len + 1) << 4) | match dir {
-            0 => self.pos() - 4,
-            1 => self.pos() + 4,
-            2 => self.pos() - 1,
-            3 => self.pos() + 1,
-            _ => unreachable!()
+            U => self.pos() - 4,
+            D => self.pos() + 4,
+            L => self.pos() - 1,
+            R => self.pos() + 1,
         };
         new
     }
@@ -56,27 +68,21 @@ impl State {
 impl fmt::Debug for State {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         for i in 0..self.len() {
-            write!(f, "{}", match self.dir(i) {
-                0 => 'U',
-                1 => 'D',
-                2 => 'L',
-                3 => 'R',
-                _ => unreachable!()
-            })?;
+            write!(f, "{}", String::from_utf8_lossy(self.dir(i).as_bytes()))?;
         }
         write!(f, "({})", self.pos())
     }
 }
 
-const HEXCHARS: &'static [u8] = b"0123456789abcdef";
-
-fn hash_to_hex(hash: &mut Md5, sbuf: &mut [u8; 32]) {
+fn eval_hash(mut hash: Md5) -> [bool; 4] {
     let mut buf = [0u8; 16];
+    let mut dirs = [false; 4];
     hash.result(&mut buf);
-    for (i, &byte) in buf.iter().enumerate() {
-        sbuf[2*i] = HEXCHARS[(byte >> 4) as usize];
-        sbuf[2*i+1] = HEXCHARS[(byte & 0xf) as usize];
-    }
+    dirs[0] = (buf[0] >> 4) >= 0xb;
+    dirs[1] = (buf[0] & 0xf) >= 0xb;
+    dirs[2] = (buf[1] >> 4) >= 0xb;
+    dirs[3] = (buf[1] & 0xf) >= 0xb;
+    dirs
 }
 
 fn next_states(states: Vec<State>) -> Vec<State> {
@@ -85,29 +91,21 @@ fn next_states(states: Vec<State>) -> Vec<State> {
         .flat_map(|state| {
             let mut res = Vec::with_capacity(4);
             let mut hash = Md5::new();
-            let mut sbuf = [0u8; 32];
             hash.input(INPUT);
             for i in 0..state.len() {
-                hash.input(match state.dir(i) {
-                    0 => b"U",
-                    1 => b"D",
-                    2 => b"L",
-                    3 => b"R",
-                    _ => unreachable!()
-                });
+                hash.input(state.dir(i).as_bytes());
             }
-            hash_to_hex(&mut hash, &mut sbuf);
-            for dir in 0..4 {
-                match (state.pos(), dir) {
-                    (15, _) => unreachable!(),
-                    (0, 0) | (1, 0) | (2, 0) | (3, 0) |
-                    (14, 1) | (13, 1) | (12, 1) |
-                    (0, 2) | (4, 2) | (8, 2) | (12, 2) |
-                    (3, 3) | (7, 3) | (11, 3) => (),
-                    _ => if sbuf[dir] >= b'b' {  // open!
-                        let new_state = state.move_dir(dir as u64);
-                        res.push(new_state);
-                    }
+            let dirs = eval_hash(hash);
+            for (dir, ok) in [U, D, L, R].iter().cloned().zip(&dirs) {
+                match (*ok, state.pos(), dir) {
+                    (false, _, _) => (),
+                    (_, 0, U)  | (_, 1, U)  | (_, 2, U)  | (_, 3, U) |
+                    (_, 14, D) | (_, 13, D) | (_, 12, D) |
+                    (_, 0, L)  | (_, 4, L)  | (_, 8, L)  | (_, 12, L) |
+                    (_, 3, R)  | (_, 7, R)  | (_, 11, R) => (),
+                    (_, 15, _) => unreachable!(),
+
+                    _ => res.push(state.move_dir(dir))
                 }
             }
             res
@@ -140,8 +138,8 @@ fn find_steps(initial: State) -> (State, usize) {
 }
 
 fn main() {
-    rayon::initialize(rayon::Configuration::new().set_num_threads(4)).unwrap();
-    let state = State(0, ArrayVec::new());
+    rayon::initialize(rayon::Configuration::new().set_num_threads(3)).unwrap();
+    let state = State::default();
     let (final_state, max_path) = find_steps(state);
     println!("Shortest path to goal: {:?}", final_state);
     println!("Max path length: {}", max_path);
