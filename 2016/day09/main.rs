@@ -6,11 +6,11 @@ fn get_decompressed_length(mut s: &str, rx: &regex::Regex, recursive: bool) -> u
     while let Some(cap) = rx.captures(s) {
         let nchars: usize = cap[1].parse().unwrap();
         let repetition: usize = cap[2].parse().unwrap();
-        let (start, end) = cap.pos(0).unwrap();
-        size += start + repetition * if !recursive { nchars } else {
-            get_decompressed_length(&s[end..end+nchars], rx, true)
+        let span = cap.get(0).unwrap();
+        size += span.start() + repetition * if !recursive { nchars } else {
+            get_decompressed_length(&s[span.end()..span.end()+nchars], rx, true)
         };
-        s = &s[end+nchars..];
+        s = &s[span.end()+nchars..];
     }
     size + s.len()
 }
