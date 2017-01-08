@@ -15,6 +15,9 @@ enum Op {
     Dec(RegNo),
     Cpy(Arg, Arg),
     Jnz(Arg, Arg),
+    Nop,
+    Add(RegNo, RegNo),
+    Mul(RegNo, Arg, RegNo, RegNo),
 }
 
 fn reg(s: &str) -> usize {
@@ -38,8 +41,40 @@ struct Machine {
 }
 
 impl Machine {
-    fn new(prog: Vec<Op>) -> Machine {
+    fn new(mut prog: Vec<Op>) -> Machine {
+        Self::opt(&mut prog);
         Machine { prog: prog, regs: [0, 0, 0, 0], pc: 0 }
+    }
+    fn opt(prog: &mut Vec<Op>) {
+        for i in 0..prog.len() - 2 {
+            if let Op::Inc(r1) = prog[i] {
+                if let Op::Dec(r2) = prog[i+1] {
+                    if let Op::Jnz(Arg::Reg(r3), Arg::Imm(-2)) = prog[i+2] {
+                        if r2 == r3 {
+                            prog[i] = Op::Add(r1, r2);
+                            prog[i+1] = Op::Nop;
+                            prog[i+2] = Op::Nop;
+                        }
+                    }
+                }
+            }
+            if i+5 < prog.len() {
+                if let Op::Cpy(mul1, Arg::Reg(r1)) = prog[i] {
+                    if let Op::Add(r2, r3) = prog[i+1] {
+                        if let Op::Dec(r4) = prog[i+4] {
+                            if let Op::Jnz(Arg::Reg(r5), Arg::Imm(-5)) = prog[i+5] {
+                                if r1 == r3 && r4 == r5 {
+                                    prog[i] = Op::Mul(r2, mul1, r4, r1);
+                                    prog[i+1] = Op::Nop;
+                                    prog[i+4] = Op::Nop;
+                                    prog[i+5] = Op::Nop;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
     fn get(&self, arg: Arg) -> i64 {
         match arg {
@@ -61,7 +96,9 @@ impl Machine {
                             Op::Dec(reg) => Op::Inc(reg),
                             Op::Cpy(v1, v2) => Op::Jnz(v1, v2),
                             Op::Jnz(v1, v2) => Op::Cpy(v1, v2),
-                        }
+                            op => panic!("cannot toggle: {:?}", op)
+                        };
+                        Self::opt(&mut self.prog);
                     }
                 }
                 Op::Inc(reg) => self.regs[reg] += 1,
@@ -71,6 +108,15 @@ impl Machine {
                 },
                 Op::Jnz(tst, ofs) => if self.get(tst) != 0 {
                     self.pc = ((self.pc as isize - 1) + self.get(ofs) as isize) as usize
+                },
+                Op::Nop => {},
+                Op::Add(dst, src) => {
+                    self.regs[dst] += self.regs[src];
+                    self.regs[src] = 0;
+                },
+                Op::Mul(dst, src1, src2, hlp) => {
+                    self.regs[dst] += self.get(src1) * self.regs[src2];
+                    self.regs[hlp] = 0;
                 },
             }
         }
