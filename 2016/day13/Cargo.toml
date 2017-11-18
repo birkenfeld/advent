@@ -1,8 +1,0 @@
-[package]
-name = "day13"
-version = "0.1.0"
-authors = ["Georg Brandl <georg@python.org>"]
-
-[[bin]]
-name = "day13"
-path = "main.rs"

@@ -5,12 +5,8 @@ ifeq ($(MODE),release)
 endif
 
 all:
-	@for d in day*; do echo -e '\n\x1b[01m'$$d; (cd $$d; cargo run $(MODEARG)); done
-clippy:
-	@for d in day*; do echo -e '\n\x1b[01m'$$d; (cd $$d; touch main.rs; cargo clippy); done
-build:
-	@for d in day*; do echo -e '\n\x1b[01m'$$d; (cd $$d; cargo build $(MODEARG)); done
+	@cargo build $(MODEARG)
+	@for s in src/bin/day*; do t=`basename $$s .rs`; echo -e '\n\x1b[01m'$$t'\x1b[0m'; target/$(MODE)/$$t; done
 time:
-	@for d in day*; do echo -e '\n\x1b[01m'$$d; (cd $$d; cargo build -q $(MODEARG); perf stat --null target/$(MODE)/$$d 2>&1 | grep elapsed); done
-clean:
-	for d in *; do rm -rf $$d/target; done
+	@cargo build $(MODEARG)
+	@for s in src/bin/day*; do t=`basename $$s .rs`; echo -e '\n\x1b[01m'$$t'\x1b[0m'; perf stat --null target/$(MODE)/$$t 2>&1 | grep elapsed; done

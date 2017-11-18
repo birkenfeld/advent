@@ -1,16 +1,19 @@
 [package]
-name = "day02"
+name = "advent16"
+description = "Solutions for Advent of Code 2016."
 version = "0.1.0"
 authors = ["Georg Brandl <georg@python.org>"]
 
-[[bin]]
-name = "day02"
-path = "main.rs"
-
 [dependencies]
+fnv = "*"
 itertools = "*"
+arrayvec = "*"
+odds = "*"
+rayon = "*"
+regex = "*"
+md-5 = "*"
 strum = "*"
 strum_macros = "*"
 
 [dependencies.advtools]
-path = "../advtools"
+path = "advtools"
