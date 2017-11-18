@@ -7,5 +7,10 @@ authors = ["Georg Brandl <georg@python.org>"]
 name = "day02"
 path = "main.rs"
 
+[dependencies]
+itertools = "*"
+strum = "*"
+strum_macros = "*"
+
 [dependencies.advtools]
 path = "../advtools"
