@@ -8,7 +8,7 @@ use arrayvec::ArrayVec;
 use md5::{Digest, Md5};
 use rayon::prelude::*;
 
-const INPUT: &'static [u8] = b"uqwqemis";
+const INPUT: &[u8] = b"uqwqemis";
 const LEN: usize = 8;
 const BATCH: usize = 1_000_000;
 
@@ -39,13 +39,13 @@ fn main() {
         let mut digits: Vec<_> = (n..n + BATCH).into_par_iter().filter_map(check).collect();
         digits.sort();  // by n, then d6, then d7
         // update passcode for first door, just by order of number
-        pass_door1.extend(digits.iter().map(|d| char::from_digit(d.1 as u32, 16).unwrap()));
+        pass_door1.extend(digits.iter().map(|d| char::from_digit(d.1.into(), 16).unwrap()));
         // update passcode for second door, where the index is d6, the code digit
         // is d7, and the first one wins
         for (_, d6, d7) in digits {
             let d6 = d6 as usize;
             if d6 < LEN && pass_door2[d6].is_none() {
-                pass_door2[d6] = char::from_digit(d7 as u32, 16);
+                pass_door2[d6] = char::from_digit(d7.into(), 16);
             }
         }
         n += BATCH;

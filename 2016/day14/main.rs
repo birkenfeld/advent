@@ -7,11 +7,11 @@ use arrayvec::ArrayVec;
 use md5::{Digest, Md5};
 use rayon::prelude::*;
 
-const INPUT: &'static [u8] = b"ngcjuoqr";
+const INPUT: &[u8] = b"ngcjuoqr";
 const OFFSET: usize = 1000;
 const KEYLEN: usize = 64;
 
-const HEXCHARS: &'static [u8] = b"0123456789abcdef";
+const HEXCHARS: &[u8] = b"0123456789abcdef";
 
 fn hash_to_hex(hash: &mut Md5, sbuf: &mut [u8; 32]) {
     let buf = hash.hash();

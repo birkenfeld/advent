@@ -3,8 +3,8 @@ extern crate advtools;
 
 use odds::slice::rotate_left;
 
-const INITIAL: &'static str = "abcdefgh";
-const FINAL:   &'static str = "fbgdceah";
+const INITIAL: &str = "abcdefgh";
+const FINAL:   &str = "fbgdceah";
 
 #[derive(Debug)]
 enum Instr {
@@ -91,7 +91,7 @@ fn main() {
                     parts.nth(2).unwrap().parse().unwrap()
                 )
             } else {
-                panic!("invalid instruction line: {}", line);
+                panic!("invalid instruction line: {}", line)
             }
         );
     }

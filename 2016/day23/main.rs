@@ -91,9 +91,9 @@ impl Machine {
                     let pos = (self.pc as i64 - 1 + self.regs[reg]) as usize;
                     if pos < self.prog.len() {
                         self.prog[pos] = match self.prog[pos] {
-                            Op::Tgl(reg) => Op::Inc(reg),
-                            Op::Inc(reg) => Op::Dec(reg),
+                            Op::Tgl(reg) |
                             Op::Dec(reg) => Op::Inc(reg),
+                            Op::Inc(reg) => Op::Dec(reg),
                             Op::Cpy(v1, v2) => Op::Jnz(v1, v2),
                             Op::Jnz(v1, v2) => Op::Cpy(v1, v2),
                             op => panic!("cannot toggle: {:?}", op)

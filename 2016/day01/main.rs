@@ -39,7 +39,7 @@ fn main() {
     let mut visited_twice = None;
     for instr in advtools::input_string().split(',') {
         let instr = instr.trim();
-        dir = if instr.starts_with("R") { dir.right() } else { dir.left() };
+        dir = if instr.starts_with('R') { dir.right() } else { dir.left() };
         for _ in 0..instr[1..].parse().unwrap() {
             pos.walk(dir, 1);
             if visited_twice.is_none() {

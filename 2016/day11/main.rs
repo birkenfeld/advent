@@ -110,7 +110,7 @@ fn next_states(states: Vec<State>, seen: &HashSet<State>) -> Vec<State> {
 }
 
 fn find_steps(initial: State) -> Option<usize> {
-    let mut seen = HashSet::with_capacity(1000000);
+    let mut seen = HashSet::with_capacity(1_000_000);
     let mut states = vec![initial];
     let mut generation = 0;
 

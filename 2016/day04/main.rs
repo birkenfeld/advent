@@ -2,8 +2,8 @@ extern crate advtools;
 extern crate regex;
 extern crate fnv;
 
-const TARGET_ROOM: &'static str = "northpole object storage";
-const LINE_FMT: &'static str = r"(.*)-(\d+)\[(.*)\]";
+const TARGET_ROOM: &str = "northpole object storage";
+const LINE_FMT: &str = r"(.*)-(\d+)\[(.*)\]";
 
 fn main() {
     let mut np_sector = 0;

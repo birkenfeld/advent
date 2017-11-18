@@ -3,9 +3,9 @@ extern crate itertools;
 
 use itertools::Itertools;
 
-const INPUT: &'static [u8] = b"00101000101111010";
+const INPUT: &[u8] = b"00101000101111010";
 const LEN: usize = 272;
-const LEN2: usize = 35651584;
+const LEN2: usize = 35_651_584;
 
 fn checksum(s: Vec<u8>) -> Vec<u8> {
     s.into_iter().tuples().map(|(a, b)| if a == b { b'1' } else { b'0' }).collect()

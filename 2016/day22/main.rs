@@ -19,7 +19,7 @@ fn find_steps(initial: Pos, final_: Pos, blockers: &HashSet<Pos>, size: &Pos) ->
         generation += 1;
         let mut new_positions = vec![];
         for (x, y) in positions {
-            for &(dx, dy) in DIRECTIONS.iter() {
+            for &(dx, dy) in &DIRECTIONS {
                 let new_pos = (x + dx, y + dy);
                 if is_allowed(new_pos, blockers, size) && !seen.contains(&new_pos) {
                     seen.insert(new_pos);

@@ -27,5 +27,5 @@ fn count_all_safe(n: usize) -> usize {
 
 fn main() {
     println!("Safe tiles (40 lines): {}", count_all_safe(40));
-    println!("Safe tiles (400000 lines): {}", count_all_safe(400000));
+    println!("Safe tiles (400000 lines): {}", count_all_safe(400_000));
 }

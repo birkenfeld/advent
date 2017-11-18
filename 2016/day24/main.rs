@@ -12,7 +12,7 @@ enum Loc {
     POI(u8),
 }
 
-fn find_steps(initial: Pos, final_: Option<Pos>, maze: &Vec<Vec<Loc>>) -> usize {
+fn find_steps(initial: Pos, final_: Option<Pos>, maze: &[Vec<Loc>]) -> usize {
     let mut seen = HashSet::with_capacity(1000);
     let mut positions = vec![initial];
     let mut generation = 0;
@@ -21,7 +21,7 @@ fn find_steps(initial: Pos, final_: Option<Pos>, maze: &Vec<Vec<Loc>>) -> usize 
         generation += 1;
         let mut new_positions = vec![];
         for (x, y, pois) in positions {
-            for &(dx, dy) in DIRECTIONS.iter() {
+            for &(dx, dy) in &DIRECTIONS {
                 let new_pos = match maze[(y + dy) as usize][(x + dx) as usize] {
                     Loc::Wall => continue,
                     Loc::Free => (x + dx, y + dy, pois),

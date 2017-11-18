@@ -1,4 +1,4 @@
-const ELVES: usize = 3014603;
+const ELVES: usize = 3_014_603;
 
 fn calc_1(n: usize) -> usize {
     let pot = (0..).find(|&m| 2usize.pow(m) > n).map_or(0, |m| 2usize.pow(m - 1));

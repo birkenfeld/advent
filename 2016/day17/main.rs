@@ -5,7 +5,7 @@ use std::fmt;
 use md5::{Digest, Md5};
 use rayon::prelude::*;
 
-const INPUT: &'static [u8] = b"edjrjqaa";
+const INPUT: &[u8] = b"edjrjqaa";
 
 #[derive(Clone, Copy)]
 enum Dir { U, D, L, R }
@@ -96,7 +96,7 @@ fn next_states(states: Vec<State>) -> Vec<State> {
             let dirs = eval_hash(hash);
             for (dir, ok) in [U, D, L, R].iter().cloned().zip(&dirs) {
                 match (*ok, state.pos(), dir) {
-                    (false, _, _) => (),
+                    (false, _, _) |
                     (_, 0, U)  | (_, 1, U)  | (_, 2, U)  | (_, 3, U) |
                     (_, 14, D) | (_, 13, D) | (_, 12, D) |
                     (_, 0, L)  | (_, 4, L)  | (_, 8, L)  | (_, 12, L) |
