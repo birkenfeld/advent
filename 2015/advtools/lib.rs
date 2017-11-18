@@ -1,8 +1,11 @@
+use std::env;
 use std::collections::HashMap;
 use std::fs::File;
 use std::hash::Hash;
 use std::io::{BufReader, BufRead, Read};
 use std::marker::PhantomData;
+use std::ops::Add;
+use std::path::Path;
 
 pub type TokIter<'t> = std::str::SplitWhitespace<'t>;
 
@@ -134,19 +137,37 @@ impl<I: Input> Iterator for InputIterator<I> {
 }
 
 
+pub fn input_file() -> File {
+    let mut infile = Path::new("input").join(
+        Path::new(&env::args_os().next().unwrap()).file_name().unwrap());
+    infile.set_extension("txt");
+    File::open(&infile)
+        .unwrap_or_else(|_| panic!("input file \"{}\" not found", infile.display()))
+}
+
+
 pub fn iter_input<I: Input>() -> InputIterator<I> {
-    let fp = File::open("input.txt").expect("input file \"input.txt\" not found in cwd");
-    let rdr = BufReader::new(fp);
+    let rdr = BufReader::new(input_file());
     InputIterator { rdr: rdr, marker: PhantomData }
 }
 
 
 pub fn input_string() -> String {
-    let mut fp = File::open("input.txt").expect("input file \"input.txt\" not found in cwd");
     let mut contents = String::new();
-    fp.read_to_string(&mut contents).unwrap();
+    input_file().read_to_string(&mut contents).unwrap();
     contents
 }
+
+
+pub trait IterExt: Iterator {
+    fn sum_from(self, start: Self::Item) -> Self::Item where
+        <Self as Iterator>::Item: Add<Self::Item, Output=Self::Item>, Self: Sized
+    {
+        self.fold(start, |s, e| s + e)
+    }
+}
+
+impl<I: Iterator> IterExt for I { }
 
 
 pub struct Uids<T> {
@@ -162,4 +183,11 @@ impl<T: Hash + Eq> Uids<T> {
         let n = self.map.len();
         *self.map.entry(k).or_insert(n)
     }
+}
+
+
+pub fn sorted<T: Ord, I: Iterator<Item=T>>(it: I) -> Vec<T> {
+    let mut v: Vec<T> = it.collect();
+    v.sort();
+    v
 }

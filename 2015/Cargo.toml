@@ -1,0 +1,16 @@
+[package]
+name = "advent15"
+description = "Solutions for Advent of Code 2015."
+version = "0.1.0"
+authors = ["Georg Brandl <georg@python.org>"]
+
+[dependencies]
+rand = "*"
+rayon = "*"
+md-5 = "*"
+itertools = "*"
+serde_json = "*"
+permutohedron = "*"
+
+[dependencies.advtools]
+path = "advtools"
