@@ -8,4 +8,4 @@ name = "day11"
 path = "main.rs"
 
 [dependencies]
-rayon = { git = "https://github.com/nikomatsakis/rayon" }
+rayon = "*"

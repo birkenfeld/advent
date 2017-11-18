@@ -1,18 +1,15 @@
-extern crate advtools;
-extern crate extprim;
+#![feature(i128_type)]
 
-use extprim::u128::u128;
+extern crate advtools;
 
 fn count_all_safe(n: usize) -> usize {
-    let u1 = u128::one();
-
     // read from input: line = 0...input...0
-    let mut line = u128::zero();
+    let mut line = 0u128;
     let len = advtools::input_string().trim().chars().map(|ch|
-        line = (if ch == '^' { line | u1 } else { line }) << 1
+        line = (if ch == '^' { line | 1 } else { line }) << 1
     ).count();
     // mask = 0111...1110
-    let mask = ((u1 << len) - u1) << 1;
+    let mask = ((1 << len) - 1) << 1;
 
     let mut count = 0;
     for _ in 0..n {

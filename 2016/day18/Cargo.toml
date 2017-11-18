@@ -7,8 +7,5 @@ authors = ["Georg Brandl <georg@python.org>"]
 name = "day18"
 path = "main.rs"
 
-[dependencies]
-extprim = "*"
-
 [dependencies.advtools]
 path = "../advtools"

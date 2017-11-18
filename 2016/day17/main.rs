@@ -138,7 +138,7 @@ fn find_steps(initial: State) -> (State, usize) {
 }
 
 fn main() {
-    rayon::initialize(rayon::Configuration::new().set_num_threads(3)).unwrap();
+    rayon::initialize(rayon::Configuration::new().num_threads(3)).unwrap();
     let state = State::default();
     let (final_state, max_path) = find_steps(state);
     println!("Shortest path to goal: {:?}", final_state);

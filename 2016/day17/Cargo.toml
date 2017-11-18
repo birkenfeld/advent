@@ -9,4 +9,4 @@ path = "main.rs"
 
 [dependencies]
 rust-crypto = "*"
-rayon = { git = "https://github.com/nikomatsakis/rayon" }
+rayon = "*"
