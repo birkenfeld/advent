@@ -3,6 +3,10 @@ name = "day12"
 version = "0.1.0"
 authors = ["Georg Brandl <georg@python.org>"]
 
+[[bin]]
+name = "day12"
+path = "main.rs"
+
 [dependencies]
 serde_json = "*"
 

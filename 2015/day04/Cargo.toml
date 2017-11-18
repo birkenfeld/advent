@@ -3,6 +3,10 @@ name = "day04"
 version = "0.1.0"
 authors = ["Georg Brandl <georg@python.org>"]
 
+[[bin]]
+name = "day04"
+path = "main.rs"
+
 [dependencies]
 md-5 = "*"
 rayon = "*"

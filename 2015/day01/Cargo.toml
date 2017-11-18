@@ -3,5 +3,9 @@ name = "day01"
 version = "0.1.0"
 authors = ["Georg Brandl <georg@python.org>"]
 
+[[bin]]
+name = "day01"
+path = "main.rs"
+
 [dependencies.advtools]
 path = "../advtools"
