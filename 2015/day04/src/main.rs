@@ -1,20 +1,18 @@
-extern crate crypto;
+extern crate md5;
 extern crate rayon;
 
 use std::cmp::min;
 use std::sync::mpsc;
-use crypto::md5::Md5;
-use crypto::digest::Digest;
+use md5::{Digest, Md5};
 
 const INPUT: &'static [u8] = b"yzbqklnj";
 const N: usize = 10_000_000;
 
 fn check(i: usize, tx: &mut mpsc::Sender<(usize, usize)>) {
-    let mut buf = [0u8; 16];
     let mut hash = Md5::new();
     hash.input(INPUT);
     hash.input(format!("{}", i).as_bytes());
-    hash.result(&mut buf);
+    let buf = hash.result();
     if buf[0] | buf[1] == 0 {
         if buf[2] & 0xF0 == 0 {
             tx.send((5, i)).unwrap();

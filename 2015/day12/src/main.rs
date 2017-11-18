@@ -7,9 +7,7 @@ use serde_json::Value::*;
 
 fn sum_up(val: Value, no_reds: bool) -> i64 {
     match val {
-        I64(v) => v,
-        U64(v) => v as i64,
-        F64(v) => v as i64,
+        Number(v) => v.as_i64().unwrap(),
         String(_) | Bool(_) | Null => 0,
         Array(vs) => vs.into_iter().map(|v| sum_up(v, no_reds)).sum(),
         Object(map) => map.into_iter().fold((false, 0), |acc, kv| {
