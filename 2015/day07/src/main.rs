@@ -36,10 +36,9 @@ impl Circuit {
     }
 
     fn connect(&mut self, id: u16, el: Element) {
-        if self.wires.contains_key(&id) {
+        if self.wires.insert(id, el).is_some() {
             panic!("duplicate wire: {}", id);
         }
-        self.wires.insert(id, el);
     }
 
     fn reconnect(&mut self, id: u16, el: Element) {

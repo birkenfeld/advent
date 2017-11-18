@@ -29,7 +29,7 @@ fn main() {
                 'y' if prev == 'x' => has_naughty = true,
                 _ => ()
             }
-            let prevpair = pairs.get(&(prev, ch)).map(|&v| v);
+            let prevpair = pairs.get(&(prev, ch)).cloned();
             if let Some(j) = prevpair {
                 if j + 1 < i {
                     has_doublepair = true;

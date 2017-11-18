@@ -9,8 +9,8 @@ fn add_up<F>(amounts: &[i32], v: &[Values], select: F) -> i32 where F: Fn(&Value
 }
 
 fn fom(amounts: &[i32], v: &[Values]) -> i32 {
-    return max(add_up(amounts, v, |vi| vi.0), 0) * max(add_up(amounts, v, |vi| vi.1), 0) *
-        max(add_up(amounts, v, |vi| vi.2), 0) * max(add_up(amounts, v, |vi| vi.3), 0);
+    max(add_up(amounts, v, |vi| vi.0), 0) * max(add_up(amounts, v, |vi| vi.1), 0) *
+        max(add_up(amounts, v, |vi| vi.2), 0) * max(add_up(amounts, v, |vi| vi.3), 0)
 }
 
 fn gen_amounts(sum: usize, n: usize) -> Vec<Vec<i32>> {
@@ -34,7 +34,7 @@ fn find_best(goalcal: Option<i32>, v: &[Values]) -> Vec<i32> {
         .filter(|amounts| if let Some(goal) = goalcal {
             add_up(amounts, v, |vi| vi.4) == goal
         } else { true })
-        .max_by_key(|amounts| fom(amounts, &v)).unwrap()
+        .max_by_key(|amounts| fom(amounts, v)).unwrap()
 }
 
 fn main() {

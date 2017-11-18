@@ -46,7 +46,7 @@ fn fight(dmg_per_turn: i32) -> i32 {
                     min_mana = min(min_mana, mana_used);
                 } else {
                     stack.push((!my_turn, new_boss_hp, hp, mana - 53,
-                                effects.clone(), mana_used + 53, rnds + 1));
+                                effects, mana_used + 53, rnds + 1));
                 }
             }
             if mana >= 73 {  // Drain
@@ -55,14 +55,15 @@ fn fight(dmg_per_turn: i32) -> i32 {
                     min_mana = min(min_mana, mana_used);
                 } else {
                     stack.push((!my_turn, new_boss_hp, hp + 2, mana - 73,
-                                effects.clone(), mana_used + 73, rnds + 1));
+                                effects, mana_used + 73, rnds + 1));
                 }
             }
             for (i, &(cost, last)) in [(113, 6), (173, 6), (229, 5)].iter().enumerate() {
                 if mana >= cost && effects[i] == 0 {
-                    let mut effects = effects.clone();
+                    let mut new_effects = effects;
                     effects[i] = last;
-                    stack.push((!my_turn, boss_hp, hp, mana - cost, effects, mana_used + cost, rnds + 1));
+                    stack.push((!my_turn, boss_hp, hp, mana - cost, new_effects,
+                                mana_used + cost, rnds + 1));
                 }
             }
         }

@@ -2,7 +2,7 @@ extern crate advtools;
 
 use std::collections::{HashSet, HashMap};
 
-const NEEDLE: &'static str = "\
+const NEEDLE: &str = "\
 children: 3
 cats: 7
 samoyeds: 2
@@ -38,13 +38,14 @@ fn main() {
         if hay.is_subset(&needle) {
             println!("Preliminary aunt: {}", i+1);
         }
-        if hay.iter().all(|&(ref name, count)| {
+        let all_ok = hay.iter().all(|&(ref name, count)| {
             match &**name {
                 "cats" | "trees" => count > needle_map[name],
                 "pomeranians" | "goldfish" => count < needle_map[name],
                 _ => count == needle_map[name]
             }
-        }) {
+        });
+        if all_ok {
             println!("Real aunt: {}", i+1);
         }
     }

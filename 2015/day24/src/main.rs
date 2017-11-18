@@ -24,9 +24,9 @@ fn find_batches(v: &[u32], i: usize, cand: u32, rest: u32,
 fn find_configuration(weights: &[u32], batch_weight: u32) -> u64 {
     let mut candidates = Vec::new();
     let mut best_count = 0;
-    find_batches(&weights, 0, 0, batch_weight, &mut best_count, &mut candidates);
+    find_batches(weights, 0, 0, batch_weight, &mut best_count, &mut candidates);
     candidates.sort();
-    return candidates[0].0;
+    candidates[0].0
 }
 
 fn main() {

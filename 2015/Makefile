@@ -6,6 +6,8 @@ endif
 
 all:
 	@for d in day*; do echo -e '\n\x1b[01m'$$d; (cd $$d; cargo run $(MODEARG)); done
+clippy:
+	@for d in day*; do echo -e '\n\x1b[01m'$$d; (cd $$d; touch main.rs; cargo clippy); done
 build:
 	@for d in day*; do echo -e '\n\x1b[01m'$$d; (cd $$d; cargo build $(MODEARG)); done
 time:

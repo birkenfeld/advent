@@ -1,4 +1,4 @@
-const INPUT: &'static str = "1321131112";
+const INPUT: &str = "1321131112";
 
 fn push_pair(v: &mut Vec<u8>, n: u8, d: u8) {
     if n >= 10 {

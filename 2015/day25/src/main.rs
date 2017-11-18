@@ -2,9 +2,9 @@ extern crate advtools;
 
 const ROW: usize = 2981;
 const COL: usize = 3075;
-const FIRST: u64 = 20151125;
-const FACTOR: u64 = 252533;
-const DIVISOR: u64 = 33554393;
+const FIRST: u64 = 20_151_125;
+const FACTOR: u64 = 252_533;
+const DIVISOR: u64 = 33_554_393;
 
 fn main() {
     let mut col = 1;

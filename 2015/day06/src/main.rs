@@ -16,8 +16,8 @@ fn main() {
         } else {
             (&parts[2], &parts[4])
         };
-        let from = coords.0.split(",").map(|v| v.parse().unwrap()).collect::<Vec<usize>>();
-        let to = coords.1.split(",").map(|v| v.parse().unwrap()).collect::<Vec<usize>>();
+        let from = coords.0.split(',').map(|v| v.parse().unwrap()).collect::<Vec<usize>>();
+        let to = coords.1.split(',').map(|v| v.parse().unwrap()).collect::<Vec<usize>>();
         for ix in from[0]..to[0]+1 {
             for iy in from[1]..to[1]+1 {
                 match todo {

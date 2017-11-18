@@ -6,7 +6,7 @@ const N: usize = 100;
 const STEPS: usize = 100;
 
 fn step(grid: &mut [[bool; N+2]; N+2], stuck: bool) {
-    let ref mut outgrid = [[false; N+2]; N+2];
+    let outgrid = &mut [[false; N+2]; N+2];
     if stuck {
         for &(i, j) in &[(1, 1), (1, N), (N, 1), (N, N)] {
             grid[i][j] = true;

@@ -1,6 +1,6 @@
 use std::cmp::min;
 
-const GOAL: u32 = 33100000;
+const GOAL: u32 = 33_100_000;
 const N: u32 = GOAL / 10;
 
 fn find(maxhouses: u32, multiplier: u32) -> usize {
