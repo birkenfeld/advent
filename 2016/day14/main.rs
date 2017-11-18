@@ -1,11 +1,10 @@
 extern crate arrayvec;
-extern crate crypto;
+extern crate md5;
 extern crate rayon;
 
 use std::io::Write;
 use arrayvec::ArrayVec;
-use crypto::md5::Md5;
-use crypto::digest::Digest;
+use md5::{Digest, Md5};
 use rayon::prelude::*;
 
 const INPUT: &'static [u8] = b"ngcjuoqr";
@@ -15,8 +14,7 @@ const KEYLEN: usize = 64;
 const HEXCHARS: &'static [u8] = b"0123456789abcdef";
 
 fn hash_to_hex(hash: &mut Md5, sbuf: &mut [u8; 32]) {
-    let mut buf = [0u8; 16];
-    hash.result(&mut buf);
+    let buf = hash.hash();
     for (i, &byte) in buf.iter().enumerate() {
         sbuf[2*i] = HEXCHARS[(byte >> 4) as usize];
         sbuf[2*i+1] = HEXCHARS[(byte & 0xf) as usize];
@@ -36,7 +34,7 @@ fn find_multiples(i: usize, n: usize) -> Option<(usize, u32)> {
     hash.input(&buf);
     hash_to_hex(&mut hash, &mut sbuf);
     for _ in 0..n {
-        hash.reset();
+        let mut hash = Md5::new();
         hash.input(&sbuf);
         hash_to_hex(&mut hash, &mut sbuf);
     }

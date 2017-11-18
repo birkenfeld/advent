@@ -9,5 +9,5 @@ path = "main.rs"
 
 [dependencies]
 arrayvec = "*"
-rust-crypto = "*"
+md-5 = "*"
 rayon = "*"

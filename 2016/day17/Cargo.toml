@@ -8,5 +8,5 @@ name = "day17"
 path = "main.rs"
 
 [dependencies]
-rust-crypto = "*"
+md-5 = "*"
 rayon = "*"

@@ -9,6 +9,6 @@ all:
 build:
 	@for d in day*; do echo -e '\n\x1b[01m'$$d; (cd $$d; cargo build $(MODEARG)); done
 time:
-	@for d in day*; do echo -e '\n\x1b[01m'$$d; (cd $$d; cargo build $(MODEARG) && perf stat --null target/$(MODE)/$$d); done
+	@for d in day*; do echo -e '\n\x1b[01m'$$d; (cd $$d; cargo build -q $(MODEARG); perf stat --null target/$(MODE)/$$d 2>&1 | grep elapsed); done
 clean:
 	for d in *; do rm -rf $$d/target; done

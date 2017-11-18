@@ -1,9 +1,8 @@
-extern crate crypto;
+extern crate md5;
 extern crate rayon;
 
 use std::fmt;
-use crypto::md5::Md5;
-use crypto::digest::Digest;
+use md5::{Digest, Md5};
 use rayon::prelude::*;
 
 const INPUT: &'static [u8] = b"edjrjqaa";
@@ -74,10 +73,9 @@ impl fmt::Debug for State {
     }
 }
 
-fn eval_hash(mut hash: Md5) -> [bool; 4] {
-    let mut buf = [0u8; 16];
+fn eval_hash(hash: Md5) -> [bool; 4] {
     let mut dirs = [false; 4];
-    hash.result(&mut buf);
+    let buf = hash.hash();
     dirs[0] = (buf[0] >> 4) >= 0xb;
     dirs[1] = (buf[0] & 0xf) >= 0xb;
     dirs[2] = (buf[1] >> 4) >= 0xb;

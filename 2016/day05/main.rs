@@ -1,12 +1,11 @@
 extern crate arrayvec;
-extern crate crypto;
+extern crate md5;
 extern crate rayon;
 
 use std::char;
 use std::io::Write;
 use arrayvec::ArrayVec;
-use crypto::md5::Md5;
-use crypto::digest::Digest;
+use md5::{Digest, Md5};
 use rayon::prelude::*;
 
 const INPUT: &'static [u8] = b"uqwqemis";
@@ -14,13 +13,12 @@ const LEN: usize = 8;
 const BATCH: usize = 1_000_000;
 
 fn check(i: usize) -> Option<(usize, u8, u8)> {
-    let mut buf = [0u8; 16];
     let mut vbuf = ArrayVec::<[u8; 16]>::new();
     let mut hash = Md5::new();
     hash.input(INPUT);
     write!(&mut vbuf, "{}", i).unwrap();
     hash.input(&vbuf);
-    hash.result(&mut buf);
+    let buf = hash.hash();
     if buf[0] | buf[1] == 0 && buf[2] & 0xF0 == 0 {
         Some((i, buf[2], buf[3] >> 4))
     } else {
