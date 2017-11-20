@@ -1,5 +1,6 @@
 extern crate md5;
 extern crate rayon;
+extern crate itoa;
 
 use std::cmp::min;
 use std::sync::mpsc;
@@ -9,10 +10,12 @@ const INPUT: &'static [u8] = b"yzbqklnj";
 const N: usize = 10_000_000;
 
 fn check(i: usize, tx: &mut mpsc::Sender<(usize, usize)>) {
+    let mut ibuf = [0u8; 16];
     let mut hash = Md5::new();
+    let n = itoa::write(&mut ibuf[..], i).unwrap();
     hash.input(INPUT);
-    hash.input(format!("{}", i).as_bytes());
-    let buf = hash.result();
+    hash.input(&ibuf[..n]);
+    let buf = hash.hash();
     if buf[0] | buf[1] == 0 {
         if buf[2] & 0xF0 == 0 {
             tx.send((5, i)).unwrap();

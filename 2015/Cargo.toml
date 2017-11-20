@@ -11,6 +11,7 @@ md-5 = "*"
 itertools = "*"
 serde_json = "*"
 permutohedron = "*"
+itoa = "*"
 
 [dependencies.advtools]
 path = "advtools"
