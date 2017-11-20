@@ -1,10 +1,8 @@
-extern crate arrayvec;
 extern crate md5;
 extern crate rayon;
+extern crate itoa;
 
 use std::char;
-use std::io::Write;
-use arrayvec::ArrayVec;
 use md5::{Digest, Md5};
 use rayon::prelude::*;
 
@@ -13,11 +11,11 @@ const LEN: usize = 8;
 const BATCH: usize = 1_000_000;
 
 fn check(i: usize) -> Option<(usize, u8, u8)> {
-    let mut vbuf = ArrayVec::<[u8; 16]>::new();
+    let mut ibuf = [0u8; 16];
     let mut hash = Md5::new();
+    let n = itoa::write(&mut ibuf[..], i).unwrap();
     hash.input(INPUT);
-    write!(&mut vbuf, "{}", i).unwrap();
-    hash.input(&vbuf);
+    hash.input(&ibuf[..n]);
     let buf = hash.hash();
     if buf[0] | buf[1] == 0 && buf[2] & 0xF0 == 0 {
         Some((i, buf[2], buf[3] >> 4))
@@ -39,7 +37,7 @@ fn main() {
         let mut digits: Vec<_> = (n..n + BATCH).into_par_iter().filter_map(check).collect();
         digits.sort();  // by n, then d6, then d7
         // update passcode for first door, just by order of number
-        pass_door1.extend(digits.iter().map(|d| char::from_digit(d.1.into(), 16).unwrap()));
+        pass_door1.extend(digits.iter().map(|d| char::from_digit(d.1 as u32, 16).unwrap()));
         // update passcode for second door, where the index is d6, the code digit
         // is d7, and the first one wins
         for (_, d6, d7) in digits {

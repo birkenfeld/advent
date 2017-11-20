@@ -7,13 +7,13 @@ authors = ["Georg Brandl <georg@python.org>"]
 [dependencies]
 fnv = "*"
 itertools = "*"
-arrayvec = "*"
 odds = "*"
 rayon = "*"
 regex = "*"
 md-5 = "*"
 strum = "*"
 strum_macros = "*"
+itoa = "*"
 
 [dependencies.advtools]
 path = "advtools"

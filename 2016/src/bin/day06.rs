@@ -1,4 +1,7 @@
+extern crate itertools;
 extern crate advtools;
+
+use itertools::Itertools;
 
 fn main() {
     let mut lines = advtools::iter_input::<String>();
@@ -10,7 +13,7 @@ fn main() {
         }
     }
     let collect_by_freq = |weight| arrs.iter().map(|arr| {
-        let freqs = advtools::sorted(arr.iter().enumerate().map(|(i, v)| (weight * v, i)));
+        let freqs = arr.iter().enumerate().map(|(i, v)| (weight * v, i)).sorted();
         (freqs[0].1 as u8 + b'a') as char
     }).collect::<String>();
     println!("Message (most common): {}", collect_by_freq(-1));

@@ -124,7 +124,7 @@ fn find_steps(initial: State) -> (State, usize) {
                 if shortest.is_none() {
                     shortest = Some(state.clone());
                 }
-                max_path = std::cmp::max(max_path, state.len());
+                max_path = max_path.max(state.len());
             } else {
                 states.push(state);
             }

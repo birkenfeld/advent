@@ -1,9 +1,7 @@
-extern crate arrayvec;
 extern crate md5;
 extern crate rayon;
+extern crate itoa;
 
-use std::io::Write;
-use arrayvec::ArrayVec;
 use md5::{Digest, Md5};
 use rayon::prelude::*;
 
@@ -13,7 +11,7 @@ const KEYLEN: usize = 64;
 
 const HEXCHARS: &[u8] = b"0123456789abcdef";
 
-fn hash_to_hex(hash: &mut Md5, sbuf: &mut [u8; 32]) {
+fn hash_to_hex(hash: Md5, sbuf: &mut [u8; 32]) {
     let buf = hash.hash();
     for (i, &byte) in buf.iter().enumerate() {
         sbuf[2*i] = HEXCHARS[(byte >> 4) as usize];
@@ -26,17 +24,17 @@ fn digit(ch: u8) -> u8 {
 }
 
 fn find_multiples(i: usize, n: usize) -> Option<(usize, u32)> {
-    let mut buf = ArrayVec::<[u8; 16]>::new();
-    let mut sbuf = [0u8; 32];
+    let mut ibuf = [0; 16];
+    let mut sbuf = [0; 32];
     let mut hash = Md5::new();
+    let m = itoa::write(&mut ibuf[..], i).unwrap();
     hash.input(INPUT);
-    write!(&mut buf, "{}", i).unwrap();
-    hash.input(&buf);
-    hash_to_hex(&mut hash, &mut sbuf);
+    hash.input(&ibuf[..m]);
+    hash_to_hex(hash, &mut sbuf);
     for _ in 0..n {
         let mut hash = Md5::new();
         hash.input(&sbuf);
-        hash_to_hex(&mut hash, &mut sbuf);
+        hash_to_hex(hash, &mut sbuf);
     }
     // find the first triplet, mark in lower 16 bits
     (0..sbuf.len()-2).find(|&j| sbuf[j..j+3].iter().all(|&c| c == sbuf[j])).map(|j| {

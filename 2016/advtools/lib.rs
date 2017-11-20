@@ -184,10 +184,3 @@ impl<T: Hash + Eq> Uids<T> {
         *self.map.entry(k).or_insert(n)
     }
 }
-
-
-pub fn sorted<T: Ord, I: Iterator<Item=T>>(it: I) -> Vec<T> {
-    let mut v: Vec<T> = it.collect();
-    v.sort();
-    v
-}

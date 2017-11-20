@@ -45,7 +45,7 @@ fn main() {
                 (cap[1].parse().unwrap(), cap[2].parse().unwrap()),
                 (cap[3].parse().unwrap(), cap[4].parse().unwrap())
             ));
-            smallest_cap = std::cmp::min(smallest_cap, (nodes.last().unwrap().1).0);
+            smallest_cap = smallest_cap.min((nodes.last().unwrap().1).0);
         }
     }
     let size = nodes[nodes.len() - 1].0;

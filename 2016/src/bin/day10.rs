@@ -1,6 +1,8 @@
+extern crate itertools;
 extern crate advtools;
 
 use std::collections::HashMap;
+use itertools::Itertools;
 
 enum Rule {
     Out(u32),
@@ -18,7 +20,7 @@ fn main() {
     let mut changes = Vec::new();
 
     for line in advtools::iter_input::<String>() {
-        let parts = line.split_whitespace().collect::<Vec<_>>();
+        let parts = line.split_whitespace().collect_vec();
         if parts[0] == "value" {
             let val = parts[1].parse().unwrap();
             let botno = parts[5].parse().unwrap();
@@ -39,7 +41,7 @@ fn main() {
         }
         for (botno, bot) in &mut bots {
             if bot.chips.len() == 2 {
-                let chips = advtools::sorted(bot.chips.drain(..));
+                let chips = bot.chips.drain(..).sorted();
                 if chips == [17, 61] {
                     println!("Comparing 17-61: {}", botno);
                 }

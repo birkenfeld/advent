@@ -3,8 +3,8 @@ extern crate itertools;
 
 use itertools::Itertools;
 
-fn possible(s: (u32, u32, u32)) -> usize {
-    (s.0 + s.1 > s.2 && s.1 + s.2 > s.0 && s.2 + s.0 > s.1) as usize
+fn possible(s: (u32, u32, u32)) -> u32 {
+    (s.0 + s.1 > s.2 && s.1 + s.2 > s.0 && s.2 + s.0 > s.1) as u32
 }
 
 fn main() {

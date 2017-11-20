@@ -1,6 +1,9 @@
+extern crate itertools;
 extern crate advtools;
 extern crate regex;
 extern crate fnv;
+
+use itertools::Itertools;
 
 const TARGET_ROOM: &str = "northpole object storage";
 const LINE_FMT: &str = r"(.*)-(\d+)\[(.*)\]";
@@ -18,7 +21,7 @@ fn main() {
             *counts.entry(ch).or_insert(0) += 1;
         }
         // get letters sorted by count, then by alphabet
-        let counts = advtools::sorted(counts.into_iter().map(|(ch, count)| (-count, ch)));
+        let counts = counts.into_iter().map(|(ch, count)| (-count, ch)).sorted();
 
         // determine checksum from letter counts
         let real_checksum = counts.into_iter().take(5).map(|x| x.1).collect::<String>();

@@ -75,7 +75,7 @@ fn next_states(states: Vec<State>, seen: &HashSet<State>) -> Vec<State> {
             let mut res = Vec::with_capacity(200);
             // determine and maybe queue all new states
             for new_floor in 0..4 {
-                let mut try_state = |mut new_state: State, new_floor, j1, j2| {
+                let mut try_state = |mut new_state: State, j1, j2| {
                     new_state.set_floor(new_floor);
                     new_state.set_thing(j1, new_floor);
                     new_state.set_thing(j2, new_floor);
@@ -94,11 +94,11 @@ fn next_states(states: Vec<State>, seen: &HashSet<State>) -> Vec<State> {
                 for j1 in 0..2*state.n() {
                     if state.thing(j1) == state.floor() {
                         // one-thing moves
-                        try_state(state, new_floor, j1, j1);
+                        try_state(state, j1, j1);
                         // two-thing moves
                         for j2 in 0..j1 {
                             if state.thing(j2) == state.floor() {
-                                try_state(state, new_floor, j1, j2);
+                                try_state(state, j1, j2);
                             }
                         }
                     }
