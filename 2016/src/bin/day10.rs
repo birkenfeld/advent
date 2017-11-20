@@ -20,17 +20,14 @@ fn main() {
     let mut changes = Vec::new();
 
     for line in advtools::iter_input::<String>() {
-        let parts = line.split_whitespace().collect_vec();
-        if parts[0] == "value" {
-            let val = parts[1].parse().unwrap();
-            let botno = parts[5].parse().unwrap();
+        if line.starts_with("value") {
+            let (val, botno) = advtools::parse(&line, (1, 5));
             changes.push((botno, val));
         } else {
-            let botno = parts[1].parse().unwrap();
-            let low = parts[6].parse().unwrap();
-            let lowrule = if parts[5] == "output" { Rule::Out(low) } else { Rule::Bot(low) };
-            let high = parts[11].parse().unwrap();
-            let highrule = if parts[10] == "output" { Rule::Out(high) } else { Rule::Bot(high) };
+            let (botno, lowrule, low, highrule, high): (u32, String, u32, String, u32) =
+                advtools::parse(&line, (1, 5, 6, 10, 11));
+            let lowrule = if lowrule == "output" { Rule::Out(low) } else { Rule::Bot(low) };
+            let highrule = if highrule == "output" { Rule::Out(high) } else { Rule::Bot(high) };
             bots.insert(botno, Bot { chips: vec![], rule: (lowrule, highrule) });
         }
     }

@@ -62,34 +62,25 @@ impl Instr {
 fn main() {
     let mut recipe = Vec::new();
     for line in advtools::iter_input::<String>() {
-        let mut parts = line.split_whitespace();
         recipe.push(
             if line.starts_with("rotate left") {
-                Instr::RotL(parts.nth(2).unwrap().parse().unwrap())
+                Instr::RotL(advtools::parse(&line, 2))
             } else if line.starts_with("rotate right") {
-                Instr::RotR(parts.nth(2).unwrap().parse().unwrap())
+                Instr::RotR(advtools::parse(&line, 2))
             } else if line.starts_with("rotate based") {
-                Instr::RotLetter(parts.nth(6).unwrap().chars().next().unwrap())
+                Instr::RotLetter(advtools::parse(&line, 6))
             } else if line.starts_with("swap position") {
-                Instr::SwapPos(
-                    parts.nth(2).unwrap().parse().unwrap(),
-                    parts.nth(2).unwrap().parse().unwrap()
-                )
+                let (p1, p2) = advtools::parse(&line, (2, 5));
+                Instr::SwapPos(p1, p2)
             } else if line.starts_with("swap letter") {
-                Instr::SwapLetter(
-                    parts.nth(2).unwrap().chars().next().unwrap(),
-                    parts.nth(2).unwrap().chars().next().unwrap()
-                )
+                let (l1, l2) = advtools::parse(&line, (2, 5));
+                Instr::SwapLetter(l1, l2)
             } else if line.starts_with("reverse positions") {
-                Instr::Reverse(
-                    parts.nth(2).unwrap().parse().unwrap(),
-                    parts.nth(1).unwrap().parse().unwrap()
-                )
+                let (p1, p2) = advtools::parse(&line, (2, 4));
+                Instr::Reverse(p1, p2)
             } else if line.starts_with("move position") {
-                Instr::Move(
-                    parts.nth(2).unwrap().parse().unwrap(),
-                    parts.nth(2).unwrap().parse().unwrap()
-                )
+                let (p1, p2) = advtools::parse(&line, (2, 5));
+                Instr::Move(p1, p2)
             } else {
                 panic!("invalid instruction line: {}", line)
             }

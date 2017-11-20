@@ -6,6 +6,7 @@ use std::io::{BufReader, BufRead, Read};
 use std::marker::PhantomData;
 use std::ops::Add;
 use std::path::Path;
+use std::str::FromStr;
 
 pub type TokIter<'t> = std::str::SplitWhitespace<'t>;
 
@@ -145,17 +146,100 @@ pub fn input_file() -> File {
         .unwrap_or_else(|_| panic!("input file \"{}\" not found", infile.display()))
 }
 
-
 pub fn iter_input<I: Input>() -> InputIterator<I> {
     let rdr = BufReader::new(input_file());
     InputIterator { rdr: rdr, marker: PhantomData }
 }
 
-
 pub fn input_string() -> String {
     let mut contents = String::new();
     input_file().read_to_string(&mut contents).unwrap();
     contents
+}
+
+
+pub trait ParseParts {
+    type Indices;
+    fn parse(indices: Self::Indices, line: &str) -> Self;
+}
+
+macro_rules! simple_parseparts_impl {
+    ($ty:ty, $($tt:tt)*) => {
+        impl ParseParts for $ty {
+            type Indices = usize;
+            fn parse(index: usize, line: &str) -> Self {
+                line.split_whitespace().nth(index).unwrap().parse().unwrap_or_else(
+                    |_| panic!("Couldn't parse line {:?}", line))
+            }
+        }
+        simple_parseparts_impl!($($tt)*);
+    };
+    () => {};
+}
+
+simple_parseparts_impl!(u8, u16, u32, u64, usize, i8, i16, i32, i64, isize, char,);
+
+impl<T: FromStr, U: FromStr> ParseParts for (T, U) {
+    type Indices = (usize, usize);
+    fn parse((i1, i2): Self::Indices, line: &str) -> Self {
+        let mut ws = line.split_whitespace();
+        (ws.nth(i1).and_then(|v| v.parse().ok()).unwrap_or_else(
+            || panic!("Couldn't parse line {:?}", line)),
+         ws.nth(i2 - i1 - 1).and_then(|v| v.parse().ok()).unwrap_or_else(
+            || panic!("Couldn't parse line {:?}", line)))
+    }
+}
+
+impl<T: FromStr, U: FromStr, V: FromStr> ParseParts for (T, U, V) {
+    type Indices = (usize, usize, usize);
+    fn parse((i1, i2, i3): Self::Indices, line: &str) -> Self {
+        let mut ws = line.split_whitespace();
+        (ws.nth(i1).and_then(|v| v.parse().ok()).unwrap_or_else(
+            || panic!("Couldn't parse line {:?}", line)),
+         ws.nth(i2 - i1 - 1).and_then(|v| v.parse().ok()).unwrap_or_else(
+            || panic!("Couldn't parse line {:?}", line)),
+         ws.nth(i3 - i2 - 1).and_then(|v| v.parse().ok()).unwrap_or_else(
+            || panic!("Couldn't parse line {:?}", line)),
+        )
+    }
+}
+
+impl<T: FromStr, U: FromStr, V: FromStr, W: FromStr> ParseParts for (T, U, V, W) {
+    type Indices = (usize, usize, usize, usize);
+    fn parse((i1, i2, i3, i4): Self::Indices, line: &str) -> Self {
+        let mut ws = line.split_whitespace();
+        (ws.nth(i1).and_then(|v| v.parse().ok()).unwrap_or_else(
+            || panic!("Couldn't parse line {:?}", line)),
+         ws.nth(i2 - i1 - 1).and_then(|v| v.parse().ok()).unwrap_or_else(
+            || panic!("Couldn't parse line {:?}", line)),
+         ws.nth(i3 - i2 - 1).and_then(|v| v.parse().ok()).unwrap_or_else(
+            || panic!("Couldn't parse line {:?}", line)),
+         ws.nth(i4 - i3 - 1).and_then(|v| v.parse().ok()).unwrap_or_else(
+            || panic!("Couldn't parse line {:?}", line)),
+        )
+    }
+}
+
+impl<T: FromStr, U: FromStr, V: FromStr, W: FromStr, X: FromStr> ParseParts for (T, U, V, W, X) {
+    type Indices = (usize, usize, usize, usize, usize);
+    fn parse((i1, i2, i3, i4, i5): Self::Indices, line: &str) -> Self {
+        let mut ws = line.split_whitespace();
+        (ws.nth(i1).and_then(|v| v.parse().ok()).unwrap_or_else(
+            || panic!("Couldn't parse line {:?}", line)),
+         ws.nth(i2 - i1 - 1).and_then(|v| v.parse().ok()).unwrap_or_else(
+            || panic!("Couldn't parse line {:?}", line)),
+         ws.nth(i3 - i2 - 1).and_then(|v| v.parse().ok()).unwrap_or_else(
+            || panic!("Couldn't parse line {:?}", line)),
+         ws.nth(i4 - i3 - 1).and_then(|v| v.parse().ok()).unwrap_or_else(
+            || panic!("Couldn't parse line {:?}", line)),
+         ws.nth(i5 - i4 - 1).and_then(|v| v.parse().ok()).unwrap_or_else(
+            || panic!("Couldn't parse line {:?}", line)),
+        )
+    }
+}
+
+pub fn parse<P: ParseParts>(line: &str, indices: P::Indices) -> P {
+    P::parse(indices, line)
 }
 
 
