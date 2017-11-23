@@ -33,8 +33,7 @@ fn find_steps(initial: Pos, final_: Option<Pos>, maze: &[Vec<Loc>]) -> usize {
                 } {
                     return generation;
                 }
-                if !seen.contains(&new_pos) {
-                    seen.insert(new_pos);
+                if seen.insert(new_pos) {
                     new_positions.push(new_pos);
                 }
             }

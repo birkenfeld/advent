@@ -43,10 +43,9 @@ fn main() {
         for _ in 0..instr[1..].parse().unwrap() {
             pos.walk(dir, 1);
             if visited_twice.is_none() {
-                if visited.contains(&pos) {
+                if !visited.insert(pos) {
                     visited_twice = Some(pos);
                 }
-                visited.insert(pos);
             }
         }
     }

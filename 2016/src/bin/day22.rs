@@ -21,8 +21,7 @@ fn find_steps(initial: Pos, final_: Pos, blockers: &HashSet<Pos>, size: &Pos) ->
         for (x, y) in positions {
             for &(dx, dy) in &DIRECTIONS {
                 let new_pos = (x + dx, y + dy);
-                if is_allowed(new_pos, blockers, size) && !seen.contains(&new_pos) {
-                    seen.insert(new_pos);
+                if is_allowed(new_pos, blockers, size) && seen.insert(new_pos) {
                     if new_pos == final_ {
                         return generation;
                     }
