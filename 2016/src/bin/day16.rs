@@ -1,18 +1,18 @@
 extern crate advtools;
-extern crate itertools;
+extern crate rayon;
 
-use itertools::Itertools;
+use rayon::prelude::*;
 
 const INPUT: &[u8] = b"00101000101111010";
 const LEN: usize = 272;
 const LEN2: usize = 35_651_584;
 
 fn checksum(s: Vec<u8>) -> Vec<u8> {
-    s.into_iter().tuples().map(|(a, b)| if a == b { b'1' } else { b'0' }).collect()
+    s.par_chunks(2).map(|s| if s[0] == s[1] { b'1' } else { b'0' }).collect()
 }
 
 fn dragon(mut s: Vec<u8>) -> Vec<u8> {
-    let ext = s.iter().rev().map(|&a| if a == b'1' { b'0' } else { b'1' }).collect_vec();
+    let ext = s.iter().rev().map(|&a| if a == b'0' { b'1' } else { b'0' }).collect::<Vec<_>>();
     s.push(b'0');
     s.extend(ext);
     s
