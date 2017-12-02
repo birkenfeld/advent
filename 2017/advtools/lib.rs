@@ -1,4 +1,5 @@
 use std::env;
+use std::fmt::Debug;
 use std::collections::HashMap;
 use std::fs::File;
 use std::hash::Hash;
@@ -26,12 +27,12 @@ impl Input for String {
     }
 }
 
-impl Input for Vec<String> {
-    fn read(line: String) -> Vec<String> {
-        line.split_whitespace().map(String::from).collect()
+impl<T> Input for Vec<T> where T: FromStr, T::Err: Debug {
+    fn read(line: String) -> Vec<T> {
+        line.split_whitespace().map(|p| p.parse().unwrap()).collect()
     }
-    fn read_token(tok: &mut TokIter) -> Vec<String> {
-        tok.next().unwrap().split_whitespace().map(String::from).collect()
+    fn read_token(tok: &mut TokIter) -> Vec<T> {
+        tok.next().unwrap().split_whitespace().map(|p| p.parse().unwrap()).collect()
     }
 }
 
