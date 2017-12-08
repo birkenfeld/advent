@@ -1,5 +1,3 @@
-use std::cmp::max;
-
 const BOSS_HP: i32 = 103;
 const BOSS_DMG: i32 = 9;
 const BOSS_DEF: i32 = 2;
@@ -14,9 +12,9 @@ const RINGS:   [Info; 7] = [(0, 0, 0), (20, 0, 1), (25, 1, 0), (40, 0, 2),
 fn fight_to_the_death(mut my_hp: i32, my_dmg: i32, my_def: i32) -> bool {
     let mut boss_hp = BOSS_HP;
     loop {
-        boss_hp -= max(1, my_dmg - BOSS_DEF);
+        boss_hp -= (my_dmg - BOSS_DEF).max(1);
         if boss_hp <= 0 { return true; }
-        my_hp -= max(1, BOSS_DMG - my_def);
+        my_hp -= (BOSS_DMG - my_def).max(1);
         if my_hp <= 0 { return false; }
     }
 }

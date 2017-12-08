@@ -1,7 +1,7 @@
 extern crate advtools;
 extern crate rand;
 
-use std::collections::{HashMap, HashSet};
+use advtools::prelude::*;
 use rand::{thread_rng, Rng};
 
 fn make_one_replacement(initial: &str, trans: &HashMap<String, Vec<String>>) -> HashSet<String> {
@@ -43,7 +43,7 @@ fn main() {
     let mut trans: HashMap<String, Vec<String>> = HashMap::new();
     let mut rtrans = HashMap::new();
     let mut target = String::new();
-    for mut line in advtools::iter_input::<Vec<String>>() {
+    for mut line in iter_input::<Vec<String>>() {
         if line.len() == 3 {
             let key = line.remove(0);
             let val = line.remove(1);

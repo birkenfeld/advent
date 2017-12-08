@@ -1,6 +1,5 @@
 extern crate advtools;
-
-use std::cmp::max;
+use advtools::prelude::*;
 
 type Values = (i32, i32, i32, i32, i32);
 
@@ -9,8 +8,8 @@ fn add_up<F>(amounts: &[i32], v: &[Values], select: F) -> i32 where F: Fn(&Value
 }
 
 fn fom(amounts: &[i32], v: &[Values]) -> i32 {
-    max(add_up(amounts, v, |vi| vi.0), 0) * max(add_up(amounts, v, |vi| vi.1), 0) *
-        max(add_up(amounts, v, |vi| vi.2), 0) * max(add_up(amounts, v, |vi| vi.3), 0)
+    add_up(amounts, v, |vi| vi.0).max(0) * add_up(amounts, v, |vi| vi.1).max(0) *
+        add_up(amounts, v, |vi| vi.2).max(0) * add_up(amounts, v, |vi| vi.3).max(0)
 }
 
 fn gen_amounts(sum: usize, n: usize) -> Vec<Vec<i32>> {
@@ -39,12 +38,12 @@ fn find_best(goalcal: Option<i32>, v: &[Values]) -> Vec<i32> {
 
 fn main() {
     let mut v = Vec::new();
-    for tok in advtools::iter_input::<Vec<String>>() {
-        v.push((tok[2].trim_matches(',').parse::<i32>().unwrap(),
-                tok[4].trim_matches(',').parse::<i32>().unwrap(),
-                tok[6].trim_matches(',').parse::<i32>().unwrap(),
-                tok[8].trim_matches(',').parse::<i32>().unwrap(),
-                tok[10].parse::<i32>().unwrap()));
+    for tok in iter_input::<Vec<String>>() {
+        v.push((to_i32(tok[2].trim_matches(',')),
+                to_i32(tok[4].trim_matches(',')),
+                to_i32(tok[6].trim_matches(',')),
+                to_i32(tok[8].trim_matches(',')),
+                to_i32(&tok[10])));
     }
     let best = find_best(None, &v);
     println!("Best: {:?} -> {}", best, fom(&best, &v));

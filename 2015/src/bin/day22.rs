@@ -1,13 +1,10 @@
-use std::cmp::{max, min};
-use std::i32;
-
 const BOSS_HP: i32 = 58;
 const BOSS_DMG: i32 = 9;
 
 fn fight(dmg_per_turn: i32) -> i32 {
     let mut stack = Vec::new();
     stack.push((true, BOSS_HP, 50_i32, 500_i32, [0; 3], 0_i32, 0_i32));
-    let mut min_mana = i32::MAX;
+    let mut min_mana = i32::max_value();
     while let Some((my_turn, mut boss_hp, mut hp, mut mana, mut effects, mana_used, rnds)) = stack.pop() {
         if mana_used > min_mana || rnds > 20 {
             continue;
@@ -20,7 +17,7 @@ fn fight(dmg_per_turn: i32) -> i32 {
         if effects[1] > 0 {
             boss_hp -= 3;
             if boss_hp <= 0 {
-                min_mana = min(min_mana, mana_used);
+                min_mana = min_mana.min(mana_used);
                 continue;
             }
             effects[1] -= 1;
@@ -30,7 +27,7 @@ fn fight(dmg_per_turn: i32) -> i32 {
             effects[2] -= 1;
         }
         if !my_turn {
-            hp -= max(1, BOSS_DMG - def);
+            hp -= (BOSS_DMG - def).max(1);
             if hp <= 0 {
                 continue;
             }
@@ -43,7 +40,7 @@ fn fight(dmg_per_turn: i32) -> i32 {
             if mana >= 53 {  // Missile
                 let new_boss_hp = boss_hp - 4;
                 if new_boss_hp < 0 {
-                    min_mana = min(min_mana, mana_used);
+                    min_mana = min_mana.min(mana_used);
                 } else {
                     stack.push((!my_turn, new_boss_hp, hp, mana - 53,
                                 effects, mana_used + 53, rnds + 1));
@@ -52,7 +49,7 @@ fn fight(dmg_per_turn: i32) -> i32 {
             if mana >= 73 {  // Drain
                 let new_boss_hp = boss_hp - 2;
                 if new_boss_hp < 0 {
-                    min_mana = min(min_mana, mana_used);
+                    min_mana = min_mana.min(mana_used);
                 } else {
                     stack.push((!my_turn, new_boss_hp, hp + 2, mana - 73,
                                 effects, mana_used + 73, rnds + 1));

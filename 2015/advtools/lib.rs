@@ -21,6 +21,7 @@ pub mod prelude {
     pub use super::input_string;
     pub use super::sorted;
     pub use super::{to_u8, to_u32, to_usize, to_i32};
+    pub use super::from_utf8;
 }
 
 pub type TokIter<'t> = std::str::SplitWhitespace<'t>;
@@ -220,3 +221,7 @@ impl_to!(to_u8, u8);
 impl_to!(to_u32, u32);
 impl_to!(to_usize, usize);
 impl_to!(to_i32, i32);
+
+pub fn from_utf8<T: AsRef<[u8]>>(s: T) -> String {
+    std::str::from_utf8(s.as_ref()).unwrap().to_owned()
+}

@@ -1,6 +1,5 @@
 extern crate advtools;
-
-use std::collections::{HashSet, HashMap};
+use advtools::prelude::*;
 
 const NEEDLE: &str = "\
 children: 3
@@ -26,11 +25,11 @@ fn main() {
         needle_map.insert(name, count);
     }
     let mut haystack = Vec::new();
-    for tok in advtools::iter_input::<Vec<String>>() {
+    for tok in iter_input::<Vec<String>>() {
         let mut set = HashSet::new();
         for i in 1..4 {
             set.insert((tok[2*i].trim_matches(':').to_owned(),
-                        tok[2*i+1].trim_matches(',').parse::<i32>().unwrap()));
+                        to_i32(tok[2*i+1].trim_matches(','))));
         }
         haystack.push(set);
     }

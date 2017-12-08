@@ -1,10 +1,13 @@
-const INPUT: &str = "1321131112";
+const INPUT: &[u8] = b"1321131112";
 
 fn push_pair(v: &mut Vec<u8>, n: u8, d: u8) {
-    if n >= 10 {
-        for ch in format!("{}", n).chars() {
-            v.push(ch.to_digit(10).unwrap() as u8);
-        }
+    if n >= 100 {
+        v.push(n / 100);
+        v.push((n % 100) / 10);
+        v.push(n % 10);
+    } else if n >= 10 {
+        v.push(n / 10);
+        v.push(n % 10);
     } else {
         v.push(n);
     }
@@ -12,7 +15,7 @@ fn push_pair(v: &mut Vec<u8>, n: u8, d: u8) {
 }
 
 fn main() {
-    let mut seq: Vec<_> = INPUT.chars().map(|ch| ch.to_digit(10).unwrap() as u8).collect();
+    let mut seq: Vec<u8> = INPUT.iter().map(|&ch| ch - b'0').collect();
     for i in 1..51 {
         let mut new_seq = Vec::with_capacity(2 * seq.len());
         let mut dp = seq[0];

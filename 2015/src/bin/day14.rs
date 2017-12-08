@@ -1,22 +1,21 @@
 extern crate advtools;
-
-use std::cmp::min;
+use advtools::prelude::*;
 
 const INPUT: u32 = 2503;
 
 fn main() {
     let mut deer = Vec::new();
-    for tok in advtools::iter_input::<Vec<String>>() {
-        let fly_time = tok[6].parse::<u32>().unwrap();
-        deer.push((tok[0].to_owned(), tok[3].parse::<u32>().unwrap(),
-                   fly_time, fly_time + tok[13].parse::<u32>().unwrap(),
+    for tok in iter_input::<Vec<String>>() {
+        let fly_time = to_u32(&tok[6]);
+        deer.push((tok[0].to_owned(), to_u32(&tok[3]),
+                   fly_time, fly_time + to_u32(&tok[13]),
                    0, 0));
     }
 
     let winner = deer.iter().map(|&(ref name, speed, fly_time, cycle_time, _, _)| {
         let cycles = INPUT / cycle_time;
         let rest_time = INPUT % cycle_time;
-        (name.clone(), speed * (cycles * fly_time + min(rest_time, fly_time)))
+        (name.clone(), speed * (cycles * fly_time + rest_time.min(fly_time)))
     }).max_by_key(|v| v.1).unwrap();
     println!("Traditional: {} ({} km)", winner.0, winner.1);
 

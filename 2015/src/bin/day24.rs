@@ -31,7 +31,7 @@ fn find_configuration(weights: &[u32], batch_weight: u32) -> u64 {
 
 fn main() {
     let mut weights = advtools::iter_input().collect::<Vec<u32>>();
-    let total_weight = weights.iter().cloned().sum::<u32>();
+    let total_weight = weights.iter().sum::<u32>();
     weights.reverse();
     println!("Lowest QE (batch weight {}): {}", total_weight / 3,
              find_configuration(&weights, total_weight / 3));

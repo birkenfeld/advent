@@ -1,4 +1,5 @@
 extern crate advtools;
+use advtools::prelude::*;
 
 enum Op {
     Inc(usize),
@@ -54,7 +55,7 @@ fn read_instr(toks: Vec<String>) -> Op {
 
 fn main() {
     let mut instrs = Vec::new();
-    for toks in advtools::iter_input::<Vec<String>>() {
+    for toks in iter_input::<Vec<String>>() {
         instrs.push(read_instr(toks));
     }
     println!("Register b for a = 0: {}", run(&instrs, [0, 0])[1]);

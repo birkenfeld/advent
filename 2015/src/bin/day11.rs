@@ -1,6 +1,5 @@
-extern crate itertools;
-
-use itertools::Itertools;
+extern crate advtools;
+use advtools::prelude::*;
 
 const INPUT: &[u8] = b"vzbxkghb";
 
@@ -28,7 +27,7 @@ fn main() {
         increment(&mut pw);
         if is_ok(&pw) {
             found += 1;
-            println!("Next password: {}", std::str::from_utf8(&pw).unwrap());
+            println!("Next password: {}", from_utf8(&pw));
             if found == 2 {
                 break;
             }
