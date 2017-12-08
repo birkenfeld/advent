@@ -1,41 +1,34 @@
-fn increment(pw: &mut Vec<u8>) {
-    for i in (0..8).rev() {
-        if pw[i] < b'z' {
-            pw[i] += 1;
+extern crate itertools;
+
+use itertools::Itertools;
+
+const INPUT: &[u8] = b"vzbxkghb";
+
+fn increment(pw: &mut [u8]) {
+    for ch in pw.iter_mut().rev() {
+        if *ch < b'z' {
+            *ch += 1;
             break;
         } else {
-            pw[i] = b'a';
+            *ch = b'a';
         }
     }
 }
 
-const INPUT: &'static [u8] = b"vzbxkghb";
+fn is_ok(pw: &[u8]) -> bool {
+    pw.iter().tuple_windows().filter(|&(c1, c2, c3)| c1 != c2 && c2 == c3).count() >= 2 &&
+        pw.iter().tuple_windows().any(|(c1, c2, c3)| c1 + 1 == *c2 && c2 + 1 == *c3) &&
+        !pw.iter().any(|&ch| ch == b'i' || ch == b'o' || ch == b'l')
+}
 
 fn main() {
     let mut pw = INPUT.to_vec();
     let mut found = 0;
-    'outer: loop {
+    loop {
         increment(&mut pw);
-        let mut pch = 0;
-        let mut ppch = 0;
-        let mut has_run = false;
-        let mut pairs = 0;
-        for &ch in &pw {
-            if ch == b'i' || ch == b'o' || ch == b'l' {
-                continue 'outer;
-            }
-            if ch == pch && pch != ppch {
-                pairs += 1;
-            }
-            if ppch + 1 == pch && pch + 1 == ch {
-                has_run = true;
-            }
-            ppch = pch;
-            pch = ch;
-        }
-        if has_run && pairs >= 2 {
+        if is_ok(&pw) {
             found += 1;
-            println!("Next password: {}", String::from_utf8(pw.clone()).unwrap());
+            println!("Next password: {}", std::str::from_utf8(&pw).unwrap());
             if found == 2 {
                 break;
             }
