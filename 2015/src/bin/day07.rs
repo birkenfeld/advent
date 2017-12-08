@@ -1,6 +1,5 @@
 extern crate advtools;
-
-use std::collections::HashMap;
+use advtools::prelude::*;
 
 #[derive(Debug, Clone, Copy)]
 enum Source {
@@ -100,7 +99,7 @@ fn parse_connection(tok: Vec<&str>) -> (u16, Element) {
 
 fn main() {
     let mut circuit = Circuit::new();
-    for line in advtools::iter_input::<String>() {
+    for line in iter_input::<String>() {
         let parts = line.split_whitespace().collect();
         let (id, el) = parse_connection(parts);
         circuit.connect(id, el);

@@ -1,10 +1,11 @@
 extern crate advtools;
+use advtools::prelude::*;
 
 fn main() {
     let mut literal_len = 0;
     let mut memory_len = 0;
     let mut reescaped_len = 0;
-    for line in advtools::iter_input::<String>() {
+    for line in iter_input::<String>() {
         let mut esc = false;
         let mut skip = 0;
         let mut extra_len = 0;

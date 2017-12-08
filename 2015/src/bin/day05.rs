@@ -1,11 +1,10 @@
 extern crate advtools;
-
-use std::collections::HashMap;
+use advtools::prelude::*;
 
 fn main() {
     let mut nice_rule1 = 0;
     let mut nice_rule2 = 0;
-    for line in advtools::iter_input::<String>() {
+    for line in iter_input::<String>() {
         let mut prev = '\n';
         let mut pprev = '\n';
         let mut vowels = 0;

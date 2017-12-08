@@ -1,7 +1,7 @@
 extern crate advtools;
 extern crate permutohedron;
 
-use std::cmp::{min, max};
+use advtools::prelude::*;
 use advtools::Uids;
 use permutohedron::Heap;
 
@@ -10,19 +10,19 @@ type InputLine = (String, (), String, (), u16);
 fn main() {
     let mut table = [[0u16; 8]; 8];
     let mut map = Uids::new();
-    for (from, _, to, _, dist) in advtools::iter_input::<InputLine>() {
+    for (from, _, to, _, dist) in iter_input::<InputLine>() {
         let from_id = map.get_id(from);
         let to_id = map.get_id(to);
-        table[max(from_id, to_id)][min(from_id, to_id)] = dist;
-        table[min(from_id, to_id)][max(from_id, to_id)] = dist;
+        table[from_id.max(to_id)][from_id.min(to_id)] = dist;
+        table[from_id.min(to_id)][from_id.max(to_id)] = dist;
     }
-    let mut shortest = 0;
+    let mut shortest = u16::max_value();
     let mut longest = 0;
-    let mut vec = (0..8).collect::<Vec<_>>();
+    let mut vec = (0..8).collect_vec();
     for p in Heap::new(&mut vec) {
         let length = p.iter().zip(p.iter().skip(1)).map(|(p1, p2)| table[*p1][*p2]).sum();
-        shortest = if shortest == 0 { length } else { min(shortest, length) };
-        longest = if longest == 0 { length } else { max(longest, length) };
+        shortest = shortest.min(length);
+        longest = longest.max(length);
     }
     println!("Shortest path: {}", shortest);
     println!("Longest path: {}", longest);
