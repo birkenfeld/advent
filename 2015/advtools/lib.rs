@@ -1,6 +1,8 @@
 extern crate itertools;
+extern crate regex;
 
 use std::env;
+use std::fmt::Debug;
 use std::collections::HashMap;
 use std::fs::File;
 use std::hash::Hash;
@@ -8,18 +10,20 @@ use std::io::{BufReader, BufRead, Read};
 use std::marker::PhantomData;
 use std::ops::Add;
 use std::path::Path;
+use std::str::FromStr;
 
 pub mod prelude {
     pub use std::collections::{HashMap, HashSet};
     pub use std::collections::hash_map::Entry;
 
     pub use itertools::Itertools;
+    pub use regex::{Regex, Captures};
 
     pub use super::IterExt;
     pub use super::iter_input;
     pub use super::input_file;
     pub use super::input_string;
-    pub use super::sorted;
+    pub use super::parse_fields;
     pub use super::{to_u8, to_u32, to_usize, to_i32};
     pub use super::from_utf8;
 }
@@ -38,16 +42,16 @@ impl Input for String {
         line
     }
     fn read_token(tok: &mut TokIter) -> String {
-        tok.next().unwrap().to_owned()
+        tok.item().to_owned()
     }
 }
 
-impl Input for Vec<String> {
-    fn read(line: String) -> Vec<String> {
-        line.split_whitespace().map(String::from).collect()
+impl<T> Input for Vec<T> where T: FromStr, T::Err: Debug {
+    fn read(line: String) -> Vec<T> {
+        line.split_whitespace().map(|p| p.parse().unwrap()).collect()
     }
-    fn read_token(tok: &mut TokIter) -> Vec<String> {
-        tok.next().unwrap().split_whitespace().map(String::from).collect()
+    fn read_token(tok: &mut TokIter) -> Vec<T> {
+        tok.item().split_whitespace().map(|p| p.parse().unwrap()).collect()
     }
 }
 
@@ -55,7 +59,7 @@ macro_rules! simple_impl {
     ($ty:ty) => {
         impl Input for $ty {
             fn read_token(tok: &mut TokIter) -> $ty {
-                tok.next().unwrap().parse().unwrap()
+                tok.item().parse().unwrap()
             }
         }
     }
@@ -91,13 +95,13 @@ array_impl!(8, tok, tok, tok, tok, tok, tok, tok, tok, tok);
 
 impl Input for char {
     fn read_token(tok: &mut TokIter) -> char {
-        tok.next().unwrap().chars().next().unwrap()
+        tok.item().chars().item()
     }
 }
 
 impl Input for () {
     fn read_token(tok: &mut TokIter) -> () {
-        tok.next().unwrap();
+        tok.item();
         ()
     }
 }
@@ -156,7 +160,7 @@ impl<I: Input> Iterator for InputIterator<I> {
 
 pub fn input_file() -> File {
     let mut infile = Path::new("input").join(
-        Path::new(&env::args_os().next().unwrap()).file_name().unwrap());
+        Path::new(&env::args_os().item()).file_name().unwrap());
     infile.set_extension("txt");
     File::open(&infile)
         .unwrap_or_else(|_| panic!("input file \"{}\" not found", infile.display()))
@@ -176,15 +180,105 @@ pub fn input_string() -> String {
 }
 
 
+pub trait ParseParts {
+    type Indices;
+    fn parse(indices: Self::Indices, line: &str) -> Self;
+}
+
+macro_rules! simple_parseparts_impl {
+    ($ty:ty, $($tt:tt)*) => {
+        impl ParseParts for $ty {
+            type Indices = usize;
+            fn parse(index: usize, line: &str) -> Self {
+                line.split_whitespace().nth(index).unwrap().parse().unwrap_or_else(
+                    |_| panic!("Couldn't parse line {:?}", line))
+            }
+        }
+        simple_parseparts_impl!($($tt)*);
+    };
+    () => {};
+}
+
+simple_parseparts_impl!(u8, u16, u32, u64, usize, i8, i16, i32, i64, isize, char,);
+
+impl<T: FromStr, U: FromStr> ParseParts for (T, U) {
+    type Indices = (usize, usize);
+    fn parse((i1, i2): Self::Indices, line: &str) -> Self {
+        let mut ws = line.split_whitespace();
+        (ws.nth(i1).and_then(|v| v.parse().ok()).unwrap_or_else(
+            || panic!("Couldn't parse line {:?}", line)),
+         ws.nth(i2 - i1 - 1).and_then(|v| v.parse().ok()).unwrap_or_else(
+            || panic!("Couldn't parse line {:?}", line)))
+    }
+}
+
+impl<T: FromStr, U: FromStr, V: FromStr> ParseParts for (T, U, V) {
+    type Indices = (usize, usize, usize);
+    fn parse((i1, i2, i3): Self::Indices, line: &str) -> Self {
+        let mut ws = line.split_whitespace();
+        (ws.nth(i1).and_then(|v| v.parse().ok()).unwrap_or_else(
+            || panic!("Couldn't parse line {:?}", line)),
+         ws.nth(i2 - i1 - 1).and_then(|v| v.parse().ok()).unwrap_or_else(
+            || panic!("Couldn't parse line {:?}", line)),
+         ws.nth(i3 - i2 - 1).and_then(|v| v.parse().ok()).unwrap_or_else(
+            || panic!("Couldn't parse line {:?}", line)),
+        )
+    }
+}
+
+impl<T: FromStr, U: FromStr, V: FromStr, W: FromStr> ParseParts for (T, U, V, W) {
+    type Indices = (usize, usize, usize, usize);
+    fn parse((i1, i2, i3, i4): Self::Indices, line: &str) -> Self {
+        let mut ws = line.split_whitespace();
+        (ws.nth(i1).and_then(|v| v.parse().ok()).unwrap_or_else(
+            || panic!("Couldn't parse line {:?}", line)),
+         ws.nth(i2 - i1 - 1).and_then(|v| v.parse().ok()).unwrap_or_else(
+            || panic!("Couldn't parse line {:?}", line)),
+         ws.nth(i3 - i2 - 1).and_then(|v| v.parse().ok()).unwrap_or_else(
+            || panic!("Couldn't parse line {:?}", line)),
+         ws.nth(i4 - i3 - 1).and_then(|v| v.parse().ok()).unwrap_or_else(
+            || panic!("Couldn't parse line {:?}", line)),
+        )
+    }
+}
+
+impl<T: FromStr, U: FromStr, V: FromStr, W: FromStr, X: FromStr> ParseParts for (T, U, V, W, X) {
+    type Indices = (usize, usize, usize, usize, usize);
+    fn parse((i1, i2, i3, i4, i5): Self::Indices, line: &str) -> Self {
+        let mut ws = line.split_whitespace();
+        (ws.nth(i1).and_then(|v| v.parse().ok()).unwrap_or_else(
+            || panic!("Couldn't parse line {:?}", line)),
+         ws.nth(i2 - i1 - 1).and_then(|v| v.parse().ok()).unwrap_or_else(
+            || panic!("Couldn't parse line {:?}", line)),
+         ws.nth(i3 - i2 - 1).and_then(|v| v.parse().ok()).unwrap_or_else(
+            || panic!("Couldn't parse line {:?}", line)),
+         ws.nth(i4 - i3 - 1).and_then(|v| v.parse().ok()).unwrap_or_else(
+            || panic!("Couldn't parse line {:?}", line)),
+         ws.nth(i5 - i4 - 1).and_then(|v| v.parse().ok()).unwrap_or_else(
+            || panic!("Couldn't parse line {:?}", line)),
+        )
+    }
+}
+
+pub fn parse_fields<P: ParseParts>(line: &str, indices: P::Indices) -> P {
+    P::parse(indices, line)
+}
+
+
 pub trait IterExt: Iterator {
     fn sum_from(self, start: Self::Item) -> Self::Item where
         <Self as Iterator>::Item: Add<Self::Item, Output=Self::Item>, Self: Sized
     {
         self.fold(start, |s, e| s + e)
     }
+
+    fn item(&mut self) -> Self::Item {
+        self.next().unwrap()
+    }
 }
 
 impl<I: Iterator> IterExt for I { }
+
 
 pub struct Uids<T> {
     map: HashMap<T, usize>
@@ -199,13 +293,6 @@ impl<T: Hash + Eq> Uids<T> {
         let n = self.map.len();
         *self.map.entry(k).or_insert(n)
     }
-}
-
-
-pub fn sorted<T: Ord, I: Iterator<Item=T>>(it: I) -> Vec<T> {
-    let mut v: Vec<T> = it.collect();
-    v.sort();
-    v
 }
 
 
