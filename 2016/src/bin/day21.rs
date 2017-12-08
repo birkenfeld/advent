@@ -1,6 +1,7 @@
-extern crate odds;
 extern crate advtools;
+extern crate odds;
 
+use advtools::prelude::*;
 use odds::slice::rotate_left;
 
 const INITIAL: &str = "abcdefgh";
@@ -64,22 +65,22 @@ fn main() {
     for line in advtools::iter_input::<String>() {
         recipe.push(
             if line.starts_with("rotate left") {
-                Instr::RotL(advtools::parse(&line, 2))
+                Instr::RotL(parse_fields(&line, 2))
             } else if line.starts_with("rotate right") {
-                Instr::RotR(advtools::parse(&line, 2))
+                Instr::RotR(parse_fields(&line, 2))
             } else if line.starts_with("rotate based") {
-                Instr::RotLetter(advtools::parse(&line, 6))
+                Instr::RotLetter(parse_fields(&line, 6))
             } else if line.starts_with("swap position") {
-                let (p1, p2) = advtools::parse(&line, (2, 5));
+                let (p1, p2) = parse_fields(&line, (2, 5));
                 Instr::SwapPos(p1, p2)
             } else if line.starts_with("swap letter") {
-                let (l1, l2) = advtools::parse(&line, (2, 5));
+                let (l1, l2) = parse_fields(&line, (2, 5));
                 Instr::SwapLetter(l1, l2)
             } else if line.starts_with("reverse positions") {
-                let (p1, p2) = advtools::parse(&line, (2, 4));
+                let (p1, p2) = parse_fields(&line, (2, 4));
                 Instr::Reverse(p1, p2)
             } else if line.starts_with("move position") {
-                let (p1, p2) = advtools::parse(&line, (2, 5));
+                let (p1, p2) = parse_fields(&line, (2, 5));
                 Instr::Move(p1, p2)
             } else {
                 panic!("invalid instruction line: {}", line)

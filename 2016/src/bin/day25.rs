@@ -1,6 +1,5 @@
 extern crate advtools;
-
-use std::collections::HashMap;
+use advtools::prelude::*;
 
 type RegNo = usize;
 
@@ -90,7 +89,7 @@ impl Machine {
 
 fn main() {
     let mut program = Vec::new();
-    for line in advtools::iter_input::<Vec<String>>() {
+    for line in iter_input::<Vec<String>>() {
         program.push(
             match &*line[0] {
                 "out" => Op::Out(reg(&line[1])),

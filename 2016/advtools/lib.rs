@@ -1,3 +1,7 @@
+extern crate itertools;
+extern crate regex;
+extern crate fnv;
+
 use std::env;
 use std::collections::HashMap;
 use std::fs::File;
@@ -7,6 +11,23 @@ use std::marker::PhantomData;
 use std::ops::Add;
 use std::path::Path;
 use std::str::FromStr;
+
+pub mod prelude {
+    pub use std::collections::{HashMap, HashSet};
+    pub use std::collections::hash_map::Entry;
+
+    pub use itertools::Itertools;
+    pub use regex::{Regex, Captures};
+    pub use fnv::FnvHashMap;
+
+    pub use super::IterExt;
+    pub use super::iter_input;
+    pub use super::input_file;
+    pub use super::input_string;
+    pub use super::parse_fields;
+    pub use super::{to_u8, to_u32, to_usize, to_i32};
+    pub use super::from_utf8;
+}
 
 pub type TokIter<'t> = std::str::SplitWhitespace<'t>;
 
@@ -146,10 +167,12 @@ pub fn input_file() -> File {
         .unwrap_or_else(|_| panic!("input file \"{}\" not found", infile.display()))
 }
 
+
 pub fn iter_input<I: Input>() -> InputIterator<I> {
     let rdr = BufReader::new(input_file());
     InputIterator { rdr: rdr, marker: PhantomData }
 }
+
 
 pub fn input_string() -> String {
     let mut contents = String::new();
@@ -238,7 +261,7 @@ impl<T: FromStr, U: FromStr, V: FromStr, W: FromStr, X: FromStr> ParseParts for 
     }
 }
 
-pub fn parse<P: ParseParts>(line: &str, indices: P::Indices) -> P {
+pub fn parse_fields<P: ParseParts>(line: &str, indices: P::Indices) -> P {
     P::parse(indices, line)
 }
 
@@ -267,4 +290,22 @@ impl<T: Hash + Eq> Uids<T> {
         let n = self.map.len();
         *self.map.entry(k).or_insert(n)
     }
+}
+
+
+macro_rules! impl_to {
+    ($fname:ident, $ty:ty) => {
+        pub fn $fname<T: AsRef<str>>(s: T) -> $ty {
+            s.as_ref().parse().unwrap()
+        }
+    };
+}
+
+impl_to!(to_u8, u8);
+impl_to!(to_u32, u32);
+impl_to!(to_usize, usize);
+impl_to!(to_i32, i32);
+
+pub fn from_utf8<T: AsRef<[u8]>>(s: T) -> String {
+    std::str::from_utf8(s.as_ref()).unwrap().to_owned()
 }

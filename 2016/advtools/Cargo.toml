@@ -7,3 +7,6 @@ authors = ["Georg Brandl <georg@python.org>"]
 path = "lib.rs"
 
 [dependencies]
+itertools = "*"
+regex = "*"
+fnv = "*"

@@ -1,6 +1,5 @@
 extern crate advtools;
-
-use std::collections::HashSet;
+use advtools::prelude::*;
 
 #[derive(Clone, Copy)]
 enum Direction { N, W, S, E }
@@ -37,10 +36,10 @@ fn main() {
     let mut dir = Direction::N;
     let mut visited = HashSet::new();
     let mut visited_twice = None;
-    for instr in advtools::input_string().split(',') {
+    for instr in input_string().split(',') {
         let instr = instr.trim();
         dir = if instr.starts_with('R') { dir.right() } else { dir.left() };
-        for _ in 0..instr[1..].parse().unwrap() {
+        for _ in 0..to_u32(&instr[1..]) {
             pos.walk(dir, 1);
             if visited_twice.is_none() {
                 if !visited.insert(pos) {

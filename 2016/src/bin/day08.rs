@@ -1,7 +1,5 @@
 extern crate advtools;
-extern crate itertools;
-
-use itertools::Itertools;
+use advtools::prelude::*;
 
 const WIDTH: usize = 50;
 const HEIGHT: usize = 6;
@@ -47,15 +45,15 @@ impl Screen {
 
 fn main() {
     let mut screen = Screen::new();
-    for line in advtools::iter_input::<String>() {
+    for line in iter_input::<String>() {
         if line.starts_with("rect") {
-            let xy = line[5..].split('x').map(|x| x.parse().unwrap()).tuples().next().unwrap();
+            let xy = line[5..].split('x').map(to_usize).collect_tuple().unwrap();
             screen.light_rect(xy);
         } else if line.starts_with("rotate row") {
-            let yby = line[13..].split(" by ").map(|x| x.parse().unwrap()).tuples().next().unwrap();
+            let yby = line[13..].split(" by ").map(to_usize).collect_tuple().unwrap();
             screen.rotate_row(yby);
         } else if line.starts_with("rotate column") {
-            let xby = line[16..].split(" by ").map(|x| x.parse().unwrap()).tuples().next().unwrap();
+            let xby = line[16..].split(" by ").map(to_usize).collect_tuple().unwrap();
             screen.rotate_col(xby);
         }
     }

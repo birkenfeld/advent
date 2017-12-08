@@ -1,4 +1,5 @@
-use std::collections::HashSet;
+extern crate advtools;
+use advtools::prelude::*;
 
 const INPUT: i32 = 1352;
 const DIRECTIONS: [(i32, i32); 4] = [(-1, 0), (0, -1), (1, 0), (0, 1)];
@@ -28,9 +29,9 @@ fn find_steps(initial: Pos, final_: Option<Pos>, limit: usize) -> (Option<usize>
                         }
                         Some(pos)
                     } else { None }
-                }).collect::<Vec<_>>()
+                }).collect_vec()
             })
-            .collect::<Vec<_>>();
+            .collect_vec();
         if reached.is_some() {
             return (reached, seen.len());
         } else if generation == limit || positions.is_empty() {

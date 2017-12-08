@@ -1,7 +1,5 @@
-extern crate regex;
 extern crate advtools;
-
-use std::collections::HashSet;
+use advtools::prelude::*;
 
 type Pos = (i32, i32);
 const DIRECTIONS: [Pos; 4] = [(-1, 0), (0, -1), (1, 0), (0, 1)];
@@ -34,15 +32,15 @@ fn find_steps(initial: Pos, final_: Pos, blockers: &HashSet<Pos>, size: &Pos) ->
 }
 
 fn main() {
-    let rx = regex::Regex::new(r"node-x(\d+)-y(\d+) +(\d+)T +(\d+)T").unwrap();
+    let rx = Regex::new(r"node-x(\d+)-y(\d+) +(\d+)T +(\d+)T").unwrap();
     let mut nodes: Vec<(Pos, (i32, i32))> = Vec::new();
     let mut smallest_cap = 1000;
-    for line in advtools::iter_input::<String>() {
+    for line in iter_input::<String>() {
         if let Some(cap) = rx.captures(&line) {
             // (x, y), (size, used)
             nodes.push((
-                (cap[1].parse().unwrap(), cap[2].parse().unwrap()),
-                (cap[3].parse().unwrap(), cap[4].parse().unwrap())
+                (to_i32(&cap[1]), to_i32(&cap[2])),
+                (to_i32(&cap[3]), to_i32(&cap[4]))
             ));
             smallest_cap = smallest_cap.min((nodes.last().unwrap().1).0);
         }

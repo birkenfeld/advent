@@ -1,4 +1,5 @@
 extern crate advtools;
+use advtools::prelude::*;
 
 fn find_insert_time(discs: &[(u32, u32)]) -> u32 {
     (0..).find(|t| {
@@ -7,12 +8,11 @@ fn find_insert_time(discs: &[(u32, u32)]) -> u32 {
 }
 
 fn main() {
-    let mut discs = Vec::<(u32, u32)>::new();
-    for line in advtools::iter_input::<String>() {
-        let mut parts = line.split_whitespace();
-        let numpos = parts.nth(3).unwrap();
-        let curpos = parts.nth(7).unwrap();
-        discs.push((numpos.parse().unwrap(), curpos[..curpos.len()-1].parse().unwrap()));
+    let mut discs = Vec::new();
+    for parts in iter_input::<Vec<String>>() {
+        let numpos = to_u32(&parts[3]);
+        let curpos = to_u32(&parts[11].trim_matches('.'));
+        discs.push((numpos, curpos));
     }
     println!("Time to insert: {}", find_insert_time(&discs));
     discs.push((11, 0));

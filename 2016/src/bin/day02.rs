@@ -1,9 +1,8 @@
 extern crate advtools;
-extern crate itertools;
 extern crate strum;
 #[macro_use] extern crate strum_macros;
 
-use itertools::Itertools;
+use advtools::prelude::*;
 
 #[derive(EnumString, Clone, Copy, Debug)]
 enum Direction { U, R, D, L }
@@ -68,7 +67,7 @@ impl Keypad for FancyKeypad {
 
 fn find_code<K: Keypad>() -> String {
     let mut btn = 5;
-    let code = advtools::iter_input::<String>().map(|line| {
+    let code = iter_input::<String>().map(|line| {
         for ch in line.chars() {
             let dir = ch.to_string().parse().unwrap();
             btn = K::next(btn, dir);

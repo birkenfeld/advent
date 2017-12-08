@@ -1,6 +1,7 @@
 extern crate advtools;
 extern crate rayon;
 
+use advtools::prelude::*;
 use rayon::prelude::*;
 
 const INPUT: &[u8] = b"00101000101111010";
@@ -12,7 +13,7 @@ fn checksum(s: Vec<u8>) -> Vec<u8> {
 }
 
 fn dragon(mut s: Vec<u8>) -> Vec<u8> {
-    let ext = s.iter().rev().map(|&a| if a == b'0' { b'1' } else { b'0' }).collect::<Vec<_>>();
+    let ext = s.iter().rev().map(|&a| if a == b'0' { b'1' } else { b'0' }).collect_vec();
     s.push(b'0');
     s.extend(ext);
     s

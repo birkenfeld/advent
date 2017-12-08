@@ -1,6 +1,5 @@
 extern crate advtools;
-
-use std::collections::HashSet;
+use advtools::prelude::*;
 
 type Pos = (i32, i32, u8);
 const DIRECTIONS: [(i32, i32); 4] = [(-1, 0), (0, -1), (1, 0), (0, 1)];
@@ -50,7 +49,7 @@ fn main() {
             '.' => Loc::Free,
             '0' ... '7' => Loc::POI((ch as u8) - b'0'),
             _ => panic!("invalid input: {}", ch)
-        }).collect::<Vec<_>>());
+        }).collect_vec());
     }
     let mut initial = None;
     'outer:
