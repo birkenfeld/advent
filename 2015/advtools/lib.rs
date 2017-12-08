@@ -1,3 +1,5 @@
+extern crate itertools;
+
 use std::env;
 use std::collections::HashMap;
 use std::fs::File;
@@ -6,6 +8,20 @@ use std::io::{BufReader, BufRead, Read};
 use std::marker::PhantomData;
 use std::ops::Add;
 use std::path::Path;
+
+pub mod prelude {
+    pub use std::collections::{HashMap, HashSet};
+    pub use std::collections::hash_map::Entry;
+
+    pub use itertools::Itertools;
+
+    pub use super::IterExt;
+    pub use super::iter_input;
+    pub use super::input_file;
+    pub use super::input_string;
+    pub use super::sorted;
+    pub use super::{to_u8, to_u32, to_usize, to_i32};
+}
 
 pub type TokIter<'t> = std::str::SplitWhitespace<'t>;
 
@@ -169,7 +185,6 @@ pub trait IterExt: Iterator {
 
 impl<I: Iterator> IterExt for I { }
 
-
 pub struct Uids<T> {
     map: HashMap<T, usize>
 }
@@ -191,3 +206,17 @@ pub fn sorted<T: Ord, I: Iterator<Item=T>>(it: I) -> Vec<T> {
     v.sort();
     v
 }
+
+
+macro_rules! impl_to {
+    ($fname:ident, $ty:ty) => {
+        pub fn $fname<T: AsRef<str>>(s: T) -> $ty {
+            s.as_ref().parse().unwrap()
+        }
+    };
+}
+
+impl_to!(to_u8, u8);
+impl_to!(to_u32, u32);
+impl_to!(to_usize, usize);
+impl_to!(to_i32, i32);
