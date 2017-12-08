@@ -1,10 +1,8 @@
 extern crate advtools;
-extern crate itertools;
-
-use itertools::Itertools;
+use advtools::prelude::*;
 
 fn main() {
-    let phrases = advtools::iter_input::<Vec<String>>().collect_vec();
+    let phrases = iter_input::<Vec<String>>().collect_vec();
     let count1 = phrases.iter().filter(|ph| {
         ph.len() == ph.iter().unique().count()
     }).count();

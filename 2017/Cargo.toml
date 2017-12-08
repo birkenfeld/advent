@@ -5,12 +5,9 @@ version = "0.1.0"
 authors = ["Georg Brandl <georg@python.org>"]
 
 [dependencies]
-itertools = "*"
 petgraph = "*"
-#fnv = "*"
 #odds = "*"
 #rayon = "*"
-#regex = "*"
 #md-5 = "*"
 #strum = "*"
 #strum_macros = "*"

@@ -1,4 +1,5 @@
 extern crate advtools;
+use advtools::prelude::*;
 
 fn jump<F: Fn(i32) -> i32>(jumps: &mut [i32], f: F) -> i32 {
     let n = jumps.len() as i32;
@@ -16,7 +17,7 @@ fn jump<F: Fn(i32) -> i32>(jumps: &mut [i32], f: F) -> i32 {
 }
 
 fn main() {
-    let mut jumps = advtools::iter_input::<i32>().collect::<Vec<_>>();
+    let mut jumps = iter_input::<i32>().collect_vec();
     let steps1 = jump(&mut jumps.clone(), |ofs| ofs + 1);
     let steps2 = jump(&mut jumps, |ofs| if ofs >= 3 { ofs - 1 } else { ofs + 1 });
     println!("Steps to outside: {}", steps1);

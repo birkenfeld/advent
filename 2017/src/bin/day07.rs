@@ -1,18 +1,17 @@
 extern crate advtools;
 extern crate petgraph;
 
-use std::collections::HashMap;
-use std::collections::hash_map::Entry;
+use advtools::prelude::*;
 use petgraph::prelude::*;
 
 fn main() {
-    let input = advtools::iter_input::<String>().collect::<Vec<_>>();
+    let input = iter_input::<String>().collect_vec();
     let mut name2ix = HashMap::new();
     let mut graph = Graph::new();
     for line in &input {
         let mut split = line.split_whitespace();
-        let name = split.next().unwrap();
-        let weight = split.next().unwrap().trim_matches(&['(', ')'][..]).parse::<i32>().unwrap();
+        let name = split.item();
+        let weight = to_i32(split.item().trim_matches(&['(', ')'][..]));
         let ix = match name2ix.entry(name) {
             Entry::Occupied(e) => { graph[*e.get()] = weight; *e.get() },
             Entry::Vacant(e) =>   { let ix = graph.add_node(weight); *e.insert(ix) },
@@ -22,7 +21,7 @@ fn main() {
             graph.add_edge(ix, cix, 0i32);
         }
     }
-    let root = graph.externals(Incoming).next().unwrap();
+    let root = graph.externals(Incoming).item();
     println!("Bottom program: {}", name2ix.iter().find(|e| e.1 == &root).unwrap().0);
 
     let mut dfs = DfsPostOrder::new(&graph, root);
