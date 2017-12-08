@@ -32,6 +32,7 @@ fn reg_or_imm(s: &str) -> Arg {
     s.parse().ok().map_or_else(|| Arg::Reg(reg(s)), Arg::Imm)
 }
 
+#[derive(Default)]
 struct Machine {
     regs: [i64; 4],
     prog: Vec<Op>,
@@ -42,7 +43,7 @@ struct Machine {
 
 impl Machine {
     fn new(prog: Vec<Op>) -> Machine {
-        Machine { prog: prog, regs: [0, 0, 0, 0], pc: 0, map: HashMap::new(), sig: vec![] }
+        Machine { prog: prog, .. Machine::default() }
     }
     fn get(&self, arg: Arg) -> i64 {
         match arg {

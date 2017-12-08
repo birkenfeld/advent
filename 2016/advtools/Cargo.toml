@@ -9,4 +9,3 @@ path = "lib.rs"
 [dependencies]
 itertools = "*"
 regex = "*"
-fnv = "*"

@@ -1,8 +1,8 @@
 extern crate itertools;
 extern crate regex;
-extern crate fnv;
 
 use std::env;
+use std::fmt::Debug;
 use std::collections::HashMap;
 use std::fs::File;
 use std::hash::Hash;
@@ -18,7 +18,6 @@ pub mod prelude {
 
     pub use itertools::Itertools;
     pub use regex::{Regex, Captures};
-    pub use fnv::FnvHashMap;
 
     pub use super::IterExt;
     pub use super::iter_input;
@@ -43,16 +42,16 @@ impl Input for String {
         line
     }
     fn read_token(tok: &mut TokIter) -> String {
-        tok.next().unwrap().to_owned()
+        tok.item().to_owned()
     }
 }
 
-impl Input for Vec<String> {
-    fn read(line: String) -> Vec<String> {
-        line.split_whitespace().map(String::from).collect()
+impl<T> Input for Vec<T> where T: FromStr, T::Err: Debug {
+    fn read(line: String) -> Vec<T> {
+        line.split_whitespace().map(|p| p.parse().unwrap()).collect()
     }
-    fn read_token(tok: &mut TokIter) -> Vec<String> {
-        tok.next().unwrap().split_whitespace().map(String::from).collect()
+    fn read_token(tok: &mut TokIter) -> Vec<T> {
+        tok.item().split_whitespace().map(|p| p.parse().unwrap()).collect()
     }
 }
 
@@ -60,7 +59,7 @@ macro_rules! simple_impl {
     ($ty:ty) => {
         impl Input for $ty {
             fn read_token(tok: &mut TokIter) -> $ty {
-                tok.next().unwrap().parse().unwrap()
+                tok.item().parse().unwrap()
             }
         }
     }
@@ -96,13 +95,13 @@ array_impl!(8, tok, tok, tok, tok, tok, tok, tok, tok, tok);
 
 impl Input for char {
     fn read_token(tok: &mut TokIter) -> char {
-        tok.next().unwrap().chars().next().unwrap()
+        tok.item().chars().item()
     }
 }
 
 impl Input for () {
     fn read_token(tok: &mut TokIter) -> () {
-        tok.next().unwrap();
+        tok.item();
         ()
     }
 }
@@ -161,7 +160,7 @@ impl<I: Input> Iterator for InputIterator<I> {
 
 pub fn input_file() -> File {
     let mut infile = Path::new("input").join(
-        Path::new(&env::args_os().next().unwrap()).file_name().unwrap());
+        Path::new(&env::args_os().item()).file_name().unwrap());
     infile.set_extension("txt");
     File::open(&infile)
         .unwrap_or_else(|_| panic!("input file \"{}\" not found", infile.display()))
@@ -271,6 +270,10 @@ pub trait IterExt: Iterator {
         <Self as Iterator>::Item: Add<Self::Item, Output=Self::Item>, Self: Sized
     {
         self.fold(start, |s, e| s + e)
+    }
+
+    fn item(&mut self) -> Self::Item {
+        self.next().unwrap()
     }
 }
 

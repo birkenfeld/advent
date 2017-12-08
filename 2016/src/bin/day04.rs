@@ -12,7 +12,7 @@ fn main() {
         let caps = rx.captures(&line).unwrap();
 
         // count the digits in the name
-        let mut counts = FnvHashMap::default();
+        let mut counts = HashMap::new();
         for ch in caps[1].chars().filter(|&ch| ch != '-') {
             *counts.entry(ch).or_insert(0) += 1;
         }
