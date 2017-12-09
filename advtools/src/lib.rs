@@ -21,28 +21,80 @@ pub mod prelude {
     pub use itertools::Itertools;
     pub use regex::{Regex, Captures};
 
+    pub use super::{input_file, input_string};
+    pub use super::{parse_parts, parse_parts_trim};
+    pub use super::{iter_input, iter_input_trim, iter_input_parts, iter_input_parts_trim};
     pub use super::IterExt;
-    pub use super::parse;
-    pub use super::iter_input;
-    pub use super::iter_input_trim;
-    pub use super::input_file;
-    pub use super::input_string;
     pub use super::{to_u8, to_u32, to_usize, to_i32};
     pub use super::from_utf8;
+}
+
+pub fn input_file() -> File {
+    let mut infile = Path::new("input").join(
+        Path::new(&env::args_os().item()).file_name().unwrap());
+    infile.set_extension("txt");
+    File::open(&infile)
+        .unwrap_or_else(|_| panic!("input file \"{}\" not found", infile.display()))
+}
+
+pub fn input_string() -> String {
+    let mut contents = String::new();
+    input_file().read_to_string(&mut contents).unwrap();
+    contents
+}
+
+pub trait Indices {
+    fn list(&self) -> Cow<'static, [usize]>;
+}
+
+impl Indices for usize {
+    fn list(&self) -> Cow<'static, [usize]> { vec![*self].into() }
+}
+
+impl Indices for &'static [usize] {
+    fn list(&self) -> Cow<'static, [usize]> { (*self).into() }
+}
+
+impl Indices for (usize, usize) {
+    fn list(&self) -> Cow<'static, [usize]> { vec![self.0, self.1].into() }
+}
+
+impl Indices for (usize, usize, usize) {
+    fn list(&self) -> Cow<'static, [usize]> { vec![self.0, self.1, self.2].into() }
+}
+
+impl Indices for (usize, usize, usize, usize) {
+    fn list(&self) -> Cow<'static, [usize]> { vec![self.0, self.1, self.2, self.3].into() }
+}
+
+impl Indices for (usize, usize, usize, usize, usize) {
+    fn list(&self) -> Cow<'static, [usize]> { vec![self.0, self.1, self.2, self.3, self.4].into() }
 }
 
 pub type TokIter<'t> = Iterator<Item = &'t str> + 't;
 
 pub trait ParseResult where Self: Sized {
-    fn read(line: Cow<str>, trim: &[char]) -> Self {
-        let iter = &mut line.split_whitespace().map(|v| v.trim_matches(trim)) as &mut TokIter;
-        Self::read_token(iter)
+    fn read(line: Cow<str>, trim: &[char], mut indices: &[usize]) -> Self {
+        let mut part_iter = line.split_whitespace().map(|v| v.trim_matches(trim));
+        if !indices.is_empty() {
+            let filter_iter = &mut part_iter.enumerate().batching(|it| loop {
+                if indices.is_empty() { return None; }
+                let (ix, item) = it.next().unwrap();
+                if ix == indices[0] {
+                    indices = &indices[1..];
+                    return Some(item);
+                }
+            }) as &mut TokIter;
+            Self::read_token(filter_iter)
+        } else {
+            Self::read_token(&mut part_iter)
+        }
     }
     fn read_token(tok: &mut TokIter) -> Self;
 }
 
 impl ParseResult for String {
-    fn read(line: Cow<str>, trim: &[char]) -> String {
+    fn read(line: Cow<str>, trim: &[char], _: &[usize]) -> String {
         if trim.is_empty() {
             line.into_owned()
         } else {
@@ -55,9 +107,6 @@ impl ParseResult for String {
 }
 
 impl<T> ParseResult for Vec<T> where T: FromStr, T::Err: Debug {
-    fn read(line: Cow<str>, trim: &[char]) -> Vec<T> {
-        line.split_whitespace().map(|p| p.trim_matches(trim).parse().unwrap()).collect()
-    }
     fn read_token(tok: &mut TokIter) -> Vec<T> {
         tok.map(|p| p.parse().unwrap()).collect()
     }
@@ -145,16 +194,17 @@ tuple_impl!(T, U, V, W, Y, Z, T1, T2, T3, T4, T5);
 tuple_impl!(T, U, V, W, Y, Z, T1, T2, T3, T4, T5, T6);
 
 
-pub struct InputIterator<I: ParseResult> {
+pub struct InputIterator<T: ParseResult> {
     rdr: BufReader<File>,
     trim: Vec<char>,
-    marker: PhantomData<I>,
+    indices: Cow<'static, [usize]>,
+    marker: PhantomData<T>,
 }
 
-impl<I: ParseResult> Iterator for InputIterator<I> {
-    type Item = I;
+impl<T: ParseResult> Iterator for InputIterator<T> {
+    type Item = T;
 
-    fn next(&mut self) -> Option<I> {
+    fn next(&mut self) -> Option<T> {
         let mut line = String::new();
         while line.is_empty() {
             if self.rdr.read_line(&mut line).unwrap() == 0 {
@@ -164,85 +214,38 @@ impl<I: ParseResult> Iterator for InputIterator<I> {
                 line.pop();
             }
         }
-        Some(I::read(Cow::from(line), &self.trim))
+            Some(T::read(Cow::from(line), &self.trim, &self.indices))
     }
 }
 
 
-pub fn input_file() -> File {
-    let mut infile = Path::new("input").join(
-        Path::new(&env::args_os().item()).file_name().unwrap());
-    infile.set_extension("txt");
-    File::open(&infile)
-        .unwrap_or_else(|_| panic!("input file \"{}\" not found", infile.display()))
-}
-
-pub fn iter_input<I: ParseResult>() -> InputIterator<I> {
+pub fn iter_input<T: ParseResult>() -> InputIterator<T> {
     let rdr = BufReader::new(input_file());
-    InputIterator { rdr: rdr, trim: vec![], marker: PhantomData }
+    InputIterator { rdr: rdr, trim: vec![], indices: vec![].into(), marker: PhantomData }
 }
 
-pub fn iter_input_trim<I: ParseResult>(trim: &str) -> InputIterator<I> {
+pub fn iter_input_trim<T: ParseResult>(trim: &str) -> InputIterator<T> {
     let rdr = BufReader::new(input_file());
-    InputIterator { rdr: rdr, trim: trim.chars().collect(), marker: PhantomData }
+    InputIterator { rdr: rdr, trim: trim.chars().collect(), indices: vec![].into(), marker: PhantomData }
 }
 
-pub fn input_string() -> String {
-    let mut contents = String::new();
-    input_file().read_to_string(&mut contents).unwrap();
-    contents
+pub fn iter_input_parts<T: ParseResult, Ix: Indices>(ix: Ix) -> InputIterator<T> {
+    let rdr = BufReader::new(input_file());
+    InputIterator { rdr: rdr, trim: vec![], indices: ix.list(), marker: PhantomData }
 }
 
-pub trait Indices {
-    fn list(&self) -> Cow<[usize]>;
+pub fn iter_input_parts_trim<T: ParseResult, Ix: Indices>(ix: Ix, trim: &str) -> InputIterator<T> {
+    let rdr = BufReader::new(input_file());
+    InputIterator { rdr: rdr, trim: trim.chars().collect(), indices: ix.list(), marker: PhantomData }
 }
 
-impl Indices for usize {
-    fn list(&self) -> Cow<[usize]> { vec![*self].into() }
+pub fn parse_parts<T: ParseResult, Ix: Indices>(line: &str, ix: Ix) -> T {
+    T::read(line.into(), &[], &ix.list()[..])
 }
 
-impl<'a> Indices for &'a [usize] {
-    fn list(&self) -> Cow<[usize]> { (*self).into() }
-}
-
-impl Indices for (usize, usize) {
-    fn list(&self) -> Cow<[usize]> { vec![self.0, self.1].into() }
-}
-
-impl Indices for (usize, usize, usize) {
-    fn list(&self) -> Cow<[usize]> { vec![self.0, self.1, self.2].into() }
-}
-
-impl Indices for (usize, usize, usize, usize) {
-    fn list(&self) -> Cow<[usize]> { vec![self.0, self.1, self.2, self.3].into() }
-}
-
-impl Indices for (usize, usize, usize, usize, usize) {
-    fn list(&self) -> Cow<[usize]> { vec![self.0, self.1, self.2, self.3, self.4].into() }
-}
-
-fn parse_inner<'a, I, It, Ix>(in_iter: It, ix: Ix) -> I
-    where I: ParseResult, It: Iterator<Item = &'a str>, Ix: Indices
-{
-    let mut indices = &ix.list()[..];
-    let iter = &mut in_iter.enumerate().batching(|it| loop {
-        if indices.is_empty() { return None; }
-        let (ix, item) = it.next().unwrap();
-        if ix == indices[0] {
-            indices = &indices[1..];
-            return Some(item);
-        }
-    }) as &mut TokIter;
-    I::read_token(iter)
-}
-
-pub fn parse<I: ParseResult, Ix: Indices>(line: &str, ix: Ix) -> I {
-    parse_inner(line.split_whitespace(), ix)
-}
-
-pub fn parse_trim<I: ParseResult, Ix: Indices>(line: &str, ix: Ix, trim: &str) -> I {
+pub fn parse_parts_trim<T: ParseResult, Ix: Indices>(line: &str, ix: Ix, trim: &str) -> T {
     let trim: Vec<_> = trim.chars().collect();
-    parse_inner(line.split_whitespace().map(|v| v.trim_matches(&trim[..])), ix)
+    T::read(line.into(), &trim, &ix.list()[..])
 }
 
 pub trait IterExt: Iterator {
