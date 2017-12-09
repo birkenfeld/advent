@@ -1,0 +1,9 @@
+[package]
+name = "advtools"
+description = "A prelude to reduce boilerplate of 'Advent of Code' like challenges."
+version = "0.1.0"
+authors = ["Georg Brandl <georg@python.org>"]
+
+[dependencies]
+itertools = "*"
+regex = "*"
