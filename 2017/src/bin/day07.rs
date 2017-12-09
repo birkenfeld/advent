@@ -8,10 +8,8 @@ fn main() {
     let mut name2ix = HashMap::new();
     let mut graph = Graph::new();
     for (name, weight, children) in iter_input_trim::<(String, i32, Vec<String>)>("(),") {
-        let ix = match name2ix.entry(name) {
-            Entry::Occupied(e) => { graph[*e.get()] = weight; *e.get() },
-            Entry::Vacant(e) =>   { let ix = graph.add_node(weight); *e.insert(ix) },
-        };
+        let ix = *name2ix.entry(name).or_insert_with(|| graph.add_node(0));
+        graph[ix] = weight;
         for childname in children.into_iter().skip(1) {
             let cix = *name2ix.entry(childname).or_insert_with(|| graph.add_node(0));
             graph.add_edge(ix, cix, 0i32);
