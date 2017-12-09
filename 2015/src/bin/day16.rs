@@ -18,20 +18,13 @@ fn main() {
     let mut needle = HashSet::new();
     let mut needle_map = HashMap::new();
     for line in NEEDLE.lines() {
-        let tok = line.split_whitespace().collect::<Vec<_>>();
-        let name = tok[0].trim_matches(':').to_owned();
-        let count = tok[1].parse::<i32>().unwrap();
+        let (name, count): (String, i32) = parse_parts_trim(&line, (0, 1), ":");
         needle.insert((name.clone(), count));
         needle_map.insert(name, count);
     }
     let mut haystack = Vec::new();
-    for tok in iter_input::<Vec<String>>() {
-        let mut set = HashSet::new();
-        for i in 1..4 {
-            set.insert((tok[2*i].trim_matches(':').to_owned(),
-                        to_i32(tok[2*i+1].trim_matches(','))));
-        }
-        haystack.push(set);
+    for tok in iter_input_trim::<Vec<(String, i32)>>(":,") {
+        haystack.push(HashSet::from_iter(tok.into_iter().skip(1)));
     }
     for (i, hay) in haystack.into_iter().enumerate() {
         if hay.is_subset(&needle) {

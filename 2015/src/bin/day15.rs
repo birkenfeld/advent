@@ -37,14 +37,7 @@ fn find_best(goalcal: Option<i32>, v: &[Values]) -> Vec<i32> {
 }
 
 fn main() {
-    let mut v = Vec::new();
-    for tok in iter_input::<Vec<String>>() {
-        v.push((to_i32(tok[2].trim_matches(',')),
-                to_i32(tok[4].trim_matches(',')),
-                to_i32(tok[6].trim_matches(',')),
-                to_i32(tok[8].trim_matches(',')),
-                to_i32(&tok[10])));
-    }
+    let v = iter_input_parts_trim((2, 4, 6, 8, 10), ",").collect_vec();
     let best = find_best(None, &v);
     println!("Best: {:?} -> {}", best, fom(&best, &v));
     let new_best = find_best(Some(500), &v);

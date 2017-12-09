@@ -5,12 +5,11 @@ use advtools::prelude::*;
 use advtools::Uids;
 use permutohedron::Heap;
 
-type InputLine = (String, (), String, (), u16);
-
 fn main() {
     let mut table = [[0u16; 8]; 8];
     let mut map = Uids::new();
-    for (from, _, to, _, dist) in iter_input::<InputLine>() {
+    for row in iter_input_parts((0, 2, 4)) {
+        let (from, to, dist): (String, String, u16) = row;
         let from_id = map.get_id(from);
         let to_id = map.get_id(to);
         table[from_id.max(to_id)][from_id.min(to_id)] = dist;

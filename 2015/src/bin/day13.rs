@@ -1,6 +1,7 @@
 extern crate advtools;
 extern crate permutohedron;
 
+use advtools::prelude::*;
 use std::iter::once;
 use advtools::Uids;
 use permutohedron::Heap;
@@ -11,13 +12,11 @@ fn most_happiness(n: usize, table: &[[i16; 9]; 9]) -> i16 {
             |(&p1, &p2)| table[p1][p2] + table[p2][p1]).sum()).max().unwrap()
 }
 
-type InputLine = (String, (), String, i16, [(); 6], String);
-
 fn main() {
     let mut table = [[0i16; 9]; 9];
     let mut map = Uids::new();
-    for row in advtools::iter_input::<InputLine>() {
-        let (p1, _, verb, mut val, _, p2) = row;
+    for row in iter_input_parts((0, 2, 3, 10)) {
+        let (p1, verb, mut val, p2): (String, String, i16, String) = row;
         let p2 = p2.trim_matches('.').to_owned();
         if verb == "lose" {
             val = -val;
