@@ -5,18 +5,14 @@ use advtools::prelude::*;
 use petgraph::prelude::*;
 
 fn main() {
-    let input = iter_input::<String>().collect_vec();
     let mut name2ix = HashMap::new();
     let mut graph = Graph::new();
-    for line in &input {
-        let mut split = line.split_whitespace();
-        let name = split.item();
-        let weight = to_i32(split.item().trim_matches(&['(', ')'][..]));
+    for (name, weight, children) in iter_input_trim::<(String, i32, Vec<String>)>("(),") {
         let ix = match name2ix.entry(name) {
             Entry::Occupied(e) => { graph[*e.get()] = weight; *e.get() },
             Entry::Vacant(e) =>   { let ix = graph.add_node(weight); *e.insert(ix) },
         };
-        for childname in split.skip(1).map(|v| v.trim_matches(',')) {
+        for childname in children.into_iter().skip(1) {
             let cix = *name2ix.entry(childname).or_insert_with(|| graph.add_node(0));
             graph.add_edge(ix, cix, 0i32);
         }

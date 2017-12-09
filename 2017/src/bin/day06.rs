@@ -2,7 +2,7 @@ extern crate advtools;
 use advtools::prelude::*;
 
 fn main() {
-    let mut banks = iter_input::<Vec<isize>>().item();
+    let mut banks = iter_input::<Vec<i32>>().item();
     let mut seen = HashMap::new();
     let mut steps = 0;
     let len = banks.len();

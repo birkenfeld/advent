@@ -4,22 +4,20 @@ use advtools::prelude::*;
 fn main() {
     let mut regs = HashMap::new();
     let mut any_largest = 0;
-    for line in iter_input::<Vec<String>>() {
-        let change_reg = line[0].to_owned();
-        let sign = if line[1] == "inc" { 1 } else { -1 };
-        let change_amount = sign * to_i32(&line[2]);
-        let check_reg_val = *regs.get(&line[4]).unwrap_or(&0);
-        let check_amount = to_i32(&line[6]);
-        if match &*line[5] {
-            "==" => check_reg_val == check_amount,
-            "!=" => check_reg_val != check_amount,
-            ">"  => check_reg_val >  check_amount,
-            ">=" => check_reg_val >= check_amount,
-            "<"  => check_reg_val <  check_amount,
-            "<=" => check_reg_val <= check_amount,
+    for line in iter_input::<(String, String, i32, (), String, String, i32)>() {
+        let (change_reg, sign, change_amt, _, check_reg, check_cond, check_val) = line;
+        let change_amt = change_amt * if sign == "inc" { 1 } else { -1 };
+        let check_reg_val = *regs.get(&check_reg).unwrap_or(&0);
+        if match &*check_cond {
+            "==" => check_reg_val == check_val,
+            "!=" => check_reg_val != check_val,
+            ">"  => check_reg_val >  check_val,
+            ">=" => check_reg_val >= check_val,
+            "<"  => check_reg_val <  check_val,
+            "<=" => check_reg_val <= check_val,
             _ => panic!("invalid condition"),
         } {
-            *regs.entry(change_reg).or_insert(0) += change_amount;
+            *regs.entry(change_reg).or_insert(0) += change_amt;
         }
         any_largest = any_largest.max(*regs.values().max().unwrap());
     }
