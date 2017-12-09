@@ -18,11 +18,11 @@ fn main() {
 
     for line in iter_input::<String>() {
         if line.starts_with("value") {
-            let (val, botno) = parse(&line, (1, 5));
+            let (val, botno) = parse_parts(&line, (1, 5));
             changes.push((botno, val));
         } else {
             let (botno, lowrule, low, highrule, high): (u32, String, u32, String, u32) =
-                parse(&line, (1, 5, 6, 10, 11));
+                parse_parts(&line, (1, 5, 6, 10, 11));
             let lowrule = if lowrule == "output" { Rule::Out(low) } else { Rule::Bot(low) };
             let highrule = if highrule == "output" { Rule::Out(high) } else { Rule::Bot(high) };
             bots.insert(botno, Bot { chips: vec![], rule: (lowrule, highrule) });
