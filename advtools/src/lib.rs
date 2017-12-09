@@ -3,7 +3,6 @@ extern crate regex;
 
 use std::borrow::Cow;
 use std::env;
-use std::fmt::Debug;
 use std::collections::HashMap;
 use std::fs::File;
 use std::hash::Hash;
@@ -11,7 +10,6 @@ use std::io::{BufReader, BufRead, Read};
 use std::marker::PhantomData;
 use std::ops::Add;
 use std::path::Path;
-use std::str::FromStr;
 use itertools::Itertools;
 
 pub mod prelude {
@@ -85,12 +83,12 @@ pub trait ParseResult where Self: Sized {
                     return Some(item);
                 }
             }) as &mut TokIter;
-            Self::read_token(filter_iter)
+            Self::read_token(filter_iter).unwrap()
         } else {
-            Self::read_token(&mut part_iter)
+            Self::read_token(&mut part_iter).unwrap()
         }
     }
-    fn read_token(tok: &mut TokIter) -> Self;
+    fn read_token(tok: &mut TokIter) -> Option<Self>;
 }
 
 impl ParseResult for String {
@@ -101,22 +99,26 @@ impl ParseResult for String {
             line.trim_matches(trim).to_owned()
         }
     }
-    fn read_token(mut tok: &mut TokIter) -> String {
-        tok.item().to_owned()
+    fn read_token(tok: &mut TokIter) -> Option<String> {
+        tok.next().map(ToOwned::to_owned)
     }
 }
 
-impl<T> ParseResult for Vec<T> where T: FromStr, T::Err: Debug {
-    fn read_token(tok: &mut TokIter) -> Vec<T> {
-        tok.map(|p| p.parse().unwrap()).collect()
+impl<T> ParseResult for Vec<T> where T: ParseResult {
+    fn read_token(tok: &mut TokIter) -> Option<Vec<T>> {
+        let mut result = Vec::new();
+        while let Some(item) = T::read_token(tok) {
+            result.push(item)
+        }
+        Some(result)
     }
 }
 
 macro_rules! simple_impl {
     ($ty:ty) => {
         impl ParseResult for $ty {
-            fn read_token(mut tok: &mut TokIter) -> $ty {
-                tok.item().parse().unwrap()
+            fn read_token(tok: &mut TokIter) -> Option<$ty> {
+                Some(tok.next()?.parse().unwrap())
             }
         }
     }
@@ -133,49 +135,52 @@ simple_impl!(i32);
 simple_impl!(i64);
 simple_impl!(isize);
 
-macro_rules! array_impl {
-    ($n:expr, $tok1:ident, $($tok:ident),+) => {
-        impl<T: ParseResult> ParseResult for [T; $n] {
-            fn read_token($tok1: &mut TokIter) -> [T; $n] {
-                [$(T::read_token($tok)),+]
-            }
-        }
-    }
-}
+// macro_rules! array_impl {
+//     ($n:expr, $tok1:ident, $($tok:ident),+) => {
+//         impl<T: ParseResult> ParseResult for [T; $n] {
+//             fn read_token($tok1: &mut TokIter) -> [T; $n] {
+//                 [$(T::read_token($tok)),+]
+//             }
+//         }
+//     }
+// }
 
-array_impl!(1, tok, tok);
-array_impl!(2, tok, tok, tok);
-array_impl!(3, tok, tok, tok, tok);
-array_impl!(4, tok, tok, tok, tok, tok);
-array_impl!(5, tok, tok, tok, tok, tok, tok);
-array_impl!(6, tok, tok, tok, tok, tok, tok, tok);
-array_impl!(7, tok, tok, tok, tok, tok, tok, tok, tok);
-array_impl!(8, tok, tok, tok, tok, tok, tok, tok, tok, tok);
+// array_impl!(1, tok, tok);
+// array_impl!(2, tok, tok, tok);
+// array_impl!(3, tok, tok, tok, tok);
+// array_impl!(4, tok, tok, tok, tok, tok);
+// array_impl!(5, tok, tok, tok, tok, tok, tok);
+// array_impl!(6, tok, tok, tok, tok, tok, tok, tok);
+// array_impl!(7, tok, tok, tok, tok, tok, tok, tok, tok);
+// array_impl!(8, tok, tok, tok, tok, tok, tok, tok, tok, tok);
 
 impl ParseResult for char {
-    fn read_token(mut tok: &mut TokIter) -> char {
-        tok.item().chars().item()
+    fn read_token(tok: &mut TokIter) -> Option<char> {
+        tok.next()?.chars().next()
     }
 }
 
 impl ParseResult for () {
-    fn read_token(mut tok: &mut TokIter) -> () {
-        tok.item();
-        ()
+    fn read_token(tok: &mut TokIter) -> Option<()> {
+        tok.next().map(|_| ())
     }
 }
 
 impl<T: ParseResult> ParseResult for (T,) {
-    fn read_token(tok: &mut TokIter) -> (T,) {
-        (T::read_token(tok),)
+    fn read_token(tok: &mut TokIter) -> Option<(T,)> {
+        T::read_token(tok).map(|v| (v,))
     }
 }
 
 macro_rules! tuple_impl {
     ($($tys:ident),+) => {
         impl<$($tys: ParseResult),+> ParseResult for ($($tys),+) {
-            fn read_token(tok: &mut TokIter) -> ($($tys),+) {
-                ($($tys::read_token(tok)),+)
+            #[allow(non_snake_case)]
+            fn read_token(tok: &mut TokIter) -> Option<($($tys),+)> {
+                $(
+                    let $tys = $tys::read_token(tok)?;
+                )+
+                Some(($($tys),+))
             }
         }
     }
