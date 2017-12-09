@@ -15,6 +15,7 @@ use itertools::Itertools;
 pub mod prelude {
     pub use std::collections::{HashMap, HashSet};
     pub use std::collections::hash_map::Entry;
+    pub use std::iter::FromIterator;
 
     pub use itertools::Itertools;
     pub use regex::{Regex, Captures};
