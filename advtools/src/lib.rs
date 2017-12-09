@@ -12,6 +12,7 @@ use std::marker::PhantomData;
 use std::ops::Add;
 use std::path::Path;
 use std::str::FromStr;
+use itertools::Itertools;
 
 pub mod prelude {
     pub use std::collections::{HashMap, HashSet};
@@ -76,10 +77,12 @@ simple_impl!(u8);
 simple_impl!(u16);
 simple_impl!(u32);
 simple_impl!(u64);
+simple_impl!(usize);
 simple_impl!(i8);
 simple_impl!(i16);
 simple_impl!(i32);
 simple_impl!(i64);
+simple_impl!(isize);
 
 macro_rules! array_impl {
     ($n:expr, $tok1:ident, $($tok:ident),+) => {
@@ -190,10 +193,57 @@ pub fn input_string() -> String {
     contents
 }
 
-pub fn parse<I: ParseResult>(line: &str) -> I {
-    I::read(Cow::from(line), &[])
+pub trait Indices {
+    fn list(&self) -> Cow<[usize]>;
 }
 
+impl Indices for usize {
+    fn list(&self) -> Cow<[usize]> { vec![*self].into() }
+}
+
+impl<'a> Indices for &'a [usize] {
+    fn list(&self) -> Cow<[usize]> { (*self).into() }
+}
+
+impl Indices for (usize, usize) {
+    fn list(&self) -> Cow<[usize]> { vec![self.0, self.1].into() }
+}
+
+impl Indices for (usize, usize, usize) {
+    fn list(&self) -> Cow<[usize]> { vec![self.0, self.1, self.2].into() }
+}
+
+impl Indices for (usize, usize, usize, usize) {
+    fn list(&self) -> Cow<[usize]> { vec![self.0, self.1, self.2, self.3].into() }
+}
+
+impl Indices for (usize, usize, usize, usize, usize) {
+    fn list(&self) -> Cow<[usize]> { vec![self.0, self.1, self.2, self.3, self.4].into() }
+}
+
+fn parse_inner<'a, I, It, Ix>(in_iter: It, ix: Ix) -> I
+    where I: ParseResult, It: Iterator<Item = &'a str>, Ix: Indices
+{
+    let mut indices = &ix.list()[..];
+    let iter = &mut in_iter.enumerate().batching(|it| loop {
+        if indices.is_empty() { return None; }
+        let (ix, item) = it.next().unwrap();
+        if ix == indices[0] {
+            indices = &indices[1..];
+            return Some(item);
+        }
+    }) as &mut TokIter;
+    I::read_token(iter)
+}
+
+pub fn parse<I: ParseResult, Ix: Indices>(line: &str, ix: Ix) -> I {
+    parse_inner(line.split_whitespace(), ix)
+}
+
+pub fn parse_trim<I: ParseResult, Ix: Indices>(line: &str, ix: Ix, trim: &str) -> I {
+    let trim: Vec<_> = trim.chars().collect();
+    parse_inner(line.split_whitespace().map(|v| v.trim_matches(&trim[..])), ix)
+}
 
 pub trait IterExt: Iterator {
     fn sum_from(self, start: Self::Item) -> Self::Item where
