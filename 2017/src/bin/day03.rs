@@ -1,4 +1,5 @@
 extern crate advtools;
+use advtools::prelude::*;
 
 const INPUT: u32 = 312051;
 
@@ -23,18 +24,18 @@ fn main() {
     }
     println!("Distance for {}: {}", INPUT, pos.0.abs() + pos.1.abs());
 
-    let mut pos = (1, 0);
-    let mut arr = vec![vec![0; 200]; 200];
-    arr[100][100] = 1;
+    let mut map = HashMap::new();
+    let mut pos = (0, 0);
+    map.insert(pos, 1);
     let value = loop {
-        let (ix, iy) = ((pos.0 + 100) as usize, (pos.1 + 100) as usize);
-        let write = arr[ix+1][iy] + arr[ix-1][iy] + arr[ix][iy+1] + arr[ix][iy-1] +
-            arr[ix+1][iy+1] + arr[ix+1][iy-1] + arr[ix-1][iy+1] + arr[ix-1][iy-1];
+        pos = next_pos(pos);
+        let write = (-1..2).cartesian_product(-1..2)
+                           .map(|d| map.get(&(pos.0 + d.0, pos.1 + d.1)).unwrap_or(&0))
+                           .sum::<u32>();
         if write > INPUT {
             break write;
         }
-        arr[ix][iy] = write;
-        pos = next_pos(pos);
+        map.insert(pos, write);
     };
     println!("Value written: {}", value);
 }
