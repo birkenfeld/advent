@@ -7,7 +7,7 @@ authors = ["Georg Brandl <georg@python.org>"]
 [dependencies]
 advtools = { git = "https://github.com/birkenfeld/advtools" }
 petgraph = "*"
-#odds = "*"
+odds = "*"
 #rayon = "*"
 #md-5 = "*"
 #strum = "*"
