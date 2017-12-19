@@ -37,8 +37,10 @@ struct Machine<'a> {
 }
 
 impl<'a> Machine<'a> {
-    fn new(prog: &[Op]) -> Machine {
-        Machine { prog: prog, regs: [0; 16], pc: 0, snd: VecDeque::new(), nsnd: 0 }
+    fn new(prog: &[Op], id: i64) -> Machine {
+        let mut m = Machine { prog: prog, regs: [0; 16], pc: 0, snd: VecDeque::new(), nsnd: 0 };
+        m.regs[15] = id;
+        m
     }
 
     fn get(&self, arg: Arg) -> i64 {
@@ -90,17 +92,12 @@ fn main() {
         _ => panic!("unknown op: {}", line[0])
     }).collect_vec();
 
-    let mut m = Machine::new(&program);
+    let mut m = Machine::new(&program, 0);
     m.run(&mut VecDeque::new());
     println!("Recovered: {}", m.snd.pop_back().unwrap());
 
-    let mut m0 = Machine::new(&program);
-    let mut m1 = Machine::new(&program);
-    m1.regs[15] = 1; // machine ID
-    loop {
-        if !m0.run(&mut m1.snd) && !m1.run(&mut m0.snd) {
-            break;
-        }
-    }
+    let mut m0 = Machine::new(&program, 0);
+    let mut m1 = Machine::new(&program, 1);
+    while m0.run(&mut m1.snd) || m1.run(&mut m0.snd) { }
     println!("Program 1 send count: {}", m1.nsnd);
 }
