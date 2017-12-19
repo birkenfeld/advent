@@ -1,5 +1,8 @@
 extern crate advtools;
+extern crate rayon;
+
 use advtools::prelude::*;
+use rayon::prelude::*;
 
 fn main() {
     let firewall: HashMap<i32, _> = iter_input_trim(":").collect();
@@ -9,10 +12,8 @@ fn main() {
     }).sum::<i32>();
     println!("Severity: {}", severity);
 
-    for delay in 0.. {
-        if firewall.iter().all(|(depth, range)| (depth + delay) % (2*range - 2) != 0)  {
-            println!("Delay without getting caught: {}", delay);
-            break;
-        }
-    }
+    let delay = (0..10_000_000).into_par_iter().find_first(|delay| {
+        firewall.iter().all(|(depth, range)| (depth + delay) % (2*range - 2) != 0)
+    }).unwrap();
+    println!("Delay without getting caught: {}", delay);
 }
