@@ -15,15 +15,16 @@ fn main() {
     println!("After 2017: {}", buf[after_pos as usize]);
 
     let mut pos = 0;
-    let mut zero_pos = 0;
     let mut after_zero = 0;
     for n in 1..50_000_000 {
-        pos = (pos + SKIP) % n + 1;
-        if pos <= zero_pos {
-            zero_pos += 1;
-        } else if pos == zero_pos + 1 {
-            after_zero = n;
+        pos += SKIP;
+        if pos >= n {
+            pos %= n;
+            if pos == 0 {
+                after_zero = n;
+            }
         }
+        pos += 1;
     }
     println!("After zero: {}", after_zero);
 }
