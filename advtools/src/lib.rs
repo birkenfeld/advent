@@ -1,5 +1,6 @@
-extern crate itertools;
-extern crate regex;
+pub extern crate itertools;
+pub extern crate regex;
+pub extern crate odds;
 
 use std::borrow::Cow;
 use std::env;
@@ -13,12 +14,16 @@ use std::path::Path;
 use itertools::Itertools;
 
 pub mod prelude {
-    pub use std::collections::{HashMap, HashSet};
+    pub use std::collections::{HashMap, HashSet, VecDeque};
     pub use std::collections::hash_map::Entry;
     pub use std::iter::FromIterator;
 
+    pub use itertools;
     pub use itertools::Itertools;
+    pub use regex;
     pub use regex::{Regex, Captures};
+    pub use odds;
+    pub use odds::slice::rotate_left;
 
     pub use super::{input_file, input_string};
     pub use super::{parse_parts, parse_parts_trim};
@@ -26,6 +31,7 @@ pub mod prelude {
     pub use super::IterExt;
     pub use super::{to_u8, to_u32, to_usize, to_i32};
     pub use super::from_utf8;
+    pub use super::rotate_right;
 }
 
 pub fn input_file() -> File {
@@ -300,4 +306,9 @@ impl_to!(to_i32, i32);
 
 pub fn from_utf8<T: AsRef<[u8]>>(s: T) -> String {
     std::str::from_utf8(s.as_ref()).unwrap().to_owned()
+}
+
+pub fn rotate_right<T>(t: &mut [T], n: usize) {
+    let m = t.len() - n;
+    odds::slice::rotate_left(t, m);
 }
