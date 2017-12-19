@@ -1,6 +1,5 @@
 extern crate advtools;
 use advtools::prelude::*;
-use std::collections::VecDeque;
 
 type RegNo = usize;
 

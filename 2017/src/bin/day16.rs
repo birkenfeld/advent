@@ -1,8 +1,5 @@
 extern crate advtools;
-extern crate odds;
-
 use advtools::prelude::*;
-use odds::slice::rotate_left;
 
 enum Move {
     RotLeft(usize),

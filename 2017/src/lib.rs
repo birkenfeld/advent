@@ -1,6 +1,5 @@
-extern crate odds;
-
-use odds::slice::rotate_left;
+extern crate advtools;
+use advtools::prelude::*;
 
 pub fn knot_process(input: &[u8], n: u32) -> Vec<u8> {
     let mut marks = (0..).take(256).collect::<Vec<_>>();
@@ -15,7 +14,7 @@ pub fn knot_process(input: &[u8], n: u32) -> Vec<u8> {
             skip += 1;
         }
     }
-    rotate_left(&mut marks, 256 - total_rot % 256);
+    rotate_right(&mut marks, total_rot % 256);
     marks
 }
 
