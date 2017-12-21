@@ -8,8 +8,4 @@ authors = ["Georg Brandl <georg@python.org>"]
 advtools = { git = "https://github.com/birkenfeld/advtools" }
 petgraph = "*"
 odds = "*"
-#rayon = "*"
-#md-5 = "*"
-#strum = "*"
-#strum_macros = "*"
-#itoa = "*"
+rayon = "*"
