@@ -9,3 +9,4 @@ advtools = { git = "https://github.com/birkenfeld/advtools" }
 petgraph = "*"
 odds = "*"
 rayon = "*"
+fnv = "*"
