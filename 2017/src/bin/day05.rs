@@ -1,6 +1,8 @@
 extern crate advtools;
 use advtools::prelude::*;
 
+/// Jump through the list of offsets, with the closure determining how an offset
+/// is modified after it is taken.
 fn jump<F: Fn(i32) -> i32>(jumps: &mut [i32], f: F) -> i32 {
     let n = jumps.len() as i32;
     let mut pos = 0;
@@ -9,6 +11,7 @@ fn jump<F: Fn(i32) -> i32>(jumps: &mut [i32], f: F) -> i32 {
         steps += 1;
         let new_pos = pos as i32 + jumps[pos];
         jumps[pos] = f(jumps[pos]);
+        // Exit condition: jumped outside the list.
         if new_pos < 0 || new_pos >= n {
             return steps;
         }
@@ -18,8 +21,12 @@ fn jump<F: Fn(i32) -> i32>(jumps: &mut [i32], f: F) -> i32 {
 
 fn main() {
     let mut jumps = iter_input::<i32>().collect_vec();
+
+    // Part 1: Taken offsets are increased by one.
     let steps1 = jump(&mut jumps.clone(), |ofs| ofs + 1);
-    let steps2 = jump(&mut jumps, |ofs| if ofs >= 3 { ofs - 1 } else { ofs + 1 });
     println!("Steps to outside: {}", steps1);
+
+    // Part 2: Taken offsets are increased or decreased by one.
+    let steps2 = jump(&mut jumps, |ofs| if ofs >= 3 { ofs - 1 } else { ofs + 1 });
     println!("Steps to outside (modified rule): {}", steps2);
 }

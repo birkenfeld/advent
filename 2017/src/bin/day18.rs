@@ -20,14 +20,17 @@ enum Op {
     Jgz(Arg, Arg),
 }
 
+/// Parse register.
 fn reg(s: &str) -> usize {
     (s.chars().item() as u8 - b'a') as usize
 }
 
+/// Parse register or immediate operand.
 fn reg_or_imm(s: &str) -> Arg {
     s.parse().ok().map_or_else(|| Arg::Reg(reg(s)), Arg::Imm)
 }
 
+/// Represents one copy of the program.  The queue is used to store sent values.
 struct Machine<'a> {
     prog: &'a [Op],
     regs: [i64; 16],
@@ -43,6 +46,7 @@ impl<'a> Machine<'a> {
         m
     }
 
+    /// Get value represented by operand (register or immediate).
     fn get(&self, arg: Arg) -> i64 {
         match arg {
             Arg::Imm(i) => i,
@@ -50,7 +54,12 @@ impl<'a> Machine<'a> {
         }
     }
 
+    /// Execute instructions until the next receive instruction that can't be
+    /// fulfilled from the given queue.
     fn run(&mut self, rcv: &mut VecDeque<i64>) -> bool {
+        // To determine the deadlock condition, we keep track of whether we've
+        // advanced by at least one instruction in this run.  When both machines
+        // haven't advanced, there is a deadlock.
         let mut advanced = false;
         loop {
             match self.prog[self.pc] {
@@ -92,10 +101,13 @@ fn main() {
         _ => panic!("unknown op: {}", line[0])
     }).collect_vec();
 
+    // Part 1: Run one machine, without any receive queue, and determine the
+    // last sent value.
     let mut m = Machine::new(&program, 0);
     m.run(&mut VecDeque::new());
     println!("Recovered: {}", m.snd.pop_back().unwrap());
 
+    // Part 2: Run two machines.  For the `while` condition see above.
     let mut m0 = Machine::new(&program, 0);
     let mut m1 = Machine::new(&program, 1);
     while m0.run(&mut m1.snd) || m1.run(&mut m0.snd) { }

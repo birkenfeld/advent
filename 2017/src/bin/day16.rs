@@ -7,6 +7,7 @@ enum Move {
     Partner(u8, u8),
 }
 
+/// Execute one dance on the list of dancers.
 fn dance_one(dance: &[Move], dancers: &mut [u8]) {
     for move_ in dance {
         match *move_ {
@@ -20,11 +21,13 @@ fn dance_one(dance: &[Move], dancers: &mut [u8]) {
     }
 }
 
+/// Format dancers for printout.
 fn as_string(dancers: &[u8]) -> String {
     dancers.iter().map(|b| (b + b'a') as char).collect()
 }
 
 fn main() {
+    // Parse the dance steps.
     let dance = input_string().trim().split(',').map(|mov| {
         if mov.starts_with("s") {
             Move::RotLeft(16 - to_usize(&mov[1..]))
@@ -41,6 +44,9 @@ fn main() {
         }
     }).collect_vec();
 
+    // Executing one billion dances is quite a lengthy task.  The idea here is
+    // that after the same state is reached a second time, all further states
+    // are known.
     let mut seen = HashSet::new();
     let mut dancers = (0..16).collect_vec();
     while seen.insert(dancers.clone()) {
@@ -48,9 +54,12 @@ fn main() {
     }
     let cycle_len = seen.len();
 
+    // Part 1: execute one dance (the current `dancers` is the state after the
+    // cycle, so it's the original state).
     dance_one(&dance, &mut dancers);
     println!("Order after 1 dance: {}", as_string(&dancers));
 
+    // Part 2: execute dances to reach 1bn (mod cycle_len).
     for _ in 0..(1_000_000_000 % cycle_len) - 1 {
         dance_one(&dance, &mut dancers);
     }

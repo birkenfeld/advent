@@ -14,12 +14,19 @@ fn main() {
     let mut steps = 0;
 
     loop {
+        // One step.
         match map[y][x] {
+            // Reached a corner: determine whether to step up or down/left or right
+            // by checking for empty space.  It is not expected to have a "corner"
+            // with two empty spaces next to it.
             b'+' => dir = match dir {
                 L | R => if map[y-1][x] != b' ' { U } else { D },
                 U | D => if map[y][x-1] != b' ' { L } else { R },
             },
+            // Any `|` or `-` just means to go on.
             b'|' | b'-' => {},
+            // If we reached a blank with these conditions, we must have reached
+            // the end of the path.
             b' ' => break,
             c => path.push(c),
         }
@@ -32,6 +39,8 @@ fn main() {
         }
     }
 
+    // Part 1: The letters in order of the path.
     println!("Path: {}", from_utf8(path));
+    // Part 2: The total number of steps taken.
     println!("Steps: {}", steps);
 }
