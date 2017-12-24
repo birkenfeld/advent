@@ -7,6 +7,16 @@ use rayon::prelude::*;
 type S2 = (u8,u8,u8,u8);
 type S3 = (u8,u8,u8,u8,u8,u8,u8,u8,u8);
 
+/// We represent the state of the image using rows/cols of squares.
+/// Therefore there are three types of states that are run through cyclically,
+/// and depend on the requirements of the next replacement:
+///
+/// One: odd total size -> represented as squares of size 3 that will be
+///      replaced by size 4 (split into 2x2)
+/// Two: even total size -> squares of size 2 of which a 2x2 group will be
+///      replaced by size 3s and then reordered in 3x3 size 2s
+/// Three: even total size -> squares of size 2 which will be replaced by
+///      squares of size 3
 enum State {
     One(Vec<Vec<S3>>),
     Two(Vec<Vec<S2>>),
@@ -14,6 +24,7 @@ enum State {
 }
 
 impl State {
+    /// Sum up all set pixels in a state.
     fn sum(&self) -> u32 {
         match *self {
             State::One(ref v) =>
@@ -36,36 +47,43 @@ fn pixel(ch: char) -> u8 {
     }
 }
 
+/// Collect a vector into a tuple.
 fn square2x2(v: Vec<u8>) -> S2 {
     (v[0], v[1], v[2], v[3])
 }
 
+/// Collect a vector into a tuple.
 fn square3x3(v: Vec<u8>) -> S3 {
     (v[0], v[1], v[2], v[3], v[4], v[5], v[6], v[7], v[8])
 }
 
+/// Flip a 2x2 pattern.
 fn flip2x2(v: S2) -> S2 {
     (v.1, v.0,
      v.3, v.2)
 }
 
+/// Rotate a 2x2 pattern by 90deg.
 fn rotate2x2(v: S2) -> S2 {
     (v.2, v.0,
      v.3, v.1)
 }
 
+/// Flip a 3x3 pattern.
 fn flip3x3(v: S3) -> S3 {
     (v.2, v.1, v.0,
      v.5, v.4, v.3,
      v.8, v.7, v.6)
 }
 
+/// Rotate a 3x3 pattern by 90deg.
 fn rotate3x3(v: S3) -> S3 {
     (v.6, v.3, v.0,
      v.7, v.4, v.1,
      v.8, v.5, v.2)
 }
 
+/// Advance the state by one iteration.
 fn advance(state: State, repls2x2: &HashMap<S2, S3>, repls3x3: &HashMap<S3, (S2,S2,S2,S2)>) -> State {
     match state {
         State::One(state) => {
@@ -73,6 +91,7 @@ fn advance(state: State, repls2x2: &HashMap<S2, S3>, repls3x3: &HashMap<S3, (S2,
                 let mut new1 = Vec::new();
                 let mut new2 = Vec::new();
                 for square in row {
+                    // The 4x4 replacement for 3x3 squares is already prepared as 4 2x2 squares.
                     let (repl1, repl2, repl3, repl4) = repls3x3[&square];
                     new1.push(repl1);
                     new1.push(repl2);
@@ -87,7 +106,9 @@ fn advance(state: State, repls2x2: &HashMap<S2, S3>, repls3x3: &HashMap<S3, (S2,
                 let mut new1 = Vec::new();
                 let mut new2 = Vec::new();
                 let mut new3 = Vec::new();
+                // Iterate over 2x2 size-2 squares at at the same time.
                 for ((sq1, sq2), (sq3, sq4)) in rows[0].iter().tuples().zip(rows[1].iter().tuples()) {
+                    // Get the 2x2 size-3 squares and make them into 3x3 size-2 squares.
                     let repl1 = &repls2x2[&sq1];
                     let repl2 = &repls2x2[&sq2];
                     let repl3 = &repls2x2[&sq3];
@@ -113,7 +134,12 @@ fn advance(state: State, repls2x2: &HashMap<S2, S3>, repls3x3: &HashMap<S3, (S2,
     }
 }
 
-fn prepare<P, Q>(mut pat: P, repl: Q, flip: fn(P) -> P, rot: fn(P) -> P, map: &mut HashMap<P, Q>)
+/// Add a pattern to the replacement mapping.
+///
+/// There are at most 8 different ways to rotate/flip the pattern and end up
+/// with distinct new patterns: one set of pi/2 rotations, and another, starting
+/// with a flipped version.
+fn add_to_map<P, Q>(mut pat: P, repl: Q, flip: fn(P) -> P, rot: fn(P) -> P, map: &mut HashMap<P, Q>)
     where P: std::hash::Hash + Eq + Copy, Q: Copy
 {
     for _ in 0..4 {
@@ -130,26 +156,30 @@ fn main() {
         let rpat = line[0].chars().filter(|&c| c != '/').map(pixel).collect_vec();
         let repl = line[2].chars().filter(|&c| c != '/').map(pixel).collect_vec();
         if line[0].len() == 5 {
-            prepare(square2x2(rpat), square3x3(repl), flip2x2, rotate2x2, &mut repls2x2);
+            add_to_map(square2x2(rpat), square3x3(repl), flip2x2, rotate2x2, &mut repls2x2);
         } else {
+            // Process the size-4 square into the 2x2 grid of size-2 squares
+            // we need later anyway.
             let repls = (
                 (repl[0],  repl[1],  repl[4],  repl[5]),
                 (repl[2],  repl[3],  repl[6],  repl[7]),
                 (repl[8],  repl[9],  repl[12], repl[13]),
                 (repl[10], repl[11], repl[14], repl[15]),
             );
-            prepare(square3x3(rpat), repls, flip3x3, rotate3x3, &mut repls3x3);
+            add_to_map(square3x3(rpat), repls, flip3x3, rotate3x3, &mut repls3x3);
         }
     }
 
     let mut state = State::One(vec![vec![(0, 1, 0,
                                           0, 0, 1,
                                           1, 1, 1)]]);
+    // Part 1: five iterations.
     for _ in 0..5 {
         state = advance(state, &repls2x2, &repls3x3);
     }
     println!("Lights on after 5: {}", state.sum());
 
+    // Part 2: 18 iterations.
     for _ in 5..18 {
         state = advance(state, &repls2x2, &repls3x3);
     }
