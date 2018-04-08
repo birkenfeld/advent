@@ -4,7 +4,7 @@ fn main() {
     // Part 1: insert values 2018 times as directed.
     let mut buf = vec![0];
     let mut pos = 0;
-    for n in 1..2018 {
+    for n in 1..=2017 {
         pos = (pos + SKIP) % n + 1;
         if pos == n {
             buf.push(n);

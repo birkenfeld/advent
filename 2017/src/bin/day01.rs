@@ -7,7 +7,7 @@ fn main() {
     let input = input_string().trim().chars().collect_vec();
     // Pair each item with the `offset`th next item, wrapping around.
     let captcha = |offset| input.iter().zip(input.iter().cycle().skip(offset))
-                                       .filter(|&(a, b)| a == b)
+                                       .filter(|(a, b)| a == b)
                                        .map(|(a, _)| a.to_digit(10).unwrap())
                                        .sum::<u32>();
     // Part 1: adjacent items.

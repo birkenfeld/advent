@@ -1,11 +1,10 @@
 extern crate advtools;
-extern crate rayon;
-use advtools::prelude::HashMap;
+use advtools::prelude::Itertools;
 use advtools::input::iter_input_trim;
-use rayon::prelude::*;
+use advtools::rayon::prelude::*;
 
 fn main() {
-    let firewall: HashMap<i32, _> = iter_input_trim(":").collect();
+    let firewall = iter_input_trim(":").collect_vec();
 
     // Part 1: Evaluate severity, determined by Sum(range*depth).
     let severity = firewall.iter().map(|(depth, range)| {

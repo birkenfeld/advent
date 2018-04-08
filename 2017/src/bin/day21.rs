@@ -1,8 +1,7 @@
 extern crate advtools;
-extern crate rayon;
 use advtools::prelude::{HashMap, Itertools};
 use advtools::input::iter_input;
-use rayon::prelude::*;
+use advtools::rayon::prelude::*;
 
 type S2 = (u8,u8,u8,u8);
 type S3 = (u8,u8,u8,u8,u8,u8,u8,u8,u8);
@@ -26,12 +25,12 @@ enum State {
 impl State {
     /// Sum up all set pixels in a state.
     fn sum(&self) -> u32 {
-        match *self {
-            State::One(ref v) =>
+        match self {
+            State::One(v) =>
                 v.iter().map(|w| w.iter().map(
                     |i| (i.0 + i.1 + i.2 + i.3 + i.4 + i.5 + i.6 + i.7 + i.8) as u32
                 ).sum::<u32>()).sum(),
-            State::Two(ref v) | State::Three(ref v) =>
+            State::Two(v) | State::Three(v) =>
                 v.iter().map(|w| w.iter().map(
                     |i| (i.0 + i.1 + i.2 + i.3) as u32
                 ).sum::<u32>()).sum(),

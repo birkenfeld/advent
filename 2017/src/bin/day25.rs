@@ -1,3 +1,4 @@
+const STEPS: usize = 12586542;
 const SIZE: usize = 10001;
 
 enum State { A, B, C, D, E, F }
@@ -8,7 +9,7 @@ fn main() {
     let mut state = A;
     let mut ptr = SIZE/2;
 
-    for _ in 0..12586542 {
+    for _ in 0..STEPS {
         state = match (state, tape[ptr]) {
             (A, false) => { tape[ptr] = true;  ptr += 1; B },
             (A, true)  => { tape[ptr] = false; ptr -= 1; B },

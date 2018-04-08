@@ -88,8 +88,8 @@ fn main() {
     // Determine number of non-primes between b and c, inclusive, in steps of 17.
     // b = 108400, c = 125400.
     let mut nonprimes = 0;
-    'outer: for n in (108400..125401).step(17) {
-        for i in 2..(n as f64).sqrt() as i64 + 1 {
+    'outer: for n in (108400..=125400).step(17) {
+        for i in 2..=(n as f64).sqrt() as i64 {
             if n % i == 0 {
                 nonprimes += 1;
                 continue 'outer;

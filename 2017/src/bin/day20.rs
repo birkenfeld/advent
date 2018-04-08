@@ -61,16 +61,16 @@ fn main() {
     // The most important attribute for staying "close" is acceleration,
     // so consider only those with the minimum possible acceleration.
     let mut particles2 = particles.iter().cloned().enumerate().collect_vec();
-    particles2.retain(|&(_, ref p)| p.a.dist() == 1);
+    particles2.retain(|(_, p)| p.a.dist() == 1);
 
     // Let the simulation run for a while, determine closest particle.
     for _ in 0..1000 {
-        for &mut (_, ref mut p) in &mut particles2 {
+        for (_, p) in &mut particles2 {
             p.v = p.v + p.a;
             p.p = p.p + p.v;
         }
     }
-    let min_p = particles2.into_iter().min_by_key(|&(_, ref p)| p.p.dist()).unwrap();
+    let min_p = particles2.into_iter().min_by_key(|(_, p)| p.p.dist()).unwrap();
     println!("Particle nearest origin: {}", min_p.0);
 
     // Part 2: Determine how many particles are left after all collisions happened.

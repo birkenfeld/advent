@@ -34,7 +34,7 @@ fn main() {
     let value = loop {
         pos = next_pos(pos);
         // Collect the ambient sum from (x-1, x, x+1) x (y-1, y, y+1).
-        let write = (-1..2).cartesian_product(-1..2)
+        let write = (-1..=1).cartesian_product(-1..=1)
                            .map(|d| map.get(&(pos.0 + d.0, pos.1 + d.1)).unwrap_or(&0))
                            .sum::<u32>();
         if write > INPUT {

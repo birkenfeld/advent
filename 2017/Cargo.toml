@@ -7,4 +7,3 @@ authors = ["Georg Brandl <georg@python.org>"]
 [dependencies]
 advtools = "0.2.1"
 petgraph = "0.4"
-rayon = "1.0"
