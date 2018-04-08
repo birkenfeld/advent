@@ -21,7 +21,7 @@ fn find_steps(initial: Pos, final_: Option<Pos>, limit: usize) -> (Option<usize>
         positions = positions
             .into_iter()
             .flat_map(|(x, y)| {
-                DIRECTIONS.iter().filter_map(|&(dx, dy)| {
+                DIRECTIONS.iter().filter_map(|(dx, dy)| {
                     let pos = (x + dx, y + dy);
                     if is_open_space(pos) && seen.insert(pos) {
                         if Some(pos) == final_ {

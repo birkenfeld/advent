@@ -27,7 +27,7 @@ impl Instr {
                 if *ch == c1 { *ch = c2; }
                 else if *ch == c2 { *ch = c1; }
             },
-            (&Instr::Reverse(i1, i2), _) => v[i1..i2+1].reverse(),
+            (&Instr::Reverse(i1, i2), _) => v[i1..=i2].reverse(),
             (&Instr::RotLetter(c), true) => {
                 let mut n = v.iter().position(|&ch| ch == c).unwrap();
                 n += if n >= 4 { 2 } else { 1 };
@@ -45,14 +45,14 @@ impl Instr {
                 rotate_left(v, n);
             }
             (&Instr::Move(i1, i2), true) => if i1 < i2 {
-                rotate_left(&mut v[i1..i2+1], 1);
+                rotate_left(&mut v[i1..=i2], 1);
             } else {
-                rotate_left(&mut v[i2..i1+1], i1-i2);  // right by 1
+                rotate_left(&mut v[i2..=i1], i1-i2);  // right by 1
             },
             (&Instr::Move(i1, i2), false) => if i1 < i2 {
-                rotate_left(&mut v[i1..i2+1], i2-i1);
+                rotate_left(&mut v[i1..=i2], i2-i1);
             } else {
-                rotate_left(&mut v[i2..i1+1], 1);
+                rotate_left(&mut v[i2..=i1], 1);
             },
         }
     }

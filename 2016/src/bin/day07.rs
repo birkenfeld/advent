@@ -7,7 +7,7 @@ fn has_abba(s: &&str) -> bool {
 }
 
 fn all_abas(s: &&str) -> Vec<(char, char, char)> {
-    s.chars().tuple_windows().filter(|&(a, b, c)| a == c && a != b).collect()
+    s.chars().tuple_windows().filter(|(a, b, c)| a == c && a != b).collect()
 }
 
 fn has_bab(s: &str, aba: (char, char, char)) -> bool {
@@ -20,7 +20,7 @@ fn main() {
     for line in iter_input::<String>() {
         let (sup, hyp): (Vec<_>, Vec<_>) = line.split(|c| c == '[' || c == ']')
                                                .enumerate()
-                                               .partition(|&(i, _)| i % 2 == 0);
+                                               .partition(|(i, _)| i % 2 == 0);
         let sup = sup.into_iter().map(|(_, s)| s).collect_vec();
         let hyp = hyp.into_iter().map(|(_, s)| s).collect_vec();
         if sup.iter().any(has_abba) && !hyp.iter().any(has_abba) {

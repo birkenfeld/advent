@@ -48,7 +48,7 @@ fn main() {
         maze.push(line.chars().map(|ch| match ch {
             '#' => Loc::Wall,
             '.' => Loc::Free,
-            '0' ... '7' => Loc::POI((ch as u8) - b'0'),
+            '0' ..= '7' => Loc::POI((ch as u8) - b'0'),
             _ => panic!("invalid input: {}", ch)
         }).collect_vec());
     }
