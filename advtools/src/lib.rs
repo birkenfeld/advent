@@ -34,6 +34,11 @@ pub mod prelude {
     pub use super::{to_u8, to_u32, to_u64, to_usize, to_i32, to_i64, to_isize};
     pub use super::from_utf8;
     pub use super::rotate_right;
+    pub use super::default;
+}
+
+pub fn default<T: Default>() -> T {
+    T::default()
 }
 
 pub fn input_file() -> File {
