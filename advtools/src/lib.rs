@@ -36,7 +36,7 @@ pub mod prelude {
 
 pub fn input_file() -> File {
     let mut infile = Path::new("input").join(
-        Path::new(&env::args_os().item()).file_name().unwrap());
+        Path::new(&env::args_os().item()).file_name().expect("no file name?"));
     infile.set_extension("txt");
     File::open(&infile)
         .unwrap_or_else(|_| panic!("input file \"{}\" not found", infile.display()))
@@ -44,7 +44,7 @@ pub fn input_file() -> File {
 
 pub fn input_string() -> String {
     let mut contents = String::new();
-    input_file().read_to_string(&mut contents).unwrap();
+    input_file().read_to_string(&mut contents).expect("input file not valid UTF8");
     contents
 }
 
@@ -294,7 +294,7 @@ impl<T: Hash + Eq> Uids<T> {
 macro_rules! impl_to {
     ($fname:ident, $ty:ty) => {
         pub fn $fname<T: AsRef<str>>(s: T) -> $ty {
-            s.as_ref().parse().unwrap()
+            s.as_ref().parse().expect(concat!("expected a ", stringify!($ty)))
         }
     };
 }
@@ -308,7 +308,7 @@ impl_to!(to_i64, i64);
 impl_to!(to_isize, isize);
 
 pub fn from_utf8<T: AsRef<[u8]>>(s: T) -> String {
-    std::str::from_utf8(s.as_ref()).unwrap().to_owned()
+    std::str::from_utf8(s.as_ref()).expect("input is not valid UTF8").into()
 }
 
 pub fn rotate_right<T>(t: &mut [T], n: usize) {
