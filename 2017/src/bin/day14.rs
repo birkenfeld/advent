@@ -1,5 +1,3 @@
-#![feature(i128_type)]
-
 extern crate advtools;
 extern crate advent17;
 use advtools::prelude::*;

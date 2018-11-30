@@ -47,7 +47,7 @@ fn main() {
     // Executing one billion dances is quite a lengthy task.  The idea here is
     // that after the same state is reached a second time, all further states
     // are known.
-    let mut seen = HashSet::new();
+    let mut seen = HashSet::default();
     let mut dancers = (0..16).collect_vec();
     while seen.insert(dancers.clone()) {
         dance_one(&dance, &mut dancers);

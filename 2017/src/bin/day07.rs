@@ -5,7 +5,7 @@ use advtools::prelude::*;
 use petgraph::prelude::*;
 
 fn main() {
-    let mut name2ix = HashMap::new();
+    let mut name2ix = HashMap::default();
     let mut graph = Graph::new();
     // Parse input into a directed graph.  The node weight is the weight of the program.
     // The edge weights are later used for cumulative weights of program + children.
@@ -32,7 +32,7 @@ fn main() {
     let mut dfs = DfsPostOrder::new(&graph, root);
     let mut req_weight = 0;
     while let Some(src_ix) = dfs.next(&graph) {
-        let mut weights = HashMap::new();
+        let mut weights = HashMap::default();
         let mut walker = graph.neighbors(src_ix).detach();
         while let Some((edge_ix, tgt_ix)) = walker.next(&graph) {
             // Find cumulative weights of all children of this node, and assign them
