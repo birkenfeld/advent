@@ -1,4 +1,5 @@
 pub extern crate itertools;
+pub extern crate fxhash;
 pub extern crate regex;
 pub extern crate odds;
 
@@ -14,7 +15,8 @@ use std::path::Path;
 use itertools::Itertools;
 
 pub mod prelude {
-    pub use std::collections::{HashMap, HashSet, VecDeque};
+    pub use fxhash::{FxHashMap as HashMap, FxHashSet as HashSet};
+    pub use std::collections::VecDeque;
     pub use std::collections::hash_map::Entry;
     pub use std::iter::FromIterator;
 

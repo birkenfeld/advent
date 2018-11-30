@@ -8,5 +8,6 @@ repository = "https://github.com/birkenfeld/advtools"
 
 [dependencies]
 itertools = "*"
+fxhash = "*"
 regex = "*"
 odds = "*"
