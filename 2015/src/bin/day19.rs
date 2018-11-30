@@ -5,7 +5,7 @@ use advtools::prelude::*;
 use rand::{thread_rng, Rng};
 
 fn make_one_replacement(initial: &str, trans: &HashMap<String, Vec<String>>) -> HashSet<String> {
-    let mut variants = HashSet::new();
+    let mut variants = HashSet::default();
     for (key, repls) in trans {
         for (i, _) in initial.match_indices(key) {
             for repl in repls {
@@ -40,8 +40,8 @@ fn find_steps(initial: &str, target: &str, rtbl: &HashMap<String, String>) -> Op
 }
 
 fn main() {
-    let mut trans: HashMap<String, Vec<String>> = HashMap::new();
-    let mut rtrans = HashMap::new();
+    let mut trans: HashMap<String, Vec<String>> = HashMap::default();
+    let mut rtrans = HashMap::default();
     let mut target = String::new();
     for mut line in iter_input::<Vec<String>>() {
         if line.len() == 3 {

@@ -15,7 +15,7 @@ fn check(i: u64, tx: &mpsc::SyncSender<(u64, bool)>) {
     let n = itoa::write(&mut ibuf[..], i).unwrap();
     hash.input(INPUT);
     hash.input(&ibuf[..n]);
-    let buf = hash.hash();
+    let buf = hash.result();
     if (buf[0] | buf[1] == 0) && (buf[2] & 0xF0 == 0) {
         tx.send((i, buf[2] == 0)).unwrap();
     }

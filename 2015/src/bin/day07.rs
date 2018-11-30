@@ -17,6 +17,7 @@ enum Element {
     Rshift(Source, Source)
 }
 
+#[derive(Default)]
 struct Circuit {
     wires: HashMap<u16, Element>,
     values: HashMap<u16, u16>,
@@ -24,10 +25,7 @@ struct Circuit {
 
 impl Circuit {
     fn new() -> Circuit {
-        Circuit {
-            wires: HashMap::new(),
-            values: HashMap::new(),
-        }
+        Circuit::default()
     }
 
     fn reset(&mut self) {

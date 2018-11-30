@@ -10,7 +10,7 @@ fn main() {
         let mut vowels = 0;
         let mut has_double = false;
         let mut has_naughty = false;
-        let mut pairs = HashMap::new();
+        let mut pairs = HashMap::default();
         let mut has_doublepair = false;
         let mut has_repeated = false;
         for (i, ch) in line.chars().enumerate() {
