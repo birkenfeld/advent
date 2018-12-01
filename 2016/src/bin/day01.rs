@@ -34,7 +34,7 @@ impl Pos {
 fn main() {
     let mut pos = Pos(0, 0);
     let mut dir = Direction::N;
-    let mut visited = HashSet::new();
+    let mut visited = HashSet::default();
     let mut visited_twice = None;
     for instr in input_string().split(',') {
         let instr = instr.trim();

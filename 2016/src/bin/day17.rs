@@ -75,7 +75,7 @@ impl fmt::Debug for State {
 
 fn eval_hash(hash: Md5) -> [bool; 4] {
     let mut dirs = [false; 4];
-    let buf = hash.hash();
+    let buf = hash.result();
     dirs[0] = (buf[0] >> 4) >= 0xb;
     dirs[1] = (buf[0] & 0xf) >= 0xb;
     dirs[2] = (buf[1] >> 4) >= 0xb;
@@ -136,7 +136,7 @@ fn find_steps(initial: State) -> (State, usize) {
 }
 
 fn main() {
-    rayon::initialize(rayon::Configuration::new().num_threads(3)).unwrap();
+    rayon::ThreadPoolBuilder::new().num_threads(3).build_global().unwrap();
     let state = State::default();
     let (final_state, max_path) = find_steps(state);
     println!("Shortest path to goal: {:?}", final_state);

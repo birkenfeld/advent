@@ -12,7 +12,7 @@ const KEYLEN: usize = 64;
 const HEXCHARS: &[u8] = b"0123456789abcdef";
 
 fn hash_to_hex(hash: Md5, sbuf: &mut [u8; 32]) {
-    let buf = hash.hash();
+    let buf = hash.result();
     for (i, &byte) in buf.iter().enumerate() {
         sbuf[2*i] = HEXCHARS[(byte >> 4) as usize];
         sbuf[2*i+1] = HEXCHARS[(byte & 0xf) as usize];

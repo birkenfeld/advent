@@ -16,7 +16,7 @@ fn check(i: usize) -> Option<(usize, u8, u8)> {
     let n = itoa::write(&mut ibuf[..], i).unwrap();
     hash.input(INPUT);
     hash.input(&ibuf[..n]);
-    let buf = hash.hash();
+    let buf = hash.result();
     if buf[0] | buf[1] == 0 && buf[2] & 0xF0 == 0 {
         Some((i, buf[2], buf[3] >> 4))
     } else {

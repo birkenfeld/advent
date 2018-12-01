@@ -12,7 +12,7 @@ enum Loc {
 }
 
 fn find_steps(initial: Pos, final_: Option<Pos>, maze: &[Vec<Loc>]) -> usize {
-    let mut seen = HashSet::with_capacity(1000);
+    let mut seen = HashSet::default();
     let mut positions = vec![initial];
     let mut generation = 0;
 
