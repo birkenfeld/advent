@@ -2,7 +2,7 @@ extern crate advtools;
 extern crate rand;
 
 use advtools::prelude::*;
-use rand::{thread_rng, Rng};
+use rand::{thread_rng, prelude::SliceRandom};
 
 fn make_one_replacement(initial: &str, trans: &HashMap<String, Vec<String>>) -> HashSet<String> {
     let mut variants = HashSet::default();
@@ -18,7 +18,7 @@ fn make_one_replacement(initial: &str, trans: &HashMap<String, Vec<String>>) -> 
 
 fn find_steps(initial: &str, target: &str, rtbl: &HashMap<String, String>) -> Option<usize> {
     let mut repls: Vec<_> = rtbl.keys().collect();
-    thread_rng().shuffle(&mut repls);
+    repls.shuffle(&mut thread_rng());
     let mut steps = 0;
     let mut cur = initial.to_owned();
     loop {
