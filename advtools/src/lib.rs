@@ -183,6 +183,27 @@ pub mod input {
     tuple_impl!(T, U, V, W, Y, Z, T1, T2, T3, T4, T5);
     tuple_impl!(T, U, V, W, Y, Z, T1, T2, T3, T4, T5, T6);
 
+    macro_rules! array_impl {
+        ($ty:ident, $n:expr, $($qm:tt)+) => {
+            impl<$ty: ParseResult> ParseResult for [$ty; $n] {
+                fn read_token(tok: &mut TokIter) -> Option<Self> {
+                    Some([
+                        $( $ty::read_token(tok) $qm ),+
+                    ])
+                }
+            }
+        }
+    }
+
+    array_impl!(T, 1, ?);
+    array_impl!(T, 2, ??);
+    array_impl!(T, 3, ???);
+    array_impl!(T, 4, ????);
+    array_impl!(T, 5, ?????);
+    array_impl!(T, 6, ??????);
+    array_impl!(T, 7, ???????);
+    array_impl!(T, 8, ????????);
+    array_impl!(T, 9, ?????????);
 
     pub struct InputIterator<T: ParseResult> {
         rdr: BufReader<File>,
