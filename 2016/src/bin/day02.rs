@@ -1,8 +1,8 @@
 extern crate advtools;
 extern crate strum;
 #[macro_use] extern crate strum_macros;
-
-use advtools::prelude::*;
+use advtools::prelude::Itertools;
+use advtools::input::iter_input;
 
 #[derive(EnumString, Clone, Copy, Debug)]
 enum Direction { U, R, D, L }

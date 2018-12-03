@@ -1,5 +1,6 @@
 extern crate advtools;
-use advtools::prelude::*;
+use advtools::prelude::Itertools;
+use advtools::input::{iter_input, to_u32};
 
 fn find_allowed(excluded: &[(u32, u32)], mut el: u32) -> Option<u32> {
     for &(rmin, rmax) in excluded {

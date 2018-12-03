@@ -1,5 +1,6 @@
 extern crate advtools;
-use advtools::prelude::*;
+use advtools::prelude::HashSet;
+use advtools::input::{input_string, to_u32};
 
 #[derive(Clone, Copy)]
 enum Direction { N, W, S, E }

@@ -1,5 +1,5 @@
 extern crate advtools;
-use advtools::prelude::*;
+use advtools::prelude::{HashSet, Itertools};
 
 const INPUT: i32 = 1352;
 const DIRECTIONS: [(i32, i32); 4] = [(-1, 0), (0, -1), (1, 0), (0, 1)];

@@ -1,5 +1,6 @@
 extern crate advtools;
-use advtools::prelude::*;
+use advtools::prelude::{HashSet, Itertools};
+use advtools::input::iter_input;
 
 type Pos = (i32, i32, u8);
 const DIRECTIONS: [(i32, i32); 4] = [(-1, 0), (0, -1), (1, 0), (0, 1)];
@@ -43,7 +44,7 @@ fn find_steps(initial: Pos, final_: Option<Pos>, maze: &[Vec<Loc>]) -> usize {
 
 fn main() {
     let mut maze = Vec::new();
-    for line in advtools::iter_input::<String>() {
+    for line in iter_input::<String>() {
         maze.push(line.chars().map(|ch| match ch {
             '#' => Loc::Wall,
             '.' => Loc::Free,

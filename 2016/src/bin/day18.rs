@@ -1,11 +1,10 @@
-#![feature(i128_type)]
-
 extern crate advtools;
+use advtools::input::input_string;
 
 fn count_all_safe(n: usize) -> usize {
     // read from input: line = 0...input...0
     let mut line = 0u128;
-    let len = advtools::input_string().trim().chars().map(|ch|
+    let len = input_string().trim().chars().map(|ch|
         line = (if ch == '^' { line | 1 } else { line }) << 1
     ).count();
     // mask = 0111...1110

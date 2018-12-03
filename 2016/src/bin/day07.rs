@@ -1,5 +1,6 @@
 extern crate advtools;
-use advtools::prelude::*;
+use advtools::prelude::Itertools;
+use advtools::input::iter_input;
 
 fn has_abba(s: &&str) -> bool {
     s.chars().tuple_windows().any(|(a, b, c, d)| a == d && b == c && a != b)

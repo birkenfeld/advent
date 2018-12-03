@@ -1,5 +1,6 @@
 extern crate advtools;
-use advtools::prelude::*;
+use advtools::prelude::Itertools;
+use advtools::input::iter_input_parts_trim;
 
 fn find_insert_time(discs: &[(u32, u32)]) -> u32 {
     (0..).find(|t| {

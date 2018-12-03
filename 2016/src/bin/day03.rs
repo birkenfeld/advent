@@ -1,5 +1,6 @@
 extern crate advtools;
-use advtools::prelude::*;
+use advtools::prelude::Itertools;
+use advtools::input::iter_input;
 
 fn possible(s: (u32, u32, u32)) -> u32 {
     (s.0 + s.1 > s.2 && s.1 + s.2 > s.0 && s.2 + s.0 > s.1) as u32

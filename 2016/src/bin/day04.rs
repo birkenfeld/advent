@@ -1,5 +1,6 @@
 extern crate advtools;
-use advtools::prelude::*;
+use advtools::prelude::{Regex, HashMap, Itertools};
+use advtools::input::{iter_input, to_u32};
 
 const TARGET_ROOM: &str = "northpole object storage";
 const LINE_FMT: &str = r"(.*)-(\d+)\[(.*)\]";

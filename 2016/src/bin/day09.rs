@@ -1,5 +1,6 @@
 extern crate advtools;
-use advtools::prelude::*;
+use advtools::prelude::Regex;
+use advtools::input::{input_string, to_usize};
 
 fn get_decompressed_length(mut s: &str, rx: &Regex, recursive: bool) -> usize {
     let mut size = 0;

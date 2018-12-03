@@ -1,5 +1,6 @@
 extern crate advtools;
-use advtools::prelude::*;
+use advtools::prelude::{HashMap, Itertools};
+use advtools::input::{iter_input, parse_parts};
 
 enum Rule {
     Out(u32),

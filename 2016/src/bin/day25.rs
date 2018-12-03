@@ -1,5 +1,6 @@
 extern crate advtools;
-use advtools::prelude::*;
+use advtools::prelude::HashMap;
+use advtools::input::iter_input;
 
 type RegNo = usize;
 

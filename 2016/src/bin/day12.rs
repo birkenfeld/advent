@@ -1,4 +1,5 @@
 extern crate advtools;
+use advtools::input::iter_input;
 
 type RegNo = usize;
 
@@ -56,7 +57,7 @@ impl Machine {
 
 fn main() {
     let mut program = Vec::new();
-    for line in advtools::iter_input::<Vec<String>>() {
+    for line in iter_input::<Vec<String>>() {
         program.push(
             match &*line[0] {
                 "inc" => Op::Inc(reg(&line[1])),

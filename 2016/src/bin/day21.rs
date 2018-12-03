@@ -1,8 +1,6 @@
 extern crate advtools;
-extern crate odds;
-
-use advtools::prelude::*;
-use odds::slice::rotate_left;
+use advtools::prelude::rotate_left;
+use advtools::input::{iter_input, parse_parts};
 
 const INITIAL: &str = "abcdefgh";
 const FINAL:   &str = "fbgdceah";
@@ -62,7 +60,7 @@ impl Instr {
 
 fn main() {
     let mut recipe = Vec::new();
-    for line in advtools::iter_input::<String>() {
+    for line in iter_input::<String>() {
         recipe.push(
             if line.starts_with("rotate left") {
                 Instr::RotL(parse_parts(&line, 2))

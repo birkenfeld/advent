@@ -1,5 +1,6 @@
 extern crate advtools;
-use advtools::prelude::*;
+use advtools::prelude::{HashSet, Regex};
+use advtools::input::{iter_input, to_i32};
 
 type Pos = (i32, i32);
 const DIRECTIONS: [Pos; 4] = [(-1, 0), (0, -1), (1, 0), (0, 1)];

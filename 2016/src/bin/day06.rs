@@ -1,9 +1,10 @@
 extern crate advtools;
-use advtools::prelude::*;
+use advtools::prelude::Itertools;
+use advtools::input::iter_input;
 
 fn main() {
     let mut lines = iter_input::<String>();
-    let first_line = lines.item();
+    let first_line = lines.next().unwrap();
     let mut arrs = vec![[0; 26]; first_line.len()];
     for line in std::iter::once(first_line).chain(lines) {
         for (arr, ch) in arrs.iter_mut().zip(line.chars()) {
