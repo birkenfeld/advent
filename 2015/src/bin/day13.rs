@@ -1,7 +1,7 @@
 extern crate advtools;
 extern crate permutohedron;
 
-use advtools::prelude::*;
+use advtools::input::iter_input_parts;
 use std::iter::once;
 use advtools::Uids;
 use permutohedron::Heap;

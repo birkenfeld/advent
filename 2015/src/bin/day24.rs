@@ -1,5 +1,6 @@
 extern crate advtools;
-use advtools::prelude::*;
+use advtools::prelude::Itertools;
+use advtools::input::iter_input;
 
 fn find_batches(v: &[u32], i: usize, cand: u32, rest: u32,
                 best_count: &mut u32, batches: &mut Vec<(u64, u32)>) {
@@ -31,7 +32,7 @@ fn find_configuration(weights: &[u32], batch_weight: u32) -> u64 {
 }
 
 fn main() {
-    let mut weights = advtools::iter_input::<u32>().collect_vec();
+    let mut weights = iter_input::<u32>().collect_vec();
     let total_weight = weights.iter().sum::<u32>();
     weights.reverse();
     println!("Lowest QE (batch weight {}): {}", total_weight / 3,

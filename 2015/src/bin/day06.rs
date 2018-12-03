@@ -1,5 +1,6 @@
 extern crate advtools;
-use advtools::prelude::*;
+use advtools::prelude::Itertools;
+use advtools::input::{iter_input, to_usize};
 
 enum Todo { On, Off, Toggle }
 

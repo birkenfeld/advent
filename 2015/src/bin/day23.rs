@@ -1,5 +1,5 @@
 extern crate advtools;
-use advtools::prelude::*;
+use advtools::input::iter_input;
 
 enum Op {
     Inc(usize),

@@ -1,6 +1,7 @@
 extern crate advtools;
 extern crate serde_json;
 
+use advtools::input::input_file;
 use serde_json::{Value, from_reader};
 use serde_json::Value::*;
 
@@ -17,7 +18,7 @@ fn sum_up(val: Value, no_reds: bool) -> i64 {
 }
 
 fn main() {
-    let doc: Value = from_reader(advtools::input_file()).unwrap();
+    let doc: Value = from_reader(input_file()).unwrap();
     println!("Sum with reds: {:?}", sum_up(doc.clone(), false));
     println!("Sum without reds: {:?}", sum_up(doc, true));
 }

@@ -1,6 +1,7 @@
 extern crate advtools;
 
 use std::mem;
+use advtools::input::iter_input;
 
 const N: usize = 100;
 const STEPS: usize = 100;
@@ -43,7 +44,7 @@ fn step(grid: &mut [[bool; N+2]; N+2], stuck: bool) {
 fn main() {
     for &stuck in &[false, true] {
         let mut grid = [[false; N+2]; N+2];
-        let input_lines = advtools::iter_input::<String>();
+        let input_lines = iter_input::<String>();
         for (line, input) in grid.iter_mut().skip(1).zip(input_lines) {
             for (loc, ch) in line.iter_mut().skip(1).zip(input.chars()) {
                 *loc = ch == '#';

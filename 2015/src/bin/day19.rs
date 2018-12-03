@@ -1,7 +1,8 @@
 extern crate advtools;
 extern crate rand;
 
-use advtools::prelude::*;
+use advtools::prelude::{HashMap, HashSet};
+use advtools::input::iter_input;
 use rand::{thread_rng, prelude::SliceRandom};
 
 fn make_one_replacement(initial: &str, trans: &HashMap<String, Vec<String>>) -> HashSet<String> {

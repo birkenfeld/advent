@@ -1,5 +1,6 @@
 extern crate advtools;
-use advtools::prelude::*;
+use advtools::prelude::{HashMap, HashSet, FromIterator};
+use advtools::input::{iter_input_trim, parse_parts_trim};
 
 const NEEDLE: &str = "\
 children: 3

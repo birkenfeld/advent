@@ -1,5 +1,5 @@
 extern crate advtools;
-use advtools::prelude::*;
+use advtools::input::input_string;
 
 fn main() {
     let res = input_string().chars().enumerate().fold(

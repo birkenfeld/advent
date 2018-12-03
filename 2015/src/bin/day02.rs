@@ -1,5 +1,6 @@
 extern crate advtools;
-use advtools::prelude::*;
+use advtools::prelude::Itertools;
+use advtools::input::{iter_input, to_u32};
 
 fn main() {
     let (total_paper, total_ribbon) = iter_input::<String>().fold(

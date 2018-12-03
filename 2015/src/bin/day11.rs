@@ -1,5 +1,6 @@
 extern crate advtools;
-use advtools::prelude::*;
+use advtools::prelude::Itertools;
+use advtools::input::from_utf8;
 
 const INPUT: &[u8] = b"vzbxkghb";
 

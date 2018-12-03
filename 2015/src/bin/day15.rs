@@ -1,5 +1,6 @@
 extern crate advtools;
-use advtools::prelude::*;
+use advtools::prelude::Itertools;
+use advtools::input::iter_input_parts_trim;
 
 type Values = (i32, i32, i32, i32, i32);
 

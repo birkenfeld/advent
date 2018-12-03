@@ -5,11 +5,10 @@ version = "0.1.0"
 authors = ["Georg Brandl <georg@python.org>"]
 
 [dependencies]
-advtools = { git = "https://github.com/birkenfeld/advtools" }
-rand = "*"
-rayon = "*"
-md-5 = "*"
-itertools = "*"
-serde_json = "*"
-permutohedron = "*"
-itoa = "*"
+advtools = "0.2"
+rand = "0.6"
+rayon = "1.0"
+md-5 = "0.8"
+serde_json = "1.0"
+permutohedron = "0.2"
+itoa = "0.4"

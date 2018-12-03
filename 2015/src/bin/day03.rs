@@ -1,5 +1,6 @@
 extern crate advtools;
-use advtools::prelude::*;
+use advtools::prelude::{HashSet, Itertools};
+use advtools::input::input_string;
 
 type Coords = HashSet<(isize, isize)>;
 

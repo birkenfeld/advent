@@ -1,5 +1,5 @@
 extern crate advtools;
-use advtools::prelude::*;
+use advtools::input::iter_input;
 
 fn main() {
     let mut literal_len = 0;
