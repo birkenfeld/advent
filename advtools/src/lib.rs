@@ -310,9 +310,12 @@ pub mod input {
     }
 
     impl_to!(to_u8, u8);
+    impl_to!(to_u16, u16);
     impl_to!(to_u32, u32);
     impl_to!(to_u64, u64);
     impl_to!(to_usize, usize);
+    impl_to!(to_i8, i8);
+    impl_to!(to_i16, i16);
     impl_to!(to_i32, i32);
     impl_to!(to_i64, i64);
     impl_to!(to_isize, isize);
