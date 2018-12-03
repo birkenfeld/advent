@@ -31,6 +31,7 @@ pub mod input {
     use std::io::{BufReader, BufRead, Read};
     use std::marker::PhantomData;
     use std::path::Path;
+    use regex::{Regex, CaptureLocations};
     use itertools::Itertools;
 
     pub fn input_file() -> File {
@@ -81,7 +82,7 @@ pub mod input {
     pub type TokIter<'t> = Iterator<Item = &'t str> + 't;
 
     pub trait ParseResult where Self: Sized {
-        fn read(line: Cow<str>, trim: &[char], mut indices: &[usize]) -> Self {
+        fn read_line(line: Cow<str>, trim: &[char], mut indices: &[usize]) -> Self {
             let mut part_iter = line.split_whitespace().map(|v| v.trim_matches(trim));
             if !indices.is_empty() {
                 let filter_iter = &mut part_iter.enumerate().batching(|it| loop {
@@ -101,7 +102,8 @@ pub mod input {
     }
 
     impl ParseResult for String {
-        fn read(line: Cow<str>, trim: &[char], _: &[usize]) -> String {
+        // Special case: reads the whole line.
+        fn read_line(line: Cow<str>, trim: &[char], _: &[usize]) -> String {
             if trim.is_empty() {
                 line.into_owned()
             } else {
@@ -202,39 +204,80 @@ pub mod input {
                     line.pop();
                 }
             }
-            Some(T::read(Cow::from(line), &self.trim, &self.indices))
+            Some(T::read_line(Cow::from(line), &self.trim, &self.indices))
+        }
+    }
+
+    pub struct RegexInputIterator<T: ParseResult> {
+        rx: Regex,
+        loc: CaptureLocations,
+        rdr: BufReader<File>,
+        marker: PhantomData<T>,
+    }
+
+    impl<T: ParseResult> Iterator for RegexInputIterator<T> {
+        type Item = T;
+
+        fn next(&mut self) -> Option<T> {
+            let mut line = String::new();
+            while line.is_empty() {
+                if self.rdr.read_line(&mut line).unwrap() == 0 {
+                    return None;
+                }
+                while line.trim_right() != line {
+                    line.pop();
+                }
+            }
+            let _ = self.rx.captures_read(&mut self.loc, &line).unwrap_or_else(
+                || panic!("line {:?} did not match the input regex {:?}",
+                          line, self.rx.as_str()));
+            let mut tok_iter = (1..self.rx.captures_len()).map(|i| {
+                self.loc.get(i).map(|(s, e)| &line[s..e]).unwrap_or("")
+            });
+            Some(T::read_token(&mut tok_iter).expect("line conversion failed"))
         }
     }
 
 
     pub fn iter_input<T: ParseResult>() -> InputIterator<T> {
         let rdr = BufReader::new(input_file());
-        InputIterator { rdr: rdr, trim: vec![], indices: vec![].into(), marker: PhantomData }
+        InputIterator { rdr, trim: vec![], indices: vec![].into(), marker: PhantomData }
     }
 
     pub fn iter_input_trim<T: ParseResult>(trim: &str) -> InputIterator<T> {
         let rdr = BufReader::new(input_file());
-        InputIterator { rdr: rdr, trim: trim.chars().collect(),
+        InputIterator { rdr, trim: trim.chars().collect(),
                         indices: vec![].into(), marker: PhantomData }
     }
 
     pub fn iter_input_parts<T: ParseResult, Ix: Indices>(ix: Ix) -> InputIterator<T> {
         let rdr = BufReader::new(input_file());
-        InputIterator { rdr: rdr, trim: vec![], indices: ix.list(), marker: PhantomData }
+        InputIterator { rdr, trim: vec![], indices: ix.list(), marker: PhantomData }
     }
 
     pub fn iter_input_parts_trim<T: ParseResult, Ix: Indices>(ix: Ix, trim: &str) -> InputIterator<T> {
         let rdr = BufReader::new(input_file());
-        InputIterator { rdr: rdr, trim: trim.chars().collect(), indices: ix.list(), marker: PhantomData }
+        InputIterator { rdr, trim: trim.chars().collect(), indices: ix.list(), marker: PhantomData }
+    }
+
+    pub fn iter_input_regex<T: ParseResult>(regex: &str) -> RegexInputIterator<T> {
+        let rx = Regex::new(regex).expect("given regex is invalid");
+        let loc = rx.capture_locations();
+        let rdr = BufReader::new(input_file());
+        RegexInputIterator { rx, loc, rdr, marker: PhantomData }
+    }
+
+    pub fn parse_str<T: ParseResult>(part: &str) -> T {
+        T::read_token(&mut [part].into_iter().map(|&v| v)).unwrap()
     }
 
     pub fn parse_parts<T: ParseResult, Ix: Indices>(line: &str, ix: Ix) -> T {
-        T::read(line.into(), &[], &ix.list()[..])
+        T::read_line(line.into(), &[], &ix.list()[..])
     }
 
     pub fn parse_parts_trim<T: ParseResult, Ix: Indices>(line: &str, ix: Ix, trim: &str) -> T {
         let trim: Vec<_> = trim.chars().collect();
-        T::read(line.into(), &trim, &ix.list()[..])
+        T::read_line(line.into(), &trim, &ix.list()[..])
     }
 
     macro_rules! impl_to {
