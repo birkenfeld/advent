@@ -1,24 +1,27 @@
 pub extern crate itertools;
+pub extern crate arrayvec;
 pub extern crate fxhash;
+pub extern crate rayon;
 pub extern crate regex;
 pub extern crate odds;
 
-use std::collections::HashMap;
 use std::hash::Hash;
-use std::ops::Add;
 
 pub mod prelude {
-    pub use fxhash::{FxHashMap as HashMap, FxHashSet as HashSet};
     pub use std::collections::VecDeque;
     pub use std::collections::hash_map::Entry;
     pub use std::iter::FromIterator;
 
+    pub use fxhash::{FxHashMap as HashMap, FxHashSet as HashSet};
     pub use itertools;
     pub use itertools::Itertools;
     pub use regex;
     pub use regex::{Regex, Captures};
     pub use odds;
     pub use odds::slice::rotate_left;
+    pub use arrayvec;
+    pub use arrayvec::ArrayVec;
+    pub use rayon;
 }
 
 pub mod input {
@@ -29,11 +32,11 @@ pub mod input {
     use std::marker::PhantomData;
     use std::path::Path;
     use itertools::Itertools;
-    use super::IterExt;
 
     pub fn input_file() -> File {
         let mut infile = Path::new("input").join(
-            Path::new(&env::args_os().item()).file_name().expect("no file name?"));
+            Path::new(&env::args_os().next().expect("no executable name")
+            ).file_name().expect("no file name?"));
         infile.set_extension("txt");
         File::open(&infile)
             .unwrap_or_else(|_| panic!("input file \"{}\" not found", infile.display()))
@@ -141,25 +144,6 @@ pub mod input {
     simple_impl!(i64);
     simple_impl!(isize);
 
-    // macro_rules! array_impl {
-    //     ($n:expr, $tok1:ident, $($tok:ident),+) => {
-    //         impl<T: ParseResult> ParseResult for [T; $n] {
-    //             fn read_token($tok1: &mut TokIter) -> [T; $n] {
-    //                 [$(T::read_token($tok)),+]
-    //             }
-    //         }
-    //     }
-    // }
-
-    // array_impl!(1, tok, tok);
-    // array_impl!(2, tok, tok, tok);
-    // array_impl!(3, tok, tok, tok, tok);
-    // array_impl!(4, tok, tok, tok, tok, tok);
-    // array_impl!(5, tok, tok, tok, tok, tok, tok);
-    // array_impl!(6, tok, tok, tok, tok, tok, tok, tok);
-    // array_impl!(7, tok, tok, tok, tok, tok, tok, tok, tok);
-    // array_impl!(8, tok, tok, tok, tok, tok, tok, tok, tok, tok);
-
     impl ParseResult for char {
         fn read_token(tok: &mut TokIter) -> Option<char> {
             tok.next()?.chars().next()
@@ -172,26 +156,19 @@ pub mod input {
         }
     }
 
-    impl<T: ParseResult> ParseResult for (T,) {
-        fn read_token(tok: &mut TokIter) -> Option<(T,)> {
-            T::read_token(tok).map(|v| (v,))
-        }
-    }
-
     macro_rules! tuple_impl {
         ($($tys:ident),+) => {
-            impl<$($tys: ParseResult),+> ParseResult for ($($tys),+) {
-                #[allow(non_snake_case)]
-                fn read_token(tok: &mut TokIter) -> Option<($($tys),+)> {
-                    $(
-                        let $tys = $tys::read_token(tok)?;
-                    )+
-                        Some(($($tys),+))
+            impl<$($tys: ParseResult),+> ParseResult for ($($tys),+ ,) {
+                fn read_token(tok: &mut TokIter) -> Option<($($tys),+ ,)> {
+                    Some((
+                        $( $tys::read_token(tok)? ),+ ,
+                    ))
                 }
             }
         }
     }
 
+    tuple_impl!(T);
     tuple_impl!(T, U);
     tuple_impl!(T, U, V);
     tuple_impl!(T, U, V, W);
@@ -286,28 +263,13 @@ pub fn rotate_right<T>(t: &mut [T], n: usize) {
     odds::slice::rotate_left(t, m);
 }
 
-pub trait IterExt: Iterator {
-    fn sum_from(self, start: Self::Item) -> Self::Item where
-        <Self as Iterator>::Item: Add<Self::Item, Output=Self::Item>, Self: Sized
-    {
-        self.fold(start, |s, e| s + e)
-    }
-
-    fn item(&mut self) -> Self::Item {
-        self.next().unwrap()
-    }
-}
-
-impl<I: Iterator> IterExt for I { }
-
-
 pub struct Uids<T> {
-    map: HashMap<T, usize>
+    map: fxhash::FxHashMap<T, usize>
 }
 
 impl<T: Hash + Eq> Uids<T> {
     pub fn new() -> Uids<T> {
-        Uids { map: HashMap::new() }
+        Uids { map: fxhash::FxHashMap::default() }
     }
 
     pub fn get_id(&mut self, k: T) -> usize {
