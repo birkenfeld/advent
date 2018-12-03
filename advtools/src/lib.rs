@@ -29,7 +29,7 @@ pub mod prelude {
     pub use super::{parse_parts, parse_parts_trim};
     pub use super::{iter_input, iter_input_trim, iter_input_parts, iter_input_parts_trim};
     pub use super::IterExt;
-    pub use super::{to_u8, to_u32, to_usize, to_i32};
+    pub use super::{to_u8, to_u32, to_u64, to_usize, to_i32, to_i64, to_isize};
     pub use super::from_utf8;
     pub use super::rotate_right;
 }
@@ -301,8 +301,11 @@ macro_rules! impl_to {
 
 impl_to!(to_u8, u8);
 impl_to!(to_u32, u32);
+impl_to!(to_u64, u64);
 impl_to!(to_usize, usize);
 impl_to!(to_i32, i32);
+impl_to!(to_i64, i64);
+impl_to!(to_isize, isize);
 
 pub fn from_utf8<T: AsRef<[u8]>>(s: T) -> String {
     std::str::from_utf8(s.as_ref()).unwrap().to_owned()
