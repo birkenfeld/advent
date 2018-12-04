@@ -1,10 +1,10 @@
 extern crate md5;
-extern crate rayon;
+extern crate advtools;
 extern crate itoa;
 
 use std::sync::mpsc;
 use md5::{Digest, Md5};
-use rayon::prelude::*;
+use advtools::rayon::prelude::*;
 
 const INPUT: &[u8] = b"yzbqklnj";
 const N: u64 = 10_000_000;
