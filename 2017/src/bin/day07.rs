@@ -1,7 +1,7 @@
 extern crate advtools;
 extern crate petgraph;
-
-use advtools::prelude::*;
+use advtools::prelude::HashMap;
+use advtools::input::iter_input_trim;
 use petgraph::prelude::*;
 
 fn main() {
@@ -24,7 +24,7 @@ fn main() {
     }
     // Part 1: The graph root (the node with no incoming edge) is the bottom program.
     // We assume there is exactly one.
-    let root = graph.externals(Incoming).item();
+    let root = graph.externals(Incoming).next().unwrap();
     println!("Bottom program: {}", name2ix.iter().find(|e| e.1 == &root).unwrap().0);
 
     // Part 2: Walk the graph using DFS to find the program whose children are not

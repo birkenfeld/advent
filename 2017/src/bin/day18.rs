@@ -1,5 +1,6 @@
 extern crate advtools;
-use advtools::prelude::*;
+use advtools::prelude::{Itertools, VecDeque};
+use advtools::input::iter_input;
 
 type RegNo = usize;
 
@@ -22,7 +23,7 @@ enum Op {
 
 /// Parse register.
 fn reg(s: &str) -> usize {
-    (s.chars().item() as u8 - b'a') as usize
+    (s.chars().next().unwrap() as u8 - b'a') as usize
 }
 
 /// Parse register or immediate operand.

@@ -1,5 +1,6 @@
 extern crate advtools;
-use advtools::prelude::*;
+use advtools::prelude::Itertools;
+use advtools::input::iter_input;
 
 fn main() {
     let phrases = iter_input::<Vec<String>>().collect_vec();

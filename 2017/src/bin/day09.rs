@@ -1,4 +1,5 @@
 extern crate advtools;
+use advtools::input::input_string;
 
 fn main() {
     let mut skip = false;
@@ -6,7 +7,7 @@ fn main() {
     let mut nesting = 0;
     let mut score = 0;
     let mut ngarbage = 0;
-    for ch in advtools::input_string().chars() {
+    for ch in input_string().chars() {
         match (skip, garbage, ch) {
             // The skipped character has the highest priority.
             (true, _, _)   => skip = false,

@@ -1,5 +1,6 @@
 extern crate advtools;
-use advtools::prelude::*;
+use advtools::prelude::Itertools;
+use advtools::input::iter_input;
 
 fn main() {
     let input = iter_input::<Vec<i32>>().collect_vec();
@@ -17,7 +18,7 @@ fn main() {
             if a % b == 0 { Some(a / b) }
             else if b % a == 0 { Some(b / a) }
             else { None }
-        }).item()
+        }).next().unwrap()
     }).sum::<i32>();
     println!("Checksum 2: {}", cksum2);
 }

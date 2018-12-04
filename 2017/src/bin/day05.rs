@@ -1,5 +1,6 @@
 extern crate advtools;
-use advtools::prelude::*;
+use advtools::prelude::Itertools;
+use advtools::input::iter_input;
 
 /// Jump through the list of offsets, with the closure determining how an offset
 /// is modified after it is taken.

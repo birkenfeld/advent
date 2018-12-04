@@ -1,5 +1,6 @@
 extern crate advtools;
-use advtools::prelude::*;
+use advtools::prelude::Itertools;
+use advtools::input::{input_string, from_utf8};
 
 enum Dir { U, D, L, R }
 use self::Dir::*;

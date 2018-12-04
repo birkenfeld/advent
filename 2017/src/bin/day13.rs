@@ -1,7 +1,7 @@
 extern crate advtools;
 extern crate rayon;
-
-use advtools::prelude::*;
+use advtools::prelude::HashMap;
+use advtools::input::iter_input_trim;
 use rayon::prelude::*;
 
 fn main() {

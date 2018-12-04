@@ -1,6 +1,7 @@
 extern crate advtools;
 extern crate advent17;
-use advtools::prelude::*;
+use advtools::prelude::Itertools;
+use advtools::input::{input_string, to_u8};
 
 fn main() {
     let input_str = input_string().trim().to_owned();

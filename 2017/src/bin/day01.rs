@@ -1,5 +1,6 @@
 extern crate advtools;
-use advtools::prelude::*;
+use advtools::prelude::Itertools;
+use advtools::input::input_string;
 
 fn main() {
     // Get input as a vector of chars.

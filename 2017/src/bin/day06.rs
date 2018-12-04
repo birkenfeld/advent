@@ -1,8 +1,9 @@
 extern crate advtools;
-use advtools::prelude::*;
+use advtools::prelude::HashMap;
+use advtools::input::iter_input;
 
 fn main() {
-    let mut banks = iter_input::<Vec<i32>>().item();
+    let mut banks = iter_input::<Vec<i32>>().next().unwrap();
     let mut seen = HashMap::default();
     let mut steps = 0;
     let len = banks.len();

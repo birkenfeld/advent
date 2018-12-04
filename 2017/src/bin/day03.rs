@@ -1,5 +1,5 @@
 extern crate advtools;
-use advtools::prelude::*;
+use advtools::prelude::{HashMap, Itertools};
 
 const INPUT: u32 = 312051;
 

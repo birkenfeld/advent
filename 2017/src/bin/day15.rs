@@ -1,5 +1,5 @@
 extern crate advtools;
-use advtools::prelude::*;
+use advtools::prelude::itertools;
 
 const START_A:  u64 = 699;
 const FACTOR_A: u64 = 16807;

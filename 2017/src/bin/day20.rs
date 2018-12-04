@@ -1,6 +1,6 @@
 extern crate advtools;
-
-use advtools::prelude::*;
+use advtools::prelude::Itertools;
+use advtools::input::{iter_input, to_i64};
 use std::ops::Add;
 use std::collections::BTreeSet;
 
@@ -16,7 +16,7 @@ struct Particle {
 
 impl Vector {
     fn new<I: Iterator<Item=i64>>(mut it: I) -> Vector {
-        Vector { x: it.item(), y: it.item(), z: it.item() }
+        Vector { x: it.next().unwrap(), y: it.next().unwrap(), z: it.next().unwrap() }
     }
     fn dist(&self) -> i64 {
         self.x.abs() + self.y.abs() + self.z.abs()

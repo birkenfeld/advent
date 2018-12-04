@@ -5,8 +5,6 @@ version = "0.1.0"
 authors = ["Georg Brandl <georg@python.org>"]
 
 [dependencies]
-advtools = { git = "https://github.com/birkenfeld/advtools" }
-petgraph = "*"
-odds = "*"
-rayon = "*"
-fnv = "*"
+advtools = "0.2"
+petgraph = "0.4"
+rayon = "1.0"

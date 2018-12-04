@@ -1,7 +1,7 @@
 extern crate advtools;
 extern crate rayon;
-
-use advtools::prelude::*;
+use advtools::prelude::{HashMap, Itertools};
+use advtools::input::iter_input;
 use rayon::prelude::*;
 
 type S2 = (u8,u8,u8,u8);
