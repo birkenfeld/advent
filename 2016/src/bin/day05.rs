@@ -1,10 +1,10 @@
 extern crate md5;
-extern crate rayon;
 extern crate itoa;
+extern crate advtools;
 
 use std::char;
 use md5::{Digest, Md5};
-use rayon::prelude::*;
+use advtools::rayon::prelude::*;
 
 const INPUT: &[u8] = b"uqwqemis";
 const LEN: usize = 8;

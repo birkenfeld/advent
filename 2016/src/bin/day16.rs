@@ -1,7 +1,6 @@
 extern crate advtools;
-extern crate rayon;
 use advtools::prelude::Itertools;
-use rayon::prelude::*;
+use advtools::rayon::prelude::*;
 
 const INPUT: &[u8] = b"00101000101111010";
 const LEN: usize = 272;

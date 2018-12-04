@@ -1,7 +1,7 @@
-extern crate rayon;
+extern crate advtools;
 
 use std::collections::HashSet;
-use rayon::prelude::*;
+use advtools::rayon::{self, prelude::*};
 
 const MAX: usize = 7;
 

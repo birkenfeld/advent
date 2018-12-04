@@ -6,7 +6,6 @@ authors = ["Georg Brandl <georg@python.org>"]
 
 [dependencies]
 advtools = "0.2.1"
-rayon = "1.0"
 md-5 = "0.8"
 strum = "0.11"
 strum_macros = "0.11"

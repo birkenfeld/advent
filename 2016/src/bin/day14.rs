@@ -1,9 +1,9 @@
 extern crate md5;
-extern crate rayon;
 extern crate itoa;
+extern crate advtools;
 
 use md5::{Digest, Md5};
-use rayon::prelude::*;
+use advtools::rayon::prelude::*;
 
 const INPUT: &[u8] = b"ngcjuoqr";
 const OFFSET: usize = 1000;

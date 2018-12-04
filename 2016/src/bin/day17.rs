@@ -1,9 +1,9 @@
 extern crate md5;
-extern crate rayon;
+extern crate advtools;
 
 use std::fmt;
 use md5::{Digest, Md5};
-use rayon::prelude::*;
+use advtools::rayon::{self, prelude::*};
 
 const INPUT: &[u8] = b"edjrjqaa";
 
