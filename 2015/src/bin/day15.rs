@@ -2,15 +2,15 @@ extern crate advtools;
 use advtools::prelude::Itertools;
 use advtools::input::iter_input_parts_trim;
 
-type Values = (i32, i32, i32, i32, i32);
+type Values = [i32; 5];
 
 fn add_up<F>(amounts: &[i32], v: &[Values], select: F) -> i32 where F: Fn(&Values) -> i32 {
     amounts.iter().enumerate().map(|(i, a)| a*select(&v[i])).sum()
 }
 
 fn fom(amounts: &[i32], v: &[Values]) -> i32 {
-    add_up(amounts, v, |vi| vi.0).max(0) * add_up(amounts, v, |vi| vi.1).max(0) *
-        add_up(amounts, v, |vi| vi.2).max(0) * add_up(amounts, v, |vi| vi.3).max(0)
+    add_up(amounts, v, |vi| vi[0]).max(0) * add_up(amounts, v, |vi| vi[1]).max(0) *
+        add_up(amounts, v, |vi| vi[2]).max(0) * add_up(amounts, v, |vi| vi[3]).max(0)
 }
 
 fn gen_amounts(sum: usize, n: usize) -> Vec<Vec<i32>> {
@@ -32,7 +32,7 @@ fn find_best(goalcal: Option<i32>, v: &[Values]) -> Vec<i32> {
     gen_amounts(100, v.len())
         .into_iter()
         .filter(|amounts| if let Some(goal) = goalcal {
-            add_up(amounts, v, |vi| vi.4) == goal
+            add_up(amounts, v, |vi| vi[4]) == goal
         } else { true })
         .max_by_key(|amounts| fom(amounts, v)).unwrap()
 }

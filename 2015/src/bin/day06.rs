@@ -1,27 +1,22 @@
 extern crate advtools;
-use advtools::prelude::Itertools;
-use advtools::input::{iter_input, to_usize};
+use advtools::input::iter_input_regex;
 
 enum Todo { On, Off, Toggle }
+
+const FORMAT: &str = r"(turn on|turn off|toggle) (\d+),(\d+) through (\d+),(\d+)";
+type Pos = (usize, usize);
 
 fn main() {
     let mut bool_grid = [[false; 1000]; 1000];
     let mut dim_grid = [[0u16; 1000]; 1000];
-    for parts in iter_input::<Vec<String>>() {
-        let todo = match &*parts[1] {
-            "on" => Todo::On,
-            "off" => Todo::Off,
+    for (verb, from, to) in iter_input_regex::<(String, Pos, Pos)>(FORMAT) {
+        let todo = match &*verb {
+            "turn on" => Todo::On,
+            "turn off" => Todo::Off,
             _ => Todo::Toggle
         };
-        let coords = if let Todo::Toggle = todo {
-            (&parts[1], &parts[3])
-        } else {
-            (&parts[2], &parts[4])
-        };
-        let from = coords.0.split(',').map(to_usize).collect_vec();
-        let to = coords.1.split(',').map(to_usize).collect_vec();
-        for ix in from[0]..to[0]+1 {
-            for iy in from[1]..to[1]+1 {
+        for ix in from.0..to.0+1 {
+            for iy in from.1..to.1+1 {
                 match todo {
                     Todo::On => {
                         bool_grid[ix][iy] = true;
