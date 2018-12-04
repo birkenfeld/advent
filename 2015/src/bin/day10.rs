@@ -16,7 +16,7 @@ fn push_pair(v: &mut Vec<u8>, n: u8, d: u8) {
 
 fn main() {
     let mut seq: Vec<u8> = INPUT.iter().map(|&ch| ch - b'0').collect();
-    for i in 1..51 {
+    for i in 1..=50 {
         let mut new_seq = Vec::with_capacity(2 * seq.len());
         let mut dp = seq[0];
         let mut n = 0;

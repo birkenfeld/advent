@@ -55,13 +55,13 @@ impl Circuit {
             self.values[&id]
         } else {
             let element = self.wires[&id];
-            let value = match element {
-                Element::Const(ref s) => self.get(s),
-                Element::Not(ref s) => !self.get(s),
-                Element::And(ref s1, ref s2) => self.get(s1) & self.get(s2),
-                Element::Or(ref s1, ref s2) => self.get(s1) | self.get(s2),
-                Element::Lshift(ref s1, ref s2) => self.get(s1) << self.get(s2),
-                Element::Rshift(ref s1, ref s2) => self.get(s1) >> self.get(s2),
+            let value = match &element {
+                Element::Const(s) => self.get(s),
+                Element::Not(s) => !self.get(s),
+                Element::And(s1, s2) => self.get(s1) & self.get(s2),
+                Element::Or(s1, s2) => self.get(s1) | self.get(s2),
+                Element::Lshift(s1, s2) => self.get(s1) << self.get(s2),
+                Element::Rshift(s1, s2) => self.get(s1) >> self.get(s2),
             };
             self.values.insert(id, value);
             value

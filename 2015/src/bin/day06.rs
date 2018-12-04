@@ -15,8 +15,8 @@ fn main() {
             "turn off" => Todo::Off,
             _ => Todo::Toggle
         };
-        for ix in from.0..to.0+1 {
-            for iy in from.1..to.1+1 {
+        for ix in from.0..=to.0 {
+            for iy in from.1..=to.1 {
                 match todo {
                     Todo::On => {
                         bool_grid[ix][iy] = true;

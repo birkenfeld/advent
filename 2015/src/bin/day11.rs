@@ -16,7 +16,7 @@ fn increment(pw: &mut [u8]) {
 }
 
 fn is_ok(pw: &[u8]) -> bool {
-    pw.iter().tuple_windows().filter(|&(c1, c2, c3)| c1 != c2 && c2 == c3).count() >= 2 &&
+    pw.iter().tuple_windows().filter(|(c1, c2, c3)| c1 != c2 && c2 == c3).count() >= 2 &&
         pw.iter().tuple_windows().any(|(c1, c2, c3)| c1 + 1 == *c2 && c2 + 1 == *c3) &&
         !pw.iter().any(|&ch| ch == b'i' || ch == b'o' || ch == b'l')
 }

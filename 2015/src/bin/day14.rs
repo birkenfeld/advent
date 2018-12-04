@@ -10,10 +10,10 @@ fn main() {
         deer.push((name, speed, fly_time, fly_time + rest_time, 0, 0));
     }
 
-    let winner = deer.iter().map(|&(ref name, speed, fly_time, cycle_time, _, _)| {
+    let winner = deer.iter().map(|(name, speed, fly_time, cycle_time, _, _)| {
         let cycles = INPUT / cycle_time;
         let rest_time = INPUT % cycle_time;
-        (name.clone(), speed * (cycles * fly_time + rest_time.min(fly_time)))
+        (name.clone(), speed * (cycles * fly_time + rest_time.min(*fly_time)))
     }).max_by_key(|v| v.1).unwrap();
     println!("Traditional: {} ({} km)", winner.0, winner.1);
 
@@ -24,8 +24,8 @@ fn main() {
             }
             *dist
         }).max().unwrap();
-        for &mut (_, _, _, _, dist, ref mut points) in &mut deer {
-            if dist == best {
+        for (_, _, _, _, dist, points) in &mut deer {
+            if *dist == best {
                 *points += 1;
             }
         }

@@ -31,11 +31,11 @@ fn main() {
         if hay.is_subset(&needle) {
             println!("Preliminary aunt: {}", i+1);
         }
-        let all_ok = hay.iter().all(|&(ref name, count)| {
+        let all_ok = hay.iter().all(|(name, count)| {
             match &**name {
-                "cats" | "trees" => count > needle_map[name],
-                "pomeranians" | "goldfish" => count < needle_map[name],
-                _ => count == needle_map[name]
+                "cats" | "trees" => *count > needle_map[name],
+                "pomeranians" | "goldfish" => *count < needle_map[name],
+                _ => *count == needle_map[name]
             }
         });
         if all_ok {

@@ -14,8 +14,8 @@ fn step(grid: &mut [[bool; N+2]; N+2], stuck: bool) {
         }
     }
     for _ in 0..STEPS {
-        for i in 1..N+1 {
-            for j in 1..N+1 {
+        for i in 1..=N {
+            for j in 1..=N {
                 let neighb =
                     grid[i-1][j-1] as u8 +
                     grid[ i ][j-1] as u8 +
