@@ -1,6 +1,6 @@
 extern crate advtools;
 use advtools::prelude::Itertools;
-use advtools::input::{iter_input, to_u32};
+use advtools::input::iter_input_regex;
 use std::cell::Cell;
 
 fn find_bridges(parts: &[(u32, u32, Cell<bool>)], connect: u32, mut strength: u32, mut length: u32,
@@ -27,10 +27,8 @@ fn find_bridges(parts: &[(u32, u32, Cell<bool>)], connect: u32, mut strength: u3
 }
 
 fn main() {
-    let parts = iter_input::<String>().map(|line| {
-        let mut conns = line.split('/').map(to_u32);
-        (conns.next().unwrap(), conns.next().unwrap(), Cell::default())
-    }).collect_vec();
+    let parts = iter_input_regex("(\\d+)/(\\d+)")
+        .map(|(a, b)| (a, b, Cell::default())).collect_vec();
 
     let mut strongest = 0;
     let mut longest = (0, 0);

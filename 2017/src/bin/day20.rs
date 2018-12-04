@@ -1,6 +1,6 @@
 extern crate advtools;
 use advtools::prelude::Itertools;
-use advtools::input::{iter_input, to_i64};
+use advtools::input::iter_input_regex;
 use std::ops::Add;
 use std::collections::BTreeSet;
 
@@ -15,9 +15,6 @@ struct Particle {
 }
 
 impl Vector {
-    fn new<I: Iterator<Item=i64>>(mut it: I) -> Vector {
-        Vector { x: it.next().unwrap(), y: it.next().unwrap(), z: it.next().unwrap() }
-    }
     fn dist(&self) -> i64 {
         self.x.abs() + self.y.abs() + self.z.abs()
     }
@@ -51,11 +48,13 @@ fn cross<F: Fn(&Vector) -> f64>(p1: &Particle, p2: &Particle, f: F) -> f64 {
 
 fn main() {
     let mut particles = Vec::new();
-    for line in iter_input::<Vec<String>>() {
-        let p = Vector::new(line[0][3..line[0].len()-2].split(',').map(to_i64));
-        let v = Vector::new(line[1][3..line[1].len()-2].split(',').map(to_i64));
-        let a = Vector::new(line[2][3..line[2].len()-1].split(',').map(to_i64));
-        particles.push(Particle { p, v, a });
+    let regex = format!("p={vec}, v={vec}, a={vec}", vec = r"<(-?\d+),(-?\d+),(-?\d+)>");
+    for (px, py, pz, vx, vy, vz, ax, ay, az) in iter_input_regex(&regex) {
+        particles.push(Particle {
+            p: Vector { x: px, y: py, z: pz },
+            v: Vector { x: vx, y: vy, z: vz },
+            a: Vector { x: ax, y: ay, z: az },
+        });
     }
 
     // Part 1: Determine particle that will stay closest to origin for t -> oo.
