@@ -1,9 +1,9 @@
 pub extern crate itertools;
 pub extern crate arrayvec;
-pub extern crate fxhash;
 pub extern crate rayon;
 pub extern crate regex;
 pub extern crate odds;
+pub extern crate hashbrown;
 
 use std::hash::Hash;
 
@@ -12,7 +12,7 @@ pub mod prelude {
     pub use std::collections::hash_map::Entry;
     pub use std::iter::FromIterator;
 
-    pub use fxhash::{FxHashMap as HashMap, FxHashSet as HashSet};
+    pub use hashbrown::{HashMap, HashSet};
     pub use itertools;
     pub use itertools::Itertools;
     pub use regex;
@@ -331,12 +331,12 @@ pub fn rotate_right<T>(t: &mut [T], n: usize) {
 }
 
 pub struct Uids<T> {
-    map: fxhash::FxHashMap<T, usize>
+    map: hashbrown::HashMap<T, usize>
 }
 
 impl<T: Hash + Eq> Uids<T> {
     pub fn new() -> Uids<T> {
-        Uids { map: fxhash::FxHashMap::default() }
+        Uids { map: Default::default() }
     }
 
     pub fn get_id(&mut self, k: T) -> usize {
