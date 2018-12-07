@@ -5,9 +5,9 @@ version = "0.1.0"
 authors = ["Georg Brandl <georg@python.org>"]
 
 [dependencies]
-advtools = "0.2.2"
-rand = "0.6"
-md-5 = "0.8"
-serde_json = "1.0"
-permutohedron = "0.2"
-itoa = "0.4"
+advtools = "0.2.3"
+rand = "0.6.1"
+itoa = "0.4.3"
+md-5 = "0.8.0"
+serde_json = "1.0.33"
+permutohedron = "0.2.4"

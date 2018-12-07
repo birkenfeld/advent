@@ -16,8 +16,8 @@ perfumes: 1
 ";
 
 fn main() {
-    let mut needle = HashSet::default();
-    let mut needle_map = HashMap::default();
+    let mut needle = HashSet::new();
+    let mut needle_map = HashMap::new();
     for line in NEEDLE.lines() {
         let (name, count): (String, i32) = parse_parts_trim(&line, (0, 1), ":");
         needle.insert((name.clone(), count));
