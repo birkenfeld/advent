@@ -1,7 +1,3 @@
-extern crate md5;
-extern crate itoa;
-extern crate advtools;
-
 use std::char;
 use md5::{Digest, Md5};
 use advtools::rayon::prelude::*;

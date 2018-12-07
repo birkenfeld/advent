@@ -1,5 +1,3 @@
-extern crate advtools;
-
 use std::collections::HashSet;
 use advtools::rayon::{self, prelude::*};
 

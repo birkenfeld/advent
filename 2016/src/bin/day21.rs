@@ -1,4 +1,3 @@
-extern crate advtools;
 use advtools::prelude::rotate_left;
 use advtools::input::{iter_input, parse_parts};
 

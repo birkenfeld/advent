@@ -1,4 +1,3 @@
-extern crate advtools;
 use advtools::prelude::{HashSet, Regex};
 use advtools::input::{iter_input, to_i32};
 

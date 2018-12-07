@@ -1,6 +1,3 @@
-extern crate md5;
-extern crate advtools;
-
 use std::fmt;
 use md5::{Digest, Md5};
 use advtools::rayon::{self, prelude::*};
@@ -9,7 +6,7 @@ const INPUT: &[u8] = b"edjrjqaa";
 
 #[derive(Clone, Copy)]
 enum Dir { U, D, L, R }
-use Dir::*;
+use self::Dir::*;
 
 impl Dir {
     fn from_int(i: u64) -> Self {

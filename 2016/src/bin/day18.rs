@@ -1,4 +1,3 @@
-extern crate advtools;
 use advtools::input::input_string;
 
 fn count_all_safe(n: usize) -> usize {

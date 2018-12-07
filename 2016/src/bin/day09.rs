@@ -1,4 +1,3 @@
-extern crate advtools;
 use advtools::prelude::Regex;
 use advtools::input::{input_string, to_usize};
 

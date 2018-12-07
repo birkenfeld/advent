@@ -1,4 +1,3 @@
-extern crate advtools;
 use advtools::prelude::{HashMap, Itertools};
 use advtools::input::iter_input_regex;
 

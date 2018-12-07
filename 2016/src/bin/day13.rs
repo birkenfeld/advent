@@ -1,4 +1,3 @@
-extern crate advtools;
 use advtools::prelude::{HashSet, Itertools};
 
 const INPUT: i32 = 1352;

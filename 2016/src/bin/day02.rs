@@ -1,17 +1,15 @@
-extern crate advtools;
-extern crate strum;
-#[macro_use] extern crate strum_macros;
 use advtools::prelude::Itertools;
 use advtools::input::iter_input;
+use strum_macros::EnumString;
 
 #[derive(EnumString, Clone, Copy, Debug)]
 enum Direction { U, R, D, L }
-use Direction::*;
+use self::Direction::*;
 
 type Button = i32;
 
 trait Keypad {
-    fn next(Button, Direction) -> Button;
+    fn next(_: Button, _: Direction) -> Button;
 }
 
 struct NormalKeypad;
