@@ -1,4 +1,3 @@
-extern crate advtools;
 use advtools::prelude::{HashMap, Itertools};
 
 const INPUT: u32 = 312051;
@@ -28,7 +27,7 @@ fn main() {
     println!("Distance for {}: {}", INPUT, pos.0.abs() + pos.1.abs());
 
     // Part 2: Walk the spiral and insert all the calculated ambient sums in a map.
-    let mut map = HashMap::default();
+    let mut map = HashMap::new();
     let mut pos = (0, 0);
     map.insert(pos, 1);
     let value = loop {

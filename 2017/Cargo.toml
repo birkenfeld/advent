@@ -3,7 +3,8 @@ name = "advent17"
 description = "Solutions for Advent of Code 2017."
 version = "0.1.0"
 authors = ["Georg Brandl <georg@python.org>"]
+edition = "2018"
 
 [dependencies]
-advtools = "0.2.1"
-petgraph = "0.4"
+advtools = "0.2.3"
+petgraph = "0.4.13"

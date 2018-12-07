@@ -1,4 +1,3 @@
-extern crate advtools;
 use advtools::prelude::rotate_left;
 use advtools::rotate_right;
 

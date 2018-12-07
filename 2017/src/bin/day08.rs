@@ -1,9 +1,8 @@
-extern crate advtools;
 use advtools::prelude::HashMap;
 use advtools::input::iter_input;
 
 fn main() {
-    let mut regs = HashMap::default();
+    let mut regs = HashMap::new();
     let mut any_largest = 0;
     for line in iter_input::<(String, String, i32, (), String, String, i32)>() {
         let (change_reg, sign, change_amt, _, check_reg, check_cond, check_val) = line;

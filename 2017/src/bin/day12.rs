@@ -1,5 +1,3 @@
-extern crate advtools;
-extern crate petgraph;
 use advtools::prelude::Itertools;
 use advtools::input::iter_input_trim;
 use petgraph::prelude::*;

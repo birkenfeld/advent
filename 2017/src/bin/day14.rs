@@ -1,5 +1,3 @@
-extern crate advtools;
-extern crate advent17;
 use advtools::prelude::Itertools;
 
 const INPUT: &str = "jxqlasbh";

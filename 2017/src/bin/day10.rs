@@ -1,5 +1,3 @@
-extern crate advtools;
-extern crate advent17;
 use advtools::prelude::Itertools;
 use advtools::input::{input_string, to_u8};
 

@@ -1,4 +1,3 @@
-extern crate advtools;
 use advtools::prelude::{Itertools, VecDeque};
 use advtools::input::iter_input;
 

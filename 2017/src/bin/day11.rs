@@ -1,4 +1,3 @@
-extern crate advtools;
 use advtools::input::input_string;
 
 /// Find distance of a point from the origin in hex steps, max(|x|, |y|, |x+y|)

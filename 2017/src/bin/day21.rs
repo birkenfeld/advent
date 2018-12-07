@@ -1,4 +1,3 @@
-extern crate advtools;
 use advtools::prelude::{HashMap, Itertools};
 use advtools::input::iter_input;
 use advtools::rayon::prelude::*;
@@ -149,8 +148,8 @@ fn add_to_map<P, Q>(mut pat: P, repl: Q, flip: fn(P) -> P, rot: fn(P) -> P, map:
 }
 
 fn main() {
-    let mut repls2x2 = HashMap::default();
-    let mut repls3x3 = HashMap::default();
+    let mut repls2x2 = HashMap::new();
+    let mut repls3x3 = HashMap::new();
     for line in iter_input::<Vec<String>>() {
         let rpat = line[0].chars().filter(|&c| c != '/').map(pixel).collect_vec();
         let repl = line[2].chars().filter(|&c| c != '/').map(pixel).collect_vec();

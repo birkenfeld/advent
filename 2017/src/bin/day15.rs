@@ -1,4 +1,3 @@
-extern crate advtools;
 use advtools::prelude::itertools;
 
 const START_A:  u64 = 699;
