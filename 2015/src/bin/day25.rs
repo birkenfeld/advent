@@ -1,5 +1,3 @@
-extern crate advtools;
-
 const ROW: usize = 2981;
 const COL: usize = 3075;
 const FIRST: u64 = 20_151_125;

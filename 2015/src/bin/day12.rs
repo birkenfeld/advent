@@ -1,6 +1,3 @@
-extern crate advtools;
-extern crate serde_json;
-
 use advtools::input::input_file;
 use serde_json::{Value, from_reader};
 use serde_json::Value::*;

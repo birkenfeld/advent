@@ -1,6 +1,3 @@
-extern crate advtools;
-extern crate permutohedron;
-
 use advtools::input::iter_input_regex;
 use std::iter::once;
 use advtools::Uids;

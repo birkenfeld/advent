@@ -1,4 +1,3 @@
-extern crate advtools;
 use advtools::prelude::{HashMap, HashSet, FromIterator};
 use advtools::input::{iter_input_trim, parse_parts_trim};
 

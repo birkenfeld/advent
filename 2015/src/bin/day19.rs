@@ -1,6 +1,3 @@
-extern crate advtools;
-extern crate rand;
-
 use advtools::prelude::{HashMap, HashSet};
 use advtools::input::iter_input;
 use rand::{thread_rng, prelude::SliceRandom};

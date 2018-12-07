@@ -1,4 +1,3 @@
-extern crate advtools;
 use advtools::input::iter_input;
 
 const GOAL: i32 = 150;

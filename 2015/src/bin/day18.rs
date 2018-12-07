@@ -1,5 +1,3 @@
-extern crate advtools;
-
 use std::mem;
 use advtools::input::iter_input;
 

@@ -1,7 +1,3 @@
-extern crate md5;
-extern crate advtools;
-extern crate itoa;
-
 use std::sync::mpsc;
 use md5::{Digest, Md5};
 use advtools::rayon::prelude::*;

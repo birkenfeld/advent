@@ -1,4 +1,3 @@
-extern crate advtools;
 use advtools::prelude::HashMap;
 use advtools::input::iter_input;
 

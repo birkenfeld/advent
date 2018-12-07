@@ -57,7 +57,7 @@ fn fight(dmg_per_turn: i32) -> i32 {
             }
             for (i, &(cost, last)) in [(113, 6), (173, 6), (229, 5)].iter().enumerate() {
                 if mana >= cost && effects[i] == 0 {
-                    let mut new_effects = effects;
+                    let new_effects = effects;
                     effects[i] = last;
                     stack.push((!my_turn, boss_hp, hp, mana - cost, new_effects,
                                 mana_used + cost, rnds + 1));
