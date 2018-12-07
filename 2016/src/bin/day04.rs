@@ -10,7 +10,7 @@ fn main() {
     let mut sector_sum = 0;
     for (name, sector, checksum) in iter_input_regex::<(String, u32, String)>(LINE_FMT) {
         // count the digits in the name
-        let mut counts = HashMap::default();
+        let mut counts = HashMap::new();
         for ch in name.chars().filter(|&ch| ch != '-') {
             *counts.entry(ch).or_insert(0) += 1;
         }

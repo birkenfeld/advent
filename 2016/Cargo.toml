@@ -5,8 +5,8 @@ version = "0.1.0"
 authors = ["Georg Brandl <georg@python.org>"]
 
 [dependencies]
-advtools = "0.2.1"
-md-5 = "0.8"
-strum = "0.11"
-strum_macros = "0.11"
-itoa = "0.4"
+advtools = "0.2.3"
+md-5 = "0.8.0"
+itoa = "0.4.3"
+strum = "0.12.0"
+strum_macros = "0.12.0"

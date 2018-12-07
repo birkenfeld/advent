@@ -44,7 +44,7 @@ struct Machine {
 
 impl Machine {
     fn new(prog: Vec<Op>) -> Machine {
-        Machine { prog: prog, .. Machine::default() }
+        Machine { prog, .. Machine::default() }
     }
     fn get(&self, arg: Arg) -> i64 {
         match arg {

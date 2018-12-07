@@ -13,8 +13,8 @@ struct Bot {
 }
 
 fn main() {
-    let mut bots = HashMap::<u32, Bot>::default();
-    let mut outputs = HashMap::<u32, u32>::default();
+    let mut bots = HashMap::<u32, Bot>::new();
+    let mut outputs = HashMap::<u32, u32>::new();
     let mut changes = Vec::new();
 
     for line in iter_input::<String>() {

@@ -11,7 +11,7 @@ fn is_open_space((x, y): Pos) -> bool {
 }
 
 fn find_steps(initial: Pos, final_: Option<Pos>, limit: usize) -> (Option<usize>, usize) {
-    let mut seen = HashSet::default();
+    let mut seen = HashSet::with_capacity(1000);
     let mut positions = vec![initial];
     let mut generation = 0;
     let mut reached = None;

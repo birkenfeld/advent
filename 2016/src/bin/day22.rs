@@ -10,7 +10,7 @@ fn is_allowed((x, y): Pos, blockers: &HashSet<Pos>, size: &Pos) -> bool {
 }
 
 fn find_steps(initial: Pos, final_: Pos, blockers: &HashSet<Pos>, size: &Pos) -> usize {
-    let mut seen = HashSet::default();
+    let mut seen = HashSet::with_capacity(1000);
     let mut positions = vec![initial];
     let mut generation = 0;
 
@@ -47,7 +47,7 @@ fn main() {
         }
     }
     let size = nodes[nodes.len() - 1].0;
-    let mut blockers = HashSet::default();
+    let mut blockers = HashSet::new();
     let mut pairs = 0;
     let mut hole_pos = (0, 0);
     for n1 in &nodes {
