@@ -48,6 +48,6 @@ fn main() {
             }
         }
     }
-    println!("Final distance: {}", pos.dist());
-    println!("Visited twice distance: {}", visited_twice.unwrap().dist());
+    advtools::print("Final distance", pos.dist());
+    advtools::print("Visited twice distance", visited_twice.unwrap().dist());
 }

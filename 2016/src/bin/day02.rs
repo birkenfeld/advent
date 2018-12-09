@@ -77,6 +77,6 @@ fn find_code<K: Keypad>() -> String {
 
 
 fn main() {
-    println!("Code (normal keypad): {}", find_code::<NormalKeypad>());
-    println!("Code (fancy keypad): {}", find_code::<FancyKeypad>());
+    advtools::print("Code (normal keypad)", find_code::<NormalKeypad>());
+    advtools::print("Code (fancy keypad)", find_code::<FancyKeypad>());
 }

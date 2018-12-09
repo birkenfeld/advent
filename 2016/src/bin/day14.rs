@@ -1,7 +1,7 @@
 use md5::{Digest, Md5};
 use advtools::rayon::prelude::*;
+use advtools::input::input_string;
 
-const INPUT: &[u8] = b"ngcjuoqr";
 const OFFSET: usize = 1000;
 const KEYLEN: usize = 64;
 
@@ -19,12 +19,12 @@ fn digit(ch: u8) -> u8 {
     if ch >= b'a' { ch - b'a' + 10 } else { ch - b'0' }
 }
 
-fn find_multiples(i: usize, n: usize) -> Option<(usize, u32)> {
+fn find_multiples(input: &[u8], i: usize, n: usize) -> Option<(usize, u32)> {
     let mut ibuf = [0; 16];
     let mut sbuf = [0; 32];
     let mut hash = Md5::new();
     let m = itoa::write(&mut ibuf[..], i).unwrap();
-    hash.input(INPUT);
+    hash.input(input);
     hash.input(&ibuf[..m]);
     hash_to_hex(hash, &mut sbuf);
     for _ in 0..n {
@@ -43,18 +43,19 @@ fn find_multiples(i: usize, n: usize) -> Option<(usize, u32)> {
     })
 }
 
-fn collect_hashes(i1: usize, i2: usize, n: usize) -> Vec<(usize, u32)> {
-    (i1..i2).into_par_iter().filter_map(|i| find_multiples(i, n)).collect::<Vec<_>>()
+fn collect_hashes(input: &[u8], i1: usize, i2: usize, n: usize) -> Vec<(usize, u32)> {
+    (i1..i2).into_par_iter().filter_map(|i| find_multiples(input, i, n))
+                            .collect::<Vec<_>>()
 }
 
-fn find_last_index(n: usize) -> usize {
+fn find_last_index(input: &[u8], n: usize) -> usize {
     let mut i = OFFSET;
-    let mut h1 = collect_hashes(0, i, n);
+    let mut h1 = collect_hashes(input, 0, i, n);
     let mut h2;
     let mut key = Vec::new();
 
     loop {
-        h2 = collect_hashes(i, i+OFFSET, n);
+        h2 = collect_hashes(input, i, i+OFFSET, n);
         for &(j1, info1) in &h1 {
             let mask = info1 << 16;
             if h1.iter().chain(&h2).any(|&(j2, info2)| j2 > j1 && j2 <= j1 + 1001 && info2 & mask != 0) {
@@ -70,6 +71,8 @@ fn find_last_index(n: usize) -> usize {
 }
 
 fn main() {
-    println!("Last index: {}", find_last_index(0));
-    println!("Last index (stretching): {}", find_last_index(2016));
+    let input = input_string();
+    let input = input.trim().as_bytes();
+    advtools::print("Last index", find_last_index(input, 0));
+    advtools::print("Last index (stretching)", find_last_index(input, 2016));
 }

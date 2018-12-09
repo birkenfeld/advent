@@ -108,7 +108,7 @@ fn main() {
         machine.reset();
         machine.regs[0] = i;
         if machine.run() {
-            println!("Register a to generate clock: {:?}", i);
+            advtools::print("Register a to generate clock", i);
             break;
         }
     }

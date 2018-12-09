@@ -32,6 +32,6 @@ fn main() {
             }
         }
     }
-    println!("Sector ID sum: {}", sector_sum);
-    println!("North Pole sector: {}", np_sector);
+    advtools::print("Sector ID sum", sector_sum);
+    advtools::print("North Pole sector", np_sector);
 }

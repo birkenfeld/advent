@@ -1,7 +1,7 @@
 use advtools::prelude::Itertools;
+use advtools::input::input_string;
 use advtools::rayon::prelude::*;
 
-const INPUT: &[u8] = b"00101000101111010";
 const LEN: usize = 272;
 const LEN2: usize = 35_651_584;
 
@@ -16,8 +16,8 @@ fn dragon(mut s: Vec<u8>) -> Vec<u8> {
     s
 }
 
-fn process(target_len: usize) -> String {
-    let mut s = INPUT.to_vec();
+fn process(input: &[u8], target_len: usize) -> String {
+    let mut s = input.to_vec();
     s.reserve(target_len);
     while s.len() < target_len {
         s = dragon(s);
@@ -30,6 +30,8 @@ fn process(target_len: usize) -> String {
 }
 
 fn main() {
-    println!("Checksum, length {}: {}", LEN, process(LEN));
-    println!("Checksum, length {}: {}", LEN2, process(LEN2));
+    let input = input_string();
+    let input = input.trim().as_bytes();
+    advtools::print("Checksum, short", process(input, LEN));
+    advtools::print("Checksum, long", process(input, LEN2));
 }

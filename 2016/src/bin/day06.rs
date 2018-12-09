@@ -14,6 +14,6 @@ fn main() {
         let freqs = arr.iter().enumerate().map(|(i, v)| (weight * v, i)).sorted();
         (freqs[0].1 as u8 + b'a') as char
     }).collect::<String>();
-    println!("Message (most common): {}", collect_by_freq(-1));
-    println!("Message (least common): {}", collect_by_freq(1));
+    advtools::print("Message (most common)", collect_by_freq(-1));
+    advtools::print("Message (least common)", collect_by_freq(1));
 }

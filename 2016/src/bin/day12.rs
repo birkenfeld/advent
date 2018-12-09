@@ -76,9 +76,9 @@ fn main() {
 
     let mut machine = Machine::new(program);
     machine.run();
-    println!("Register a for c = 0: {}", machine.regs[0]);
+    advtools::print("Register a for c = 0", machine.regs[0]);
     machine.reset();
     machine.regs[2] = 1;
     machine.run();
-    println!("Register a for c = 1: {}", machine.regs[0]);
+    advtools::print("Register a for c = 1", machine.regs[0]);
 }

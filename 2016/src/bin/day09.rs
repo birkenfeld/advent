@@ -18,6 +18,6 @@ fn get_decompressed_length(mut s: &str, rx: &Regex, recursive: bool) -> usize {
 fn main() {
     let rx = Regex::new(r"\((\d+)x(\d+)\)").unwrap();
     let input = input_string().replace('\n', "");
-    println!("Length of data (v1): {}", get_decompressed_length(&input, &rx, false));
-    println!("Length of data (v2): {}", get_decompressed_length(&input, &rx, true));
+    advtools::print("Length of data (v1)", get_decompressed_length(&input, &rx, false));
+    advtools::print("Length of data (v2)", get_decompressed_length(&input, &rx, true));
 }

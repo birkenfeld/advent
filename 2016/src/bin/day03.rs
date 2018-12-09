@@ -14,6 +14,6 @@ fn main() {
             possible((a.1, b.1, c.1)) +
             possible((a.2, b.2, c.2));
     }
-    println!("Possible triangles (by row): {}", num_row);
-    println!("Possible triangles (by column): {}", num_col);
+    advtools::print("Possible triangles (by row)", num_row);
+    advtools::print("Possible triangles (by column)", num_col);
 }

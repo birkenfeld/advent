@@ -70,7 +70,7 @@ fn main() {
             }
         }
     }
-    println!("Number of viable pairs: {}", pairs);
+    advtools::print("Number of viable pairs", pairs);
 
     let mut total_steps = 0;
     // move data from (max,0) to (0,0) step by step
@@ -85,5 +85,5 @@ fn main() {
         total_steps += steps + 1;
         hole_pos = (target_x as i32 + 1, 0);
     }
-    println!("Total # of steps: {}", total_steps);
+    advtools::print("Total # of steps", total_steps);
 }

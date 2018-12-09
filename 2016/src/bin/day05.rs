@@ -1,16 +1,16 @@
 use std::char;
 use md5::{Digest, Md5};
 use advtools::rayon::prelude::*;
+use advtools::input::input_string;
 
-const INPUT: &[u8] = b"uqwqemis";
 const LEN: usize = 8;
 const BATCH: usize = 1_000_000;
 
-fn check(i: usize) -> Option<(usize, u8, u8)> {
+fn check(input: &[u8], i: usize) -> Option<(usize, u8, u8)> {
     let mut ibuf = [0u8; 16];
     let mut hash = Md5::new();
     let n = itoa::write(&mut ibuf[..], i).unwrap();
-    hash.input(INPUT);
+    hash.input(input);
     hash.input(&ibuf[..n]);
     let buf = hash.result();
     if buf[0] | buf[1] == 0 && buf[2] & 0xF0 == 0 {
@@ -21,6 +21,8 @@ fn check(i: usize) -> Option<(usize, u8, u8)> {
 }
 
 fn main() {
+    let input = input_string();
+    let input = input.trim().as_bytes();
     // the first passcode can be collected directly
     let mut pass_door1 = String::new();
     // the second passcode needs to be constructed char by char
@@ -30,7 +32,8 @@ fn main() {
     // (pass_door1 is long done by then)
     while pass_door2.iter().any(|v| v.is_none()) {
         // get every candidate digit (with 00000 MD5 prefix) in the next batch
-        let mut digits: Vec<_> = (n..n + BATCH).into_par_iter().filter_map(check).collect();
+        let mut digits: Vec<_> = (n..n + BATCH).into_par_iter()
+                                               .filter_map(|v| check(input, v)).collect();
         digits.sort();  // by n, then d6, then d7
         // update passcode for first door, just by order of number
         pass_door1.extend(digits.iter().map(|d| char::from_digit(d.1 as u32, 16).unwrap()));
@@ -46,6 +49,6 @@ fn main() {
     }
     let pass_door1 = &pass_door1[..LEN];
     let pass_door2 = pass_door2.into_iter().map(|x| x.unwrap()).collect::<String>();
-    println!("First door: {}", pass_door1);
-    println!("Second door: {}", pass_door2);
+    advtools::print("First door", pass_door1);
+    advtools::print("Second door", pass_door2);
 }

@@ -1,8 +1,7 @@
 use std::fmt;
 use md5::{Digest, Md5};
 use advtools::rayon::{self, prelude::*};
-
-const INPUT: &[u8] = b"edjrjqaa";
+use advtools::input::input_string;
 
 #[derive(Clone, Copy)]
 enum Dir { U, D, L, R }
@@ -61,12 +60,12 @@ impl State {
     }
 }
 
-impl fmt::Debug for State {
+impl fmt::Display for State {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         for i in 0..self.len() {
             write!(f, "{}", String::from_utf8_lossy(self.dir(i).as_bytes()))?;
         }
-        write!(f, "({})", self.pos())
+        write!(f, " ({})", self.pos())
     }
 }
 
@@ -80,13 +79,13 @@ fn eval_hash(hash: Md5) -> [bool; 4] {
     dirs
 }
 
-fn next_states(states: Vec<State>) -> Vec<State> {
+fn next_states(input: &[u8], states: Vec<State>) -> Vec<State> {
     states
         .into_par_iter()
         .flat_map(|state| {
             let mut res = Vec::with_capacity(4);
             let mut hash = Md5::new();
-            hash.input(INPUT);
+            hash.input(input);
             for i in 0..state.len() {
                 hash.input(state.dir(i).as_bytes());
             }
@@ -108,13 +107,13 @@ fn next_states(states: Vec<State>) -> Vec<State> {
         .collect()
 }
 
-fn find_steps(initial: State) -> (State, usize) {
+fn find_steps(input: &[u8], initial: State) -> (State, usize) {
     let mut states = vec![initial];
     let mut max_path = 0;
     let mut shortest = None;
 
     loop {
-        let new_states = next_states(states);
+        let new_states = next_states(input, states);
         states = Vec::with_capacity(new_states.len());
         for state in new_states {
             if state.pos() == 0xf {
@@ -133,9 +132,11 @@ fn find_steps(initial: State) -> (State, usize) {
 }
 
 fn main() {
+    let input = input_string();
+    let input = input.trim().as_bytes();
     rayon::ThreadPoolBuilder::new().num_threads(3).build_global().unwrap();
     let state = State::default();
-    let (final_state, max_path) = find_steps(state);
-    println!("Shortest path to goal: {:?}", final_state);
-    println!("Max path length: {}", max_path);
+    let (final_state, max_path) = find_steps(input, state);
+    advtools::print("Shortest path to goal", final_state);
+    advtools::print("Max path length", max_path);
 }

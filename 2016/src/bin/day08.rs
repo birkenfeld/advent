@@ -33,13 +33,15 @@ impl Screen {
     fn lit(&self) -> usize {
         self.pixels.iter().map(|col| col.iter().filter(|&&x| x).count()).sum()
     }
-    fn print(&self) {
+    fn print(&self) -> String {
+        let mut result = String::new();
         for row in &self.pixels {
+            result.push('\n');
             for pixel in &row[..] {
-                print!("{}", if *pixel { '#' } else { ' ' });
+                result.push(if *pixel { '#' } else { ' ' });
             }
-            println!();
         }
+        result
     }
 }
 
@@ -57,7 +59,6 @@ fn main() {
             screen.rotate_col(xby);
         }
     }
-    println!("Lit pixels: {}", screen.lit());
-    println!("Code:");
-    screen.print();
+    advtools::print("Lit pixels", screen.lit());
+    advtools::print("Code:", screen.print());
 }

@@ -143,9 +143,9 @@ fn main() {
     let mut machine = Machine::new(program.clone());
     machine.regs[0] = 7;
     machine.run();
-    println!("a (7 eggs): {}", machine.regs[0]);
+    advtools::print("a (7 eggs)", machine.regs[0]);
     let mut machine = Machine::new(program);
     machine.regs[0] = 12;
     machine.run();
-    println!("a (12 eggs): {}", machine.regs[0]);
+    advtools::print("a (12 eggs)", machine.regs[0]);
 }

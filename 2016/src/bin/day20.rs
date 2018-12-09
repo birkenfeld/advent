@@ -16,11 +16,11 @@ fn find_allowed(excluded: &[(u32, u32)], mut el: u32) -> Option<u32> {
 fn main() {
     let excluded = iter_input_regex("(\\d+)-(\\d+)").sorted();
     let mut smallest = find_allowed(&excluded, 0);
-    println!("Smallest allowed: {}", smallest.unwrap());
+    advtools::print("Smallest allowed", smallest.unwrap());
     let mut n = 0;
     while let Some(el) = smallest {
         smallest = find_allowed(&excluded, el + 1);
         n += 1;
     }
-    println!("Number allowed: {}", n);
+    advtools::print("Number allowed", n);
 }

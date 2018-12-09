@@ -89,11 +89,11 @@ fn main() {
     for instr in &recipe {
         instr.exec(&mut password, true);
     }
-    println!("scrambled password: {}", password.iter().cloned().collect::<String>());
+    advtools::print("scrambled password", password.iter().cloned().collect::<String>());
 
     password = FINAL.chars().collect();
     for instr in recipe.iter().rev() {
         instr.exec(&mut password, false);
     }
-    println!("unscrambled password: {}", password.iter().cloned().collect::<String>());
+    advtools::print("unscrambled password", password.iter().cloned().collect::<String>());
 }
