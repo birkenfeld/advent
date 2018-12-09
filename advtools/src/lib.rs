@@ -24,29 +24,48 @@ pub mod prelude {
     pub use rayon;
 }
 
+use std::cell::RefCell;
+use std::path::Path;
+use std::fmt::Display;
+
+thread_local! {
+    static INPUT: RefCell<Option<String>> = Default::default();
+    static BENCH_MODE: RefCell<Option<u32>> = RefCell::new(Some(0));
+}
+
+pub fn bench_mode(path: impl AsRef<Path>) {
+    BENCH_MODE.with(|k| *k.borrow_mut() = None);
+    INPUT.with(|k| *k.borrow_mut() = Some(
+        std::fs::read_to_string(path.as_ref()).unwrap_or_else(
+            |e| panic!("could not read input file: {}", e))
+    ));
+}
+
+pub fn print(part: &str, value: impl Display) {
+    BENCH_MODE.with(|k| if let Some(ref mut n) = *k.borrow_mut() {
+        *n += 1;
+        println!("{}. {}: {}", n, part, value);
+    });
+}
+
 pub mod input {
     use std::borrow::Cow;
     use std::env;
-    use std::fs::File;
-    use std::io::{BufReader, BufRead, Read};
+    use std::io::{BufRead, Cursor};
     use std::marker::PhantomData;
     use std::path::Path;
     use regex::{Regex, CaptureLocations};
     use itertools::Itertools;
 
-    pub fn input_file() -> File {
-        let mut infile = Path::new("input").join(
-            Path::new(&env::args_os().next().expect("no executable name")
-            ).file_name().expect("no file name?"));
-        infile.set_extension("txt");
-        File::open(&infile)
-            .unwrap_or_else(|_| panic!("input file \"{}\" not found", infile.display()))
-    }
-
     pub fn input_string() -> String {
-        let mut contents = String::new();
-        input_file().read_to_string(&mut contents).expect("input file not valid UTF8");
-        contents
+        ::INPUT.with(|k| k.borrow().clone().unwrap_or_else(|| {
+            let mut infile = Path::new("input").join(
+                Path::new(&env::args_os().next().expect("no executable name")
+                ).file_name().expect("no file name?"));
+            infile.set_extension("txt");
+            std::fs::read_to_string(&infile).unwrap_or_else(
+                |e| panic!("could not read input file: {}", e))
+        }))
     }
 
     pub trait Indices {
@@ -205,14 +224,14 @@ pub mod input {
     array_impl!(T, 8, ????????);
     array_impl!(T, 9, ?????????);
 
-    pub struct InputIterator<T: ParseResult> {
-        rdr: BufReader<File>,
+    pub struct InputIterator<T, R> {
+        rdr: R,
         trim: Vec<char>,
         indices: Cow<'static, [usize]>,
         marker: PhantomData<T>,
     }
 
-    impl<T: ParseResult> Iterator for InputIterator<T> {
+    impl<T: ParseResult, R: BufRead> Iterator for InputIterator<T, R> {
         type Item = T;
 
         fn next(&mut self) -> Option<T> {
@@ -229,14 +248,14 @@ pub mod input {
         }
     }
 
-    pub struct RegexInputIterator<T: ParseResult> {
+    pub struct RegexInputIterator<T, R> {
         rx: Regex,
         loc: CaptureLocations,
-        rdr: BufReader<File>,
+        rdr: R,
         marker: PhantomData<T>,
     }
 
-    impl<T: ParseResult> Iterator for RegexInputIterator<T> {
+    impl<T: ParseResult, R: BufRead> Iterator for RegexInputIterator<T, R> {
         type Item = T;
 
         fn next(&mut self) -> Option<T> {
@@ -260,32 +279,34 @@ pub mod input {
     }
 
 
-    pub fn iter_input<T: ParseResult>() -> InputIterator<T> {
-        let rdr = BufReader::new(input_file());
-        InputIterator { rdr, trim: vec![], indices: vec![].into(), marker: PhantomData }
+    pub fn input_file() -> impl BufRead {
+        Cursor::new(input_string())
     }
 
-    pub fn iter_input_trim<T: ParseResult>(trim: &str) -> InputIterator<T> {
-        let rdr = BufReader::new(input_file());
-        InputIterator { rdr, trim: trim.chars().collect(),
+    pub fn iter_input<T: ParseResult>() -> InputIterator<T, impl BufRead> {
+        InputIterator { rdr: input_file(), trim: vec![],
                         indices: vec![].into(), marker: PhantomData }
     }
 
-    pub fn iter_input_parts<T: ParseResult, Ix: Indices>(ix: Ix) -> InputIterator<T> {
-        let rdr = BufReader::new(input_file());
-        InputIterator { rdr, trim: vec![], indices: ix.list(), marker: PhantomData }
+    pub fn iter_input_trim<T: ParseResult>(trim: &str) -> InputIterator<T, impl BufRead> {
+        InputIterator { rdr: input_file(), trim: trim.chars().collect(),
+                        indices: vec![].into(), marker: PhantomData }
     }
 
-    pub fn iter_input_parts_trim<T: ParseResult, Ix: Indices>(ix: Ix, trim: &str) -> InputIterator<T> {
-        let rdr = BufReader::new(input_file());
-        InputIterator { rdr, trim: trim.chars().collect(), indices: ix.list(), marker: PhantomData }
+    pub fn iter_input_parts<T: ParseResult, Ix: Indices>(ix: Ix) -> InputIterator<T, impl BufRead> {
+        InputIterator { rdr: input_file(), trim: vec![],
+                        indices: ix.list(), marker: PhantomData }
     }
 
-    pub fn iter_input_regex<T: ParseResult>(regex: &str) -> RegexInputIterator<T> {
+    pub fn iter_input_parts_trim<T: ParseResult, Ix: Indices>(ix: Ix, trim: &str) -> InputIterator<T, impl BufRead> {
+        InputIterator { rdr: input_file(), trim: trim.chars().collect(),
+                        indices: ix.list(), marker: PhantomData }
+    }
+
+    pub fn iter_input_regex<T: ParseResult>(regex: &str) -> RegexInputIterator<T, impl BufRead> {
         let rx = Regex::new(regex).expect("given regex is invalid");
         let loc = rx.capture_locations();
-        let rdr = BufReader::new(input_file());
-        RegexInputIterator { rx, loc, rdr, marker: PhantomData }
+        RegexInputIterator { rx, loc, rdr: input_file(), marker: PhantomData }
     }
 
     pub fn parse_str<T: ParseResult>(part: &str) -> T {
