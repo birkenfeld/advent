@@ -1,15 +1,15 @@
 use std::sync::mpsc;
 use md5::{Digest, Md5};
 use advtools::rayon::prelude::*;
+use advtools::input::input_string;
 
-const INPUT: &[u8] = b"yzbqklnj";
 const N: u64 = 10_000_000;
 
-fn check(i: u64, tx: &mpsc::SyncSender<(u64, bool)>) {
+fn check(input: &[u8], i: u64, tx: &mpsc::SyncSender<(u64, bool)>) {
     let mut ibuf = [0u8; 16];
     let mut hash = Md5::new();
     let n = itoa::write(&mut ibuf[..], i).unwrap();
-    hash.input(INPUT);
+    hash.input(input);
     hash.input(&ibuf[..n]);
     let buf = hash.result();
     if (buf[0] | buf[1] == 0) && (buf[2] & 0xF0 == 0) {
@@ -18,8 +18,10 @@ fn check(i: u64, tx: &mpsc::SyncSender<(u64, bool)>) {
 }
 
 fn main() {
+    let input = input_string();
+    let input = input.trim().as_bytes();
     let (tx, rx) = mpsc::sync_channel(256);
-    (0..N).into_par_iter().for_each(|n| check(n, &tx));
+    (0..N).into_par_iter().for_each(|n| check(input, n, &tx));
     drop(tx);
     let mut min5z = u64::max_value();
     let mut min6z = u64::max_value();
@@ -29,6 +31,6 @@ fn main() {
             min6z = min6z.min(number);
         }
     }
-    println!("First 5-zero hash for: {}", min5z);
-    println!("First 6-zero hash for: {}", min6z);
+    advtools::print("First 5-zero hash for", min5z);
+    advtools::print("First 6-zero hash for", min6z);
 }

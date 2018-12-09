@@ -1,17 +1,18 @@
-const GOAL: u32 = 33_100_000;
-const N: u32 = GOAL / 10;
+use advtools::input::{input_string, to_u32};
 
-fn find(maxhouses: u32, multiplier: u32) -> usize {
-    let mut presents = vec![1u32; N as usize];
-    for elf in 2..N {
-        for house in 1..maxhouses.min(N/elf) {
+fn find(goal: u32, maxhouses: u32, multiplier: u32, n: u32) -> usize {
+    let mut presents = vec![1u32; n as usize];
+    for elf in 2..n {
+        for house in 1..maxhouses.min(n/elf) {
             presents[(house * elf) as usize] += multiplier * elf;
         }
     }
-    presents.into_iter().position(|p| p >= GOAL).unwrap()
+    presents.into_iter().position(|p| p >= goal).unwrap()
 }
 
 fn main() {
-    println!("Visiting all houses: {}", find(N, 10));
-    println!("Visiting only 50 houses: {}", find(50, 11));
+    let goal = to_u32(input_string().trim());
+    let n = goal / 10;
+    advtools::print("Visiting all houses", find(goal, n, 10, n));
+    advtools::print("Visiting only 50 houses", find(goal, 50, 11, n));
 }

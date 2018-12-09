@@ -46,6 +46,6 @@ fn main() {
             nice_rule2 += 1;
         }
     }
-    println!("Nice strings (rule 1): {}", nice_rule1);
-    println!("Nice strings (rule 2): {}", nice_rule2);
+    advtools::print("Nice strings (rule 1)", nice_rule1);
+    advtools::print("Nice strings (rule 2)", nice_rule2);
 }

@@ -28,7 +28,7 @@ fn main() {
     }
     for (i, hay) in haystack.into_iter().enumerate() {
         if hay.is_subset(&needle) {
-            println!("Preliminary aunt: {}", i+1);
+            advtools::print("Preliminary aunt", i+1);
         }
         let all_ok = hay.iter().all(|(name, count)| {
             match &**name {
@@ -38,7 +38,7 @@ fn main() {
             }
         });
         if all_ok {
-            println!("Real aunt: {}", i+1);
+            advtools::print("Real aunt", i+1);
         }
     }
 }

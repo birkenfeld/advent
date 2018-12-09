@@ -52,10 +52,10 @@ fn main() {
         }
     }
     let variants = make_one_replacement(&target, &trans);
-    println!("# distinct molecules for calibration: {}", variants.len());
+    advtools::print("# distinct molecules for calibration", variants.len());
     loop {
         if let Some(steps) = find_steps(&target, "e", &rtrans) {
-            println!("# steps for making target: {}", steps);
+            advtools::print("# steps for making target", steps);
             break;
         }
     }

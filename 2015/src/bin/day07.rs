@@ -103,8 +103,8 @@ fn main() {
         circuit.connect(id, el);
     }
     let signal_a = circuit.get_value(wire_id("a"));
-    println!("Signal at wire a: {}", signal_a);
+    advtools::print("Signal at wire a", signal_a);
     circuit.reset();
     circuit.reconnect(wire_id("b"), Element::Const(Source::Const(signal_a)));
-    println!("Signal at wire a after modification: {}", circuit.get_value(wire_id("a")));
+    advtools::print("Signal at wire a after modification", circuit.get_value(wire_id("a")));
 }

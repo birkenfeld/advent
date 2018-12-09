@@ -21,6 +21,6 @@ fn main() {
         shortest = shortest.min(length);
         longest = longest.max(length);
     }
-    println!("Shortest path: {}", shortest);
-    println!("Longest path: {}", longest);
+    advtools::print("Shortest path", shortest);
+    advtools::print("Longest path", longest);
 }

@@ -5,6 +5,6 @@ fn main() {
         (0, 0), |(paper, ribbon), [l, w, h]: [u32; 3]| {
             (paper + 2 * (l*w + w*h + h*l) + l*w, ribbon + l*w*h + 2 * (l + w))
         });
-    println!("Paper: {}", total_paper);
-    println!("Ribbon: {}", total_ribbon);
+    advtools::print("Paper", total_paper);
+    advtools::print("Ribbon", total_ribbon);
 }

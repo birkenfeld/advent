@@ -34,8 +34,8 @@ fn main() {
     let mut weights = iter_input::<u32>().collect_vec();
     let total_weight = weights.iter().sum::<u32>();
     weights.reverse();
-    println!("Lowest QE (batch weight {}): {}", total_weight / 3,
-             find_configuration(&weights, total_weight / 3));
-    println!("Lowest QE (batch weight {}): {}", total_weight / 4,
-             find_configuration(&weights, total_weight / 4));
+    advtools::print(&format!("Lowest QE (batch weight {})", total_weight / 3),
+                    find_configuration(&weights, total_weight / 3));
+    advtools::print(&format!("Lowest QE (batch weight {})", total_weight / 4),
+                    find_configuration(&weights, total_weight / 4));
 }

@@ -35,8 +35,8 @@ fn main() {
     }
     let number_on: usize = bool_grid.iter().map(
         |row| row.iter().filter(|&&lamp| lamp).count()).sum();
-    println!("Lights on: {}", number_on);
+    advtools::print("Lights on", number_on);
     let total_brightness: usize = dim_grid.iter().map(
         |row| row.iter().map(|&v| v as usize).sum::<usize>()).sum();
-    println!("Total brightness: {}", total_brightness);
+    advtools::print("Total brightness", total_brightness);
 }

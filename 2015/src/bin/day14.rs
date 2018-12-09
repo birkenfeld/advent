@@ -14,7 +14,7 @@ fn main() {
         let rest_time = INPUT % cycle_time;
         (name.clone(), speed * (cycles * fly_time + rest_time.min(*fly_time)))
     }).max_by_key(|v| v.1).unwrap();
-    println!("Traditional: {} ({} km)", winner.0, winner.1);
+    advtools::print("Traditional", winner.1);
 
     for time in 0..INPUT {
         let best = deer.iter_mut().map(|&mut (_, speed, fly_time, cycle_time, ref mut dist, _)| {
@@ -30,5 +30,5 @@ fn main() {
         }
     }
     let winner = deer.iter().max_by_key(|v| v.5).unwrap();
-    println!("New-style: {} ({} points)", winner.0, winner.5);
+    advtools::print("New-style", winner.5);
 }

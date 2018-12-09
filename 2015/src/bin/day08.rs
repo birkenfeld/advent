@@ -32,9 +32,9 @@ fn main() {
         literal_len += line.len();
         reescaped_len += line.len() + extra_len + 4;
     }
-    // println!("Literal length: {}", literal_len);
-    // println!("In-memory length: {}", memory_len);
-    // println!("Re-escaped length: {}", reescaped_len);
-    println!("Difference literal - memory: {}", literal_len - memory_len);
-    println!("Difference reescaped - literal: {}", reescaped_len - literal_len);
+    // advtools::print("Literal length", literal_len);
+    // advtools::print("In-memory length", memory_len);
+    // advtools::print("Re-escaped length", reescaped_len);
+    advtools::print("Difference literal - memory", literal_len - memory_len);
+    advtools::print("Difference reescaped - literal", reescaped_len - literal_len);
 }

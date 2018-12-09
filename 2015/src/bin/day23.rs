@@ -57,6 +57,6 @@ fn main() {
     for toks in iter_input::<Vec<String>>() {
         instrs.push(read_instr(toks));
     }
-    println!("Register b for a = 0: {}", run(&instrs, [0, 0])[1]);
-    println!("Register b for a = 1: {}", run(&instrs, [1, 0])[1]);
+    advtools::print("Register b for a = 0", run(&instrs, [0, 0])[1]);
+    advtools::print("Register b for a = 1", run(&instrs, [1, 0])[1]);
 }

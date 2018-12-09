@@ -19,6 +19,6 @@ fn main() {
         let p2_id = map.get_id(p2);
         table[p1_id][p2_id] = val;
     }
-    println!("Most happiness: {}", most_happiness(8, &table));
-    println!("Most happiness including self: {}", most_happiness(9, &table));
+    advtools::print("Most happiness", most_happiness(8, &table));
+    advtools::print("Most happiness including self", most_happiness(9, &table));
 }

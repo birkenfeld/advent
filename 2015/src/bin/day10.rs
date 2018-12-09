@@ -1,4 +1,5 @@
-const INPUT: &[u8] = b"1321131112";
+use advtools::prelude::Itertools;
+use advtools::input::input_string;
 
 fn push_pair(v: &mut Vec<u8>, n: u8, d: u8) {
     if n >= 100 {
@@ -15,7 +16,8 @@ fn push_pair(v: &mut Vec<u8>, n: u8, d: u8) {
 }
 
 fn main() {
-    let mut seq: Vec<u8> = INPUT.iter().map(|&ch| ch - b'0').collect();
+    let input = input_string();
+    let mut seq = input.trim().chars().map(|ch| ch as u8 - b'0').collect_vec();
     for i in 1..=50 {
         let mut new_seq = Vec::with_capacity(2 * seq.len());
         let mut dp = seq[0];
@@ -31,7 +33,8 @@ fn main() {
         push_pair(&mut new_seq, n, dp);
         seq = new_seq;
         if i > 35 && i % 10 == 0 {
-            println!("Resulting length after {} iterations: {}", i, seq.len());
+            advtools::print(&format!("Resulting length after {} iterations", i),
+                            seq.len());
         }
     }
 }

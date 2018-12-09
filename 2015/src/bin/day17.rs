@@ -22,7 +22,7 @@ fn find_with_cont(v: &[i32], rest: i32, ncont: u32) -> u32 {
 
 fn main() {
     let containers = iter_input().collect::<Vec<i32>>();
-    println!("Combinations: {}", find(&containers, GOAL));
-    println!("Combinations with 4 containers: {}",
+    advtools::print("Combinations", find(&containers, GOAL));
+    advtools::print("Combinations with 4 containers",
              find_with_cont(&containers, GOAL, GOALCONT));
 }

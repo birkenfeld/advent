@@ -9,6 +9,6 @@ fn main() {
                 _   => (level, basement),
             }
         });
-    println!("Resulting floor: {}", res.0);
-    println!("Basement: {}", res.1.unwrap());
+    advtools::print("Resulting floor", res.0);
+    advtools::print("Basement", res.1.unwrap());
 }

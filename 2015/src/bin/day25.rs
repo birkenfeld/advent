@@ -18,7 +18,7 @@ fn main() {
         }
         code = (code * FACTOR) % DIVISOR;
         if row == ROW && col == COL {
-            println!("Code at ({},{}): {}", ROW, COL, code);
+            advtools::print("Code at target", code);
             break;
         }
     }
