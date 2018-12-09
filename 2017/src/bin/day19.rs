@@ -40,7 +40,7 @@ fn main() {
     }
 
     // Part 1: The letters in order of the path.
-    println!("Path: {}", from_utf8(path));
+    advtools::print("Path", from_utf8(path));
     // Part 2: The total number of steps taken.
-    println!("Steps: {}", steps);
+    advtools::print("Steps", steps);
 }

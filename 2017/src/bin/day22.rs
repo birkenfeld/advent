@@ -60,7 +60,7 @@ fn main() {
         State::Clean => State::Infected,
         _ => unreachable!()
     });
-    println!("Infections part 1: {}", part1);
+    advtools::print("Infections part 1", part1);
 
     // Part 2: Run 10M iterations, with full four states.
     let part2 = run(10_000_000, grid, |state| match state {
@@ -69,5 +69,5 @@ fn main() {
         State::Infected => State::Flagged,
         State::Flagged  => State::Clean,
     });
-    println!("Infections part 2: {}", part2);
+    advtools::print("Infections part 2", part2);
 }

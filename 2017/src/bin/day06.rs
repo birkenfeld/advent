@@ -22,6 +22,6 @@ fn main() {
             break steps - prev;
         }
     };
-    println!("Redistribution steps: {}", steps);
-    println!("Size of loop: {}", loop_size);
+    advtools::print("Redistribution steps", steps);
+    advtools::print("Size of loop", loop_size);
 }

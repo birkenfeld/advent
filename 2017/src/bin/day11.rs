@@ -25,7 +25,7 @@ fn main() {
         furthest = furthest.max(dist(x, y));
     }
     // Part 1: distance after all steps.
-    println!("Distance: {}", dist(x, y));
+    advtools::print("Distance", dist(x, y));
     // Part 2: furthest distance during any step.
-    println!("Furthest: {}", furthest);
+    advtools::print("Furthest", furthest);
 }

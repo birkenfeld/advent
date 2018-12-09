@@ -25,6 +25,6 @@ fn main() {
     }
     // Part 1: Largest register value after all instructions.
     let final_largest = regs.values().max().unwrap();
-    println!("Largest value: {}", final_largest);
-    println!("Largest value at any time: {}", any_largest);
+    advtools::print("Largest value", final_largest);
+    advtools::print("Largest value at any time", any_largest);
 }

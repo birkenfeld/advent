@@ -8,11 +8,11 @@ fn main() {
     let count1 = phrases.iter().filter(|ph| {
         ph.len() == ph.iter().unique().count()
     }).count();
-    println!("Valid passphrases: {}", count1);
+    advtools::print("Valid passphrases", count1);
 
     // Part 2: Check uniqueness after sorting, which considers anagrams.
     let count2 = phrases.iter().filter(|ph| {
         ph.len() == ph.iter().unique_by(|w| w.chars().sorted()).count()
     }).count();
-    println!("Valid without anagrams: {}", count2);
+    advtools::print("Valid without anagrams", count2);
 }

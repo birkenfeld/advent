@@ -1,6 +1,5 @@
 use advtools::prelude::{HashMap, Itertools};
-
-const INPUT: u32 = 312051;
+use advtools::input::{input_string, to_u32};
 
 /// Determine next coordinate of the position on the spiral.
 fn next_pos((x, y): (i32, i32)) -> (i32, i32) {
@@ -18,13 +17,15 @@ fn next_pos((x, y): (i32, i32)) -> (i32, i32) {
 }
 
 fn main() {
-    // Part 1: Just walk the spiral.  (Could start from the largest full ring, but this
-    // is very quick anyway.)
+    let input = to_u32(input_string().trim());
+
+    // Part 1: Just walk the spiral.  (Could start from the largest full ring,
+    // but this is very quick anyway.)
     let mut pos = (0, 0);
-    for _ in 1..INPUT {
+    for _ in 1..input {
         pos = next_pos(pos);
     }
-    println!("Distance for {}: {}", INPUT, pos.0.abs() + pos.1.abs());
+    advtools::print("Distance", pos.0.abs() + pos.1.abs());
 
     // Part 2: Walk the spiral and insert all the calculated ambient sums in a map.
     let mut map = HashMap::new();
@@ -36,10 +37,10 @@ fn main() {
         let write = (-1..=1).cartesian_product(-1..=1)
                            .map(|d| map.get(&(pos.0 + d.0, pos.1 + d.1)).unwrap_or(&0))
                            .sum::<u32>();
-        if write > INPUT {
+        if write > input {
             break write;
         }
         map.insert(pos, write);
     };
-    println!("Value written: {}", value);
+    advtools::print("Value written", value);
 }

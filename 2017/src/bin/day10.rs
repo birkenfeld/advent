@@ -7,9 +7,9 @@ fn main() {
 
     // Part 1: Preliminary knot hash.
     let marks = advent17::knot_process(&input, 1);
-    println!("Product of first elements: {}", (marks[0] as u16) * (marks[1] as u16));
+    advtools::print("Product of first elements", (marks[0] as u16) * (marks[1] as u16));
 
     // Part 2: Full knot hash of the input.
     let hash = advent17::knot_hash(input_str);
-    println!("Knot hash: {:02x}", hash.into_iter().format(""));
+    advtools::print("Knot hash", format!("{:02x}", hash.into_iter().format("")));
 }

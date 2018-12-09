@@ -24,9 +24,9 @@ fn main() {
 
     // Part 1: Taken offsets are increased by one.
     let steps1 = jump(&mut jumps.clone(), |ofs| ofs + 1);
-    println!("Steps to outside: {}", steps1);
+    advtools::print("Steps to outside", steps1);
 
     // Part 2: Taken offsets are increased or decreased by one.
     let steps2 = jump(&mut jumps, |ofs| if ofs >= 3 { ofs - 1 } else { ofs + 1 });
-    println!("Steps to outside (modified rule): {}", steps2);
+    advtools::print("Steps to outside (modified rule)", steps2);
 }

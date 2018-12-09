@@ -105,11 +105,11 @@ fn main() {
     // last sent value.
     let mut m = Machine::new(&program, 0);
     m.run(&mut VecDeque::new());
-    println!("Recovered: {}", m.snd.pop_back().unwrap());
+    advtools::print("Recovered", m.snd.pop_back().unwrap());
 
     // Part 2: Run two machines.  For the `while` condition see above.
     let mut m0 = Machine::new(&program, 0);
     let mut m1 = Machine::new(&program, 1);
     while m0.run(&mut m1.snd) || m1.run(&mut m0.snd) { }
-    println!("Program 1 send count: {}", m1.nsnd);
+    advtools::print("Program 1 send count", m1.nsnd);
 }

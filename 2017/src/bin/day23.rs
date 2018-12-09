@@ -81,7 +81,7 @@ fn main() {
     // Part 1: Run machine.
     let mut m = Machine::new(program.clone());
     m.run();
-    println!("Number of `mul`s: {}", m.nmul);
+    advtools::print("Number of `mul`s", m.nmul);
 
     // Part 2: Run the algorithm, translated:
     // Determine number of non-primes between b and c, inclusive, in steps of 17.
@@ -95,5 +95,5 @@ fn main() {
             }
         }
     }
-    println!("Nonprimes (`h` register): {}", nonprimes);
+    advtools::print("Nonprimes (`h` register)", nonprimes);
 }

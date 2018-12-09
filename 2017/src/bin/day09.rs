@@ -23,7 +23,7 @@ fn main() {
         }
     }
     // Part 1: "Score" (sum of nesting levels) of the input.
-    println!("Score: {}", score);
+    advtools::print("Score", score);
     // Part 2: Number of characters within garbage.
-    println!("Garbage: {}", ngarbage);
+    advtools::print("Garbage", ngarbage);
 }

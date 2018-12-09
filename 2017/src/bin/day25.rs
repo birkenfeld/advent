@@ -27,5 +27,5 @@ fn main() {
     }
 
     let cksum = tape.iter().map(|&v| v as u32).sum::<u32>();
-    println!("Diagnostic checksum: {}", cksum);
+    advtools::print("Diagnostic checksum", cksum);
 }

@@ -23,7 +23,7 @@ fn main() {
     // Part 1: The graph root (the node with no incoming edge) is the bottom program.
     // We assume there is exactly one.
     let root = graph.externals(Incoming).next().unwrap();
-    println!("Bottom program: {}", name2ix.iter().find(|e| e.1 == &root).unwrap().0);
+    advtools::print("Bottom program", name2ix.iter().find(|e| e.1 == &root).unwrap().0);
 
     // Part 2: Walk the graph using DFS to find the program whose children are not
     // balanced.
@@ -53,5 +53,5 @@ fn main() {
             break;
         }
     }
-    println!("Required weight: {}", req_weight);
+    advtools::print("Required weight", req_weight);
 }

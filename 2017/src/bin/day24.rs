@@ -34,7 +34,7 @@ fn main() {
     // Go through all bridge combinations recursively, using DFS.
     find_bridges(&parts, 0, 0, 0, &mut strongest, &mut longest);
     // Part 1: Find maximum strength of any bridge.
-    println!("Max bridge strength: {}", strongest);
+    advtools::print("Max bridge strength", strongest);
     // Part 2: Find maximum strength of longest bridges.
-    println!("Longest bridge strength: {}", longest.1);
+    advtools::print("Longest bridge strength", longest.1);
 }
