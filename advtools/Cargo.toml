@@ -1,7 +1,7 @@
 [package]
 name = "advtools"
 description = "A prelude to reduce boilerplate of 'Advent of Code' like challenges."
-version = "0.3.1"
+version = "0.4.0"
 authors = ["Georg Brandl <georg@python.org>"]
 license = "MIT/Apache-2.0"
 repository = "https://github.com/birkenfeld/advtools"

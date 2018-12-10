@@ -56,6 +56,18 @@ pub mod input {
     use std::path::Path;
     use regex::{Regex, CaptureLocations};
     use itertools::Itertools;
+    use arrayvec::Array;
+
+    // As in arrayvec, but not public unfortunately.
+    pub trait ArrayExt: Array {
+        #[inline]
+        fn as_slice(&self) -> &[Self::Item] {
+            unsafe { std::slice::from_raw_parts(self.as_ptr(), Self::capacity()) }
+        }
+    }
+
+    impl<A> ArrayExt for A where A: Array { }
+
 
     pub fn input_string() -> String {
         ::INPUT.with(|k| k.borrow().clone().unwrap_or_else(|| {
@@ -66,36 +78,6 @@ pub mod input {
             std::fs::read_to_string(&infile).unwrap_or_else(
                 |e| panic!("could not read input file: {}", e))
         }))
-    }
-
-    pub trait Indices {
-        fn list(&self) -> Cow<'static, [usize]>;
-    }
-
-    impl Indices for usize {
-        fn list(&self) -> Cow<'static, [usize]> { vec![*self].into() }
-    }
-
-    impl Indices for &'static [usize] {
-        fn list(&self) -> Cow<'static, [usize]> { (*self).into() }
-    }
-
-    impl Indices for (usize, usize) {
-        fn list(&self) -> Cow<'static, [usize]> { vec![self.0, self.1].into() }
-    }
-
-    impl Indices for (usize, usize, usize) {
-        fn list(&self) -> Cow<'static, [usize]> { vec![self.0, self.1, self.2].into() }
-    }
-
-    impl Indices for (usize, usize, usize, usize) {
-        fn list(&self) -> Cow<'static, [usize]> { vec![self.0, self.1, self.2, self.3].into() }
-    }
-
-    impl Indices for (usize, usize, usize, usize, usize) {
-        fn list(&self) -> Cow<'static, [usize]> {
-            vec![self.0, self.1, self.2, self.3, self.4].into()
-        }
     }
 
     pub type TokIter<'t> = Iterator<Item = &'t str> + 't;
@@ -224,14 +206,14 @@ pub mod input {
     array_impl!(T, 8, ????????);
     array_impl!(T, 9, ?????????);
 
-    pub struct InputIterator<T, R> {
+    pub struct InputIterator<T, R, A> {
         rdr: R,
         trim: Vec<char>,
-        indices: Cow<'static, [usize]>,
+        indices: A,
         marker: PhantomData<T>,
     }
 
-    impl<T: ParseResult, R: BufRead> Iterator for InputIterator<T, R> {
+    impl<T: ParseResult, R: BufRead, A: Array<Item=usize>> Iterator for InputIterator<T, R, A> {
         type Item = T;
 
         fn next(&mut self) -> Option<T> {
@@ -244,7 +226,7 @@ pub mod input {
                     line.pop();
                 }
             }
-            Some(T::read_line(Cow::from(line), &self.trim, &self.indices))
+            Some(T::read_line(Cow::from(line), &self.trim, self.indices.as_slice()))
         }
     }
 
@@ -283,24 +265,24 @@ pub mod input {
         Cursor::new(input_string())
     }
 
-    pub fn iter_input<T: ParseResult>() -> InputIterator<T, impl BufRead> {
+    pub fn iter_input<T: ParseResult>() -> InputIterator<T, impl BufRead, [usize; 0]> {
         InputIterator { rdr: input_file(), trim: vec![],
-                        indices: vec![].into(), marker: PhantomData }
+                        indices: [], marker: PhantomData }
     }
 
-    pub fn iter_input_trim<T: ParseResult>(trim: &str) -> InputIterator<T, impl BufRead> {
+    pub fn iter_input_trim<T: ParseResult>(trim: &str) -> InputIterator<T, impl BufRead, [usize; 0]> {
         InputIterator { rdr: input_file(), trim: trim.chars().collect(),
-                        indices: vec![].into(), marker: PhantomData }
+                        indices: [], marker: PhantomData }
     }
 
-    pub fn iter_input_parts<T: ParseResult, Ix: Indices>(ix: Ix) -> InputIterator<T, impl BufRead> {
+    pub fn iter_input_parts<T: ParseResult, Ix: Array>(ix: Ix) -> InputIterator<T, impl BufRead, Ix> {
         InputIterator { rdr: input_file(), trim: vec![],
-                        indices: ix.list(), marker: PhantomData }
+                        indices: ix, marker: PhantomData }
     }
 
-    pub fn iter_input_parts_trim<T: ParseResult, Ix: Indices>(ix: Ix, trim: &str) -> InputIterator<T, impl BufRead> {
+    pub fn iter_input_parts_trim<T: ParseResult, Ix: Array>(ix: Ix, trim: &str) -> InputIterator<T, impl BufRead, Ix> {
         InputIterator { rdr: input_file(), trim: trim.chars().collect(),
-                        indices: ix.list(), marker: PhantomData }
+                        indices: ix, marker: PhantomData }
     }
 
     pub fn iter_input_regex<T: ParseResult>(regex: &str) -> RegexInputIterator<T, impl BufRead> {
@@ -313,13 +295,13 @@ pub mod input {
         T::read_token(&mut [part].into_iter().map(|&v| v)).unwrap()
     }
 
-    pub fn parse_parts<T: ParseResult, Ix: Indices>(line: &str, ix: Ix) -> T {
-        T::read_line(line.into(), &[], &ix.list()[..])
+    pub fn parse_parts<T: ParseResult, Ix: Array<Item=usize>>(line: &str, ix: Ix) -> T {
+        T::read_line(line.into(), &[], ix.as_slice())
     }
 
-    pub fn parse_parts_trim<T: ParseResult, Ix: Indices>(line: &str, ix: Ix, trim: &str) -> T {
+    pub fn parse_parts_trim<T: ParseResult, Ix: Array<Item=usize>>(line: &str, ix: Ix, trim: &str) -> T {
         let trim: Vec<_> = trim.chars().collect();
-        T::read_line(line.into(), &trim, &ix.list()[..])
+        T::read_line(line.into(), &trim, ix.as_slice())
     }
 
     macro_rules! impl_to {
