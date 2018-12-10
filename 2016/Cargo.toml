@@ -10,7 +10,7 @@ name = "days"
 harness = false
 
 [dependencies]
-advtools = "0.3.0"
+advtools = { version = "0.4.0", path = "../advtools" }
 md-5 = "0.8.0"
 itoa = "0.4.3"
 strum = "0.12.0"

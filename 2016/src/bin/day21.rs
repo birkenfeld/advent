@@ -62,22 +62,22 @@ fn main() {
     for line in iter_input::<String>() {
         recipe.push(
             if line.starts_with("rotate left") {
-                Instr::RotL(parse_parts(&line, 2))
+                Instr::RotL(parse_parts(&line, [2]))
             } else if line.starts_with("rotate right") {
-                Instr::RotR(parse_parts(&line, 2))
+                Instr::RotR(parse_parts(&line, [2]))
             } else if line.starts_with("rotate based") {
-                Instr::RotLetter(parse_parts(&line, 6))
+                Instr::RotLetter(parse_parts(&line, [6]))
             } else if line.starts_with("swap position") {
-                let (p1, p2) = parse_parts(&line, (2, 5));
+                let (p1, p2) = parse_parts(&line, [2, 5]);
                 Instr::SwapPos(p1, p2)
             } else if line.starts_with("swap letter") {
-                let (l1, l2) = parse_parts(&line, (2, 5));
+                let (l1, l2) = parse_parts(&line, [2, 5]);
                 Instr::SwapLetter(l1, l2)
             } else if line.starts_with("reverse positions") {
-                let (p1, p2) = parse_parts(&line, (2, 4));
+                let (p1, p2) = parse_parts(&line, [2, 4]);
                 Instr::Reverse(p1, p2)
             } else if line.starts_with("move position") {
-                let (p1, p2) = parse_parts(&line, (2, 5));
+                let (p1, p2) = parse_parts(&line, [2, 5]);
                 Instr::Move(p1, p2)
             } else {
                 panic!("invalid instruction line: {}", line)
