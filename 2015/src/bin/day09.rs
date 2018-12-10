@@ -6,7 +6,7 @@ use permutohedron::Heap;
 fn main() {
     let mut table = [[0u16; 8]; 8];
     let mut map = Uids::new();
-    for row in iter_input_parts((0, 2, 4)) {
+    for row in iter_input_parts([0, 2, 4]) {
         let (from, to, dist): (String, String, u16) = row;
         let from_id = map.get_id(from);
         let to_id = map.get_id(to);

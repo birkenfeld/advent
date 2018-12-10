@@ -4,7 +4,7 @@ const INPUT: u32 = 2503;
 
 fn main() {
     let mut deer = Vec::new();
-    for row in iter_input_parts((0, 3, 6, 13)) {
+    for row in iter_input_parts([0, 3, 6, 13]) {
         let (name, speed, fly_time, rest_time): (String, u32, u32, u32) = row;
         deer.push((name, speed, fly_time, fly_time + rest_time, 0, 0));
     }

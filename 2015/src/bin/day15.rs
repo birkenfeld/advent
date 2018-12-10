@@ -37,7 +37,7 @@ fn find_best(goalcal: Option<i32>, v: &[Values]) -> Vec<i32> {
 }
 
 fn main() {
-    let v = iter_input_parts_trim((2, 4, 6, 8, 10), ",").collect_vec();
+    let v = iter_input_parts_trim([2, 4, 6, 8, 10], ",").collect_vec();
     let best = find_best(None, &v);
     advtools::print("Best", fom(&best, &v));
     let new_best = find_best(Some(500), &v);

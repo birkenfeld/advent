@@ -18,7 +18,7 @@ fn main() {
     let mut needle = HashSet::new();
     let mut needle_map = HashMap::new();
     for line in NEEDLE.lines() {
-        let (name, count): (String, i32) = parse_parts_trim(&line, (0, 1), ":");
+        let (name, count): (String, i32) = parse_parts_trim(&line, [0, 1], ":");
         needle.insert((name.clone(), count));
         needle_map.insert(name, count);
     }
