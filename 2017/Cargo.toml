@@ -10,7 +10,7 @@ name = "days"
 harness = false
 
 [dependencies]
-advtools = "0.3.0"
+advtools = { version = "0.4.0", path = "../advtools" }
 petgraph = "0.4.13"
 
 [dev-dependencies]
