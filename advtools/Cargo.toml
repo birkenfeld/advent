@@ -7,9 +7,9 @@ license = "MIT/Apache-2.0"
 repository = "https://github.com/birkenfeld/advtools"
 
 [dependencies]
-itertools = "0.7.11"
-hashbrown = "0.1.7"
-arrayvec = "0.4.8"
-rayon = "1.0.3"
-regex = "1.1.0"
+itertools = "0.8.2"
+hashbrown = "0.6.3"
+arrayvec = "0.5.1"
+rayon = "1.2.1"
+regex = "1.3.1"
 odds = { version = "0.3.1", features = ["std-string", "std-vec"] }

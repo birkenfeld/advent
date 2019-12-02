@@ -58,17 +58,6 @@ pub mod input {
     use itertools::Itertools;
     use arrayvec::Array;
 
-    // As in arrayvec, but not public unfortunately.
-    pub trait ArrayExt: Array {
-        #[inline]
-        fn as_slice(&self) -> &[Self::Item] {
-            unsafe { std::slice::from_raw_parts(self.as_ptr(), Self::capacity()) }
-        }
-    }
-
-    impl<A> ArrayExt for A where A: Array { }
-
-
     pub fn input_string() -> String {
         ::INPUT.with(|k| k.borrow().clone().unwrap_or_else(|| {
             let mut infile = Path::new("input").join(
@@ -80,7 +69,7 @@ pub mod input {
         }))
     }
 
-    pub type TokIter<'t> = Iterator<Item = &'t str> + 't;
+    pub type TokIter<'t> = dyn Iterator<Item = &'t str> + 't;
 
     pub trait ParseResult where Self: Sized {
         fn read_line(line: Cow<str>, trim: &[char], mut indices: &[usize]) -> Self {
@@ -222,7 +211,7 @@ pub mod input {
                 if self.rdr.read_line(&mut line).unwrap() == 0 {
                     return None;
                 }
-                while line.trim_right() != line {
+                while line.trim_end() != line {
                     line.pop();
                 }
             }
@@ -246,7 +235,7 @@ pub mod input {
                 if self.rdr.read_line(&mut line).unwrap() == 0 {
                     return None;
                 }
-                while line.trim_right() != line {
+                while line.trim_end() != line {
                     line.pop();
                 }
             }
@@ -292,7 +281,7 @@ pub mod input {
     }
 
     pub fn parse_str<T: ParseResult>(part: &str) -> T {
-        T::read_token(&mut [part].into_iter().map(|&v| v)).unwrap()
+        T::read_token(&mut [part].iter().map(|&v| v)).unwrap()
     }
 
     pub fn parse_parts<T: ParseResult, Ix: Array<Item=usize>>(line: &str, ix: Ix) -> T {
