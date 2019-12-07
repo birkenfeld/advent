@@ -24,6 +24,8 @@ pub mod prelude {
     pub use rayon;
 }
 
+use std::borrow::Borrow;
+use std::ops::Index;
 use std::cell::RefCell;
 use std::path::Path;
 use std::fmt::Display;
@@ -334,5 +336,12 @@ impl<T: Hash + Eq> Uids<T> {
     pub fn get_id(&mut self, k: T) -> usize {
         let n = self.map.len();
         *self.map.entry(k).or_insert(n)
+    }
+}
+
+impl<T: Hash + Eq + Borrow<Q>, Q: Hash + Eq + ?Sized> Index<&Q> for Uids<T> {
+    type Output = usize;
+    fn index(&self, q: &Q) -> &usize {
+        &self.map[&q]
     }
 }
