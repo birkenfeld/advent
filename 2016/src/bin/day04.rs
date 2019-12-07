@@ -17,7 +17,7 @@ fn main() {
         let counts = counts.into_iter().map(|(ch, count)| (-count, ch)).sorted();
 
         // determine checksum from letter counts
-        let real_checksum = counts.into_iter().take(5).map(|x| x.1).collect::<String>();
+        let real_checksum: String = counts.take(5).map(|x| x.1).collect();
         if real_checksum == checksum {
             sector_sum += sector;
 

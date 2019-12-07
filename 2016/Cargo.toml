@@ -13,8 +13,8 @@ harness = false
 advtools = { version = "0.4.0", path = "../advtools" }
 md-5 = "0.8.0"
 itoa = "0.4.3"
-strum = "0.12.0"
-strum_macros = "0.12.0"
+strum = "0.16.0"
+strum_macros = "0.16.0"
 
 [dev-dependencies]
-criterion = { version = "0.2.5", default-features = false }
+criterion = { version = "0.3.0", default-features = false }

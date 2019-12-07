@@ -14,7 +14,7 @@ fn find_allowed(excluded: &[(u32, u32)], mut el: u32) -> Option<u32> {
 }
 
 fn main() {
-    let excluded = iter_input_regex("(\\d+)-(\\d+)").sorted();
+    let excluded = iter_input_regex("(\\d+)-(\\d+)").sorted().collect_vec();
     let mut smallest = find_allowed(&excluded, 0);
     advtools::print("Smallest allowed", smallest.unwrap());
     let mut n = 0;

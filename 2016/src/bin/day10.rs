@@ -35,7 +35,7 @@ fn main() {
         }
         for (botno, bot) in &mut bots {
             if bot.chips.len() == 2 {
-                let chips = bot.chips.drain(..).sorted();
+                let chips = bot.chips.drain(..).sorted().collect_vec();
                 if chips == [17, 61] {
                     advtools::print("Comparing 17-61", botno);
                 }
