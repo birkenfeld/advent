@@ -1,4 +1,4 @@
-use advtools::prelude::{HashSet, Itertools};
+use advtools::prelude::HashSet;
 use advtools::input::input_string;
 
 type Coords = HashSet<(isize, isize)>;
@@ -21,7 +21,7 @@ fn walk<I>(directions: I, mut set: Coords) -> Coords where I: IntoIterator<Item=
 fn main() {
     let directions = input_string();
     advtools::print("# houses", walk(directions.chars(), HashSet::new()).len());
-    let set = walk(directions.chars().step(2), HashSet::new());
-    let set = walk(directions.chars().skip(1).step(2), set);
+    let set = walk(directions.chars().step_by(2), HashSet::new());
+    let set = walk(directions.chars().skip(1).step_by(2), set);
     advtools::print("# houses with robot", set.len())
 }
