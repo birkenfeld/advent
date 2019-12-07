@@ -12,7 +12,7 @@ fn main() {
 
     // Part 2: Check uniqueness after sorting, which considers anagrams.
     let count2 = phrases.iter().filter(|ph| {
-        ph.len() == ph.iter().unique_by(|w| w.chars().sorted()).count()
+        ph.len() == ph.iter().unique_by(|w| w.chars().sorted().collect_vec()).count()
     }).count();
     advtools::print("Valid without anagrams", count2);
 }
