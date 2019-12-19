@@ -1,6 +1,6 @@
 use advtools::prelude::{Itertools, HashMap, FromIterator};
 use advtools::input::input_string;
-use advent19::Machine;
+use advent19::I64Machine;
 use num::Zero;
 
 #[derive(Clone, PartialEq)]
@@ -19,8 +19,8 @@ impl Dir {
 }
 
 fn main() {
-    let code = Machine::parse(&input_string());
-    let mut machine = Machine::new(&code);
+    let code = I64Machine::parse(&input_string());
+    let mut machine = I64Machine::new(&code);
 
     let mut walk = |tiles: &mut HashMap<(i32, i32), Color>| {
         let (mut x, mut y, mut dir) = (0, 0, U);
