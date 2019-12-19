@@ -5,6 +5,7 @@ use generic_array::{GenericArray, ArrayLength, arr};
 
 const ALL_KEYS: u32 = (1 << 26) - 1;
 
+#[derive(PartialEq, Clone, Copy)]
 enum Cell {
     Wall,
     Free,
@@ -16,9 +17,9 @@ use Cell::*;
 type XY = (usize, usize);
 
 fn main() {
-    let mut grid = Vec::new();
+    let mut maze = Vec::new();
     for line in iter_input::<String>() {
-        grid.push(line.trim().chars().map(|ch| match ch {
+        maze.push(line.trim().chars().map(|ch| match ch {
             '#' => Wall,
             '.' | '@' => Free,
             'a'..='z' => Key(ch as u8 - b'a'),
@@ -27,45 +28,71 @@ fn main() {
         }).collect_vec());
     }
 
-    let ny = grid.len()/2;
-    let nx = grid[0].len()/2;
+    let my = maze.len()/2;
+    let mx = maze[0].len()/2;
 
-    advtools::print("Fewest steps with 1 robot", visit_n(&grid, arr![XY; (nx, ny)]));
+    prune_maze(&mut maze);
 
-    grid[ny][nx] = Wall;
-    grid[ny-1][nx] = Wall;
-    grid[ny][nx-1] = Wall;
-    grid[ny+1][nx] = Wall;
-    grid[ny][nx+1] = Wall;
+    advtools::print("Fewest steps with 1 robot", visit_n(&maze, arr![XY; (mx, my)]));
 
-    let start = arr![XY; (nx-1, ny-1), (nx-1, ny+1), (nx+1, ny-1), (nx+1, ny+1)];
-    advtools::print("Fewest steps with 4 robots", visit_n(&grid, start));
+    maze[my][mx] = Wall;
+    maze[my-1][mx] = Wall;
+    maze[my][mx-1] = Wall;
+    maze[my+1][mx] = Wall;
+    maze[my][mx+1] = Wall;
+
+    let start = arr![XY; (mx-1, my-1), (mx-1, my+1), (mx+1, my-1), (mx+1, my+1)];
+    advtools::print("Fewest steps with 4 robots", visit_n(&maze, start));
 }
 
+/// Prune any cul-de-sacs without keys or doors from the maze.
+fn prune_maze(maze: &mut [Vec<Cell>]) {
+    loop {
+        let mut changed = 0;
+        for y in 0..maze.len() {
+            for x in 0..maze[0].len() {
+                if maze[y][x] == Free {
+                    let neighbors = [maze[y-1][x],
+                                     maze[y+1][x],
+                                     maze[y][x-1],
+                                     maze[y][x+1]];
+                    if neighbors.iter().filter(|&n| n == &Wall).count() == 3 &&
+                        neighbors.iter().filter(|&n| n == &Free).count() == 1
+                    {
+                        maze[y][x] = Wall;
+                        changed += 1;
+                    }
+                }
+            }
+        }
+        if changed == 0 {
+            break;
+        }
+    }
+}
+
+/// Visit a maze with N robots.
 fn visit_n<N>(maze: &[Vec<Cell>], start: GenericArray<XY, N>) -> u32
     where N: ArrayLength<XY>
 {
     let mut fastest = HashMap::new();
-    let mut possible = HashMap::new();
+    let mut next = HashMap::new();
     fastest.insert(((0, 0), 0), 0);
     let start = (start, 0, 0);
     let mut queue = vec![start];
     let mut min_steps = u32::max_value();
 
-    let mut tmp = HashSet::default();
     loop {
+        queue.sort_by_key(|k| k.2);
+        // println!("{}", queue.len());
         for (xys, keys, steps) in replace(&mut queue, Vec::new()) {
-            if steps > min_steps {
-                continue;
-            }
             if keys == ALL_KEYS {
                 min_steps = min_steps.min(steps);
                 continue;
             }
 
             for (i, &xy) in xys.iter().enumerate() {
-                let pk = possible.entry((xy, keys)).or_insert_with(
-                    || possible_keys(&mut tmp, &maze, xy, keys));
+                let pk = next.entry((xy, keys)).or_insert_with(|| next_keys(&maze, xy, keys));
                 for &(nxy, nkeys, ksteps) in pk.iter() {
                     match fastest.get(&(nxy, nkeys)) {
                         Some(&n) if n <= steps + ksteps => (),
@@ -85,8 +112,10 @@ fn visit_n<N>(maze: &[Vec<Cell>], start: GenericArray<XY, N>) -> u32
     }
 }
 
-fn possible_keys(known: &mut HashSet<XY>, maze: &[Vec<Cell>], start: XY, keys: u32) -> Vec<(XY, u32, u32)> {
-    known.clear();
+/// Find all keys reachable from the given position, with the given set of keys
+/// already in possession.  Keys that lie behind other new keys are not considered.
+fn next_keys(maze: &[Vec<Cell>], start: XY, keys: u32) -> Vec<(XY, u32, u32)> {
+    let mut known = HashSet::with_capacity(4096);
     known.insert(start);
     let mut keys_found = keys;
     let mut res = Vec::with_capacity(4);
