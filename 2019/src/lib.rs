@@ -3,13 +3,14 @@ use num_bigint::BigInt;
 use num_traits::{Zero, ToPrimitive};
 
 pub type Int = BigInt;
-pub type Mem = HashMap<Int, Int>;
+pub type Mem = HashMap<usize, Int>;
 
 /// The Intcode computer.
 pub struct Machine {
-    ip: Int,
+    ip: usize,
     bp: Int,
     mem: Mem,
+    zero: Int,
     input: Vec<Int>,
 }
 
@@ -23,7 +24,7 @@ impl Machine {
 
     /// Create a new machine with given memory cells and initial input.
     pub fn new(mem: &Mem) -> Self {
-        Self { ip: BigInt::zero(), bp: BigInt::zero(),
+        Self { ip: 0, bp: BigInt::zero(), zero: BigInt::zero(),
                mem: mem.clone(), input: Vec::new() }
     }
 
@@ -44,42 +45,55 @@ impl Machine {
     }
 
     /// Return contents of given memory cell.
-    pub fn mem(&self, index: impl Into<BigInt>) -> Int {
-        self.mem.get(&index.into()).cloned().unwrap_or(BigInt::zero())
+    pub fn mem(&self, index: usize) -> Int {
+        self.mem.get(&index).cloned().unwrap_or_default()
     }
 
     /// Set contents of given memory cell.
-    pub fn set_mem(&mut self, index: impl Into<BigInt>, value: impl Into<BigInt>) {
-        self.mem.insert(index.into(), value.into());
+    pub fn set_mem(&mut self, index: usize, value: impl Into<BigInt>) {
+        self.mem.insert(index, value.into());
     }
 
     fn reg(&mut self, mode: u32) -> &mut Int {
         self.ip += 1;
         if mode == 0 {
             // Address mode
-            let addr = self.mem.entry(&self.ip - 1).or_default().clone();
+            let addr = self.mem[&(self.ip - 1)].to_usize().unwrap();
             self.mem.entry(addr).or_default()
         } else if mode == 2 {
             // Relative address mode
-            let addr = &self.bp + &*self.mem.entry(&self.ip - 1).or_default();
-            self.mem.entry(addr).or_default()
+            let addr = &self.bp + &self.mem[&(self.ip - 1)];
+            self.mem.entry(addr.to_usize().unwrap()).or_default()
         } else {
             // Immediate mode
-            self.mem.entry(&self.ip - 1).or_default()
+            self.mem.entry(self.ip - 1).or_default()
         }
     }
 
-    fn binop<F: Fn(Int, Int) -> Int>(&mut self, m1: u32, m2: u32, m3: u32, op: F) {
-        let vs = self.reg(m1).clone(); // TODO: borrow here
-        let vt = self.reg(m2).clone();
-        *self.reg(m3) = op(vs, vt);
+    fn reg_imm(&self, mode: u32, off: usize) -> &Int {
+        let arg = self.mem.get(&(self.ip - 1 + off)).unwrap_or(&self.zero);
+        if mode == 0 {
+            self.mem.get(&arg.to_usize().unwrap()).unwrap_or(&self.zero)
+        } else if mode == 2 {
+            self.mem.get(&(&self.bp + arg).to_usize().unwrap()).unwrap_or(&self.zero)
+        } else {
+            arg
+        }
+    }
+
+    fn binop<F: Fn(&Int, &Int) -> Int>(&mut self, m1: u32, m2: u32, m3: u32, op: F) {
+        let vs = self.reg_imm(m1, 1);
+        let vt = self.reg_imm(m2, 2);
+        let val = op(vs, vt);
+        self.ip += 2;
+        *self.reg(m3) = val;
     }
 
     fn jumpop<F: Fn(&Int) -> bool>(&mut self, m1: u32, m2: u32, cond: F) {
-        if cond(self.reg(m1)) {
-            self.ip = self.reg(m2).clone();
+        if cond(self.reg_imm(m1, 1)) {
+            self.ip = self.reg_imm(m2, 2).to_usize().unwrap();
         } else {
-            self.ip += 1;
+            self.ip += 2;
         }
     }
 }
