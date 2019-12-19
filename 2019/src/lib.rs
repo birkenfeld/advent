@@ -1,6 +1,6 @@
 use std::collections::HashMap;
-use num_bigint::BigInt;
-use num_traits::{Zero, ToPrimitive};
+use num::BigInt;
+use num::{Zero, ToPrimitive};
 
 pub type Int = BigInt;
 pub type Mem = HashMap<usize, Int>;

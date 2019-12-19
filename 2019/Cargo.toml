@@ -11,8 +11,7 @@ harness = false
 
 [dependencies]
 advtools = { version = "0.4.0", path = "../advtools" }
-num-bigint = "0.2.3"
-num-traits = "0.2.10"
+num = "0.2.0"
 float-ord = "0.2.0"
 
 [dev-dependencies]
