@@ -1,20 +1,9 @@
 use advtools::prelude::{Itertools, HashSet};
 use advtools::input::input_string;
-use advent19::Machine;
-
-#[derive(Clone, Copy)]
-enum Dir { U, L, D, R }
-use Dir::*;
-
-impl Dir {
-    fn left(&self)  -> Self { match self { U => L, L => D, D => R, R => U } }
-    fn right(&self) -> Self { match self { U => R, R => D, D => L, L => U } }
-}
+use advent19::{Machine, Dir};
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
-enum Instr { L, R, Fwd(usize), A, B, C }
-
-type XY = (usize, usize);
+enum Instr { Fwd(usize), L, R, A, B, C }
 
 struct Grid {
     width: usize,
@@ -23,16 +12,9 @@ struct Grid {
 }
 
 impl Grid {
-    fn step(&self, (x, y): XY, dir: Dir) -> Option<XY> {
-        match dir {
-            U => if y > 0             { Some((x, y-1)) } else { None },
-            D => if y < self.height-1 { Some((x, y+1)) } else { None },
-            L => if x > 0             { Some((x-1, y)) } else { None },
-            R => if x < self.width-1  { Some((x+1, y)) } else { None },
-        }
-    }
-    fn neighbor(&self, xy: XY, dir: Dir) -> Option<XY> {
-        self.step(xy, dir).filter(|(x, y)| self.grid[y*self.width + x])
+    fn neighbor(&self, xy: (usize, usize), dir: Dir) -> Option<(usize, usize)> {
+        dir.maybe_step(xy, self.width, self.height)
+           .filter(|(x, y)| self.grid[y*self.width + x])
     }
 }
 
@@ -55,15 +37,15 @@ fn main() {
     let code = Machine::parse(&input_string());
     let mut width = usize::max_value();
     let mut robot_pos = (0, 0);
-    let mut robot_dir = U;
+    let mut robot_dir = Dir::U;
     let grid = Machine::new(&code).enumerate().filter_map(|(i, ch)| match ch as u8 {
         b'#'  => Some(true),
         b'.'  => Some(false),
         b'\n' => { width = width.min(i); None }
-        b'^'  => { robot_pos = (i % (width+1), i / (width+1)); robot_dir = U; Some(true) }
-        b'v'  => { robot_pos = (i % (width+1), i / (width+1)); robot_dir = D; Some(true) }
-        b'<'  => { robot_pos = (i % (width+1), i / (width+1)); robot_dir = L; Some(true) }
-        b'>'  => { robot_pos = (i % (width+1), i / (width+1)); robot_dir = R; Some(true) }
+        b'^'  => { robot_pos = (i % (width+1), i / (width+1)); robot_dir = Dir::U; Some(true) }
+        b'v'  => { robot_pos = (i % (width+1), i / (width+1)); robot_dir = Dir::D; Some(true) }
+        b'<'  => { robot_pos = (i % (width+1), i / (width+1)); robot_dir = Dir::L; Some(true) }
+        b'>'  => { robot_pos = (i % (width+1), i / (width+1)); robot_dir = Dir::R; Some(true) }
         _ => panic!("invalid char in machine output")
     }).collect_vec();
     let grid = Grid { width, height: grid.len()/width, grid };
@@ -71,7 +53,7 @@ fn main() {
     // Part 1: determine the sum of "alignment parameters" which are intersections
     // in the scaffold, i.e. all neighbors are present.
     let alignment = (0..grid.width).cartesian_product(0..grid.height).filter(|&xy| {
-        [U, D, R, L].iter().all(|&d| grid.neighbor(xy, d).is_some())
+        Dir::iter().all(|d| grid.neighbor(xy, d).is_some())
     }).map(|(x, y)| x * y).sum::<usize>();
     advtools::print("Alignment param sum", alignment);
 

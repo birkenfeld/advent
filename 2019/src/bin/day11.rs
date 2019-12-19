@@ -1,46 +1,30 @@
 use std::fmt::Write;
 use advtools::prelude::{Itertools, HashMap};
 use advtools::input::input_string;
-use advent19::Machine;
+use advent19::{Machine, Dir};
 
 #[derive(Clone, PartialEq)]
 enum Color { Black, White }
-enum Dir { U, L, D, R }
-use {Dir::*, Color::*};
-
-impl Dir {
-    fn ccw(self) -> Self {
-        match self { U => L, L => D, D => R, R => U }
-    }
-
-    fn cw(self) -> Self {
-        match self { U => R, R => D, D => L, L => U }
-    }
-}
+use Color::*;
 
 fn main() {
     let code = Machine::parse(&input_string());
     let mut machine = Machine::new(&code);
 
     let mut walk = |tiles: &mut HashMap<(i32, i32), Color>| {
-        let (mut x, mut y, mut dir) = (0, 0, U);
+        let (mut xy, mut dir) = ((0, 0), Dir::U);
         loop {
             // Determine current color and feed it to the machine.
-            let cur_color = tiles.get(&(x, y)).cloned().unwrap_or(Black);
+            let cur_color = tiles.get(&xy).cloned().unwrap_or(Black);
             let paint = match machine.run(cur_color as i64) {
                 Some(p) => if p == 0 { Black } else { White },
                 None => break
             };
             // Mark this tile as painted, white or black.
-            tiles.insert((x, y), paint);
+            tiles.insert(xy, paint);
             // Determine direction, turn and advance one step.
-            dir = if machine.next().unwrap() == 0 { dir.ccw() } else { dir.cw() };
-            match dir {
-                U => y -= 1,
-                L => x -= 1,
-                D => y += 1,
-                R => x += 1,
-            }
+            dir = if machine.next().unwrap() == 0 { dir.left() } else { dir.right() };
+            xy = dir.step(xy);
         }
     };
 

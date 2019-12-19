@@ -1,5 +1,6 @@
 use std::collections::HashMap;
 use std::rc::Rc;
+use num::Integer;
 
 /// The Intcode computer.
 #[derive(Clone)]
@@ -133,6 +134,67 @@ impl Iterator for Machine {
                 99 => return None,
                 d => panic!("unknown opcode {}", d)
             }
+        }
+    }
+}
+
+
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
+pub enum Dir {
+    U,
+    L,
+    D,
+    R,
+}
+
+impl Dir {
+    pub fn iter() -> impl Iterator<Item=Self> {
+        [Dir::U, Dir::D, Dir::R, Dir::L].iter().cloned()
+    }
+
+    pub fn left(&self)  -> Self {
+        match self {
+            Dir::U => Dir::L,
+            Dir::L => Dir::D,
+            Dir::D => Dir::R,
+            Dir::R => Dir::U,
+        }
+    }
+
+    pub fn right(&self) -> Self {
+        match self {
+            Dir::U => Dir::R,
+            Dir::R => Dir::D,
+            Dir::D => Dir::L,
+            Dir::L => Dir::U,
+        }
+    }
+
+    pub fn step<N: Integer>(&self, (x, y): (N, N)) -> (N, N) {
+        match self {
+            Dir::U => (x, y-N::one()),
+            Dir::D => (x, y+N::one()),
+            Dir::L => (x-N::one(), y),
+            Dir::R => (x+N::one(), y),
+        }
+    }
+
+    pub fn maybe_step<N: Integer>(&self, (x, y): (N, N), w: N, h: N) -> Option<(N, N)> {
+        match self {
+            Dir::U => if y > N::zero()  { Some((x, y-N::one())) } else { None },
+            Dir::D => if y < h-N::one() { Some((x, y+N::one())) } else { None },
+            Dir::L => if x > N::zero()  { Some((x-N::one(), y)) } else { None },
+            Dir::R => if x < w-N::one() { Some((x+N::one(), y)) } else { None },
+        }
+    }
+
+    pub fn from_str(s: &str) -> Self {
+        match s {
+            "U" => Dir::U,
+            "D" => Dir::D,
+            "L" => Dir::L,
+            "R" => Dir::R,
+            _ => unreachable!("invalid direction")
         }
     }
 }
