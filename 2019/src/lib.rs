@@ -1,5 +1,6 @@
 pub type Int = i32;
 
+/// The Intcode computer.
 pub struct Machine {
     ip: usize,
     cells: Vec<Int>,
@@ -7,12 +8,14 @@ pub struct Machine {
 }
 
 impl Machine {
+    /// Create a new machine with given memory cells and initial input.
     pub fn new<I>(cells: &[Int], input: I) -> Self
     where I: IntoIterator<Item=i32>
     {
         Self { ip: 0, cells: cells.to_vec(), input: input.into_iter().collect() }
     }
 
+    /// Run the machine with some new input until it produces some output.
     pub fn run<I>(&mut self, new_input: I) -> Option<Int>
     where I: IntoIterator<Item=i32>
     {
@@ -20,6 +23,7 @@ impl Machine {
         self.next()
     }
 
+    /// Return contents of given memory cell.
     pub fn mem(&self, index: usize) -> Int {
         self.cells[index]
     }
@@ -49,6 +53,8 @@ impl Machine {
     }
 }
 
+/// To implement Iterator, every call to next() produces one piece
+/// of output until the machine halts.
 impl Iterator for Machine {
     type Item = Int;
 
