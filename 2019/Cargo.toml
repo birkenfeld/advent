@@ -13,6 +13,8 @@ harness = false
 advtools = { version = "0.4.0", path = "../advtools" }
 petgraph = "0.4.13"
 permutohedron = "0.2.4"
+num-bigint = "0.2.3"
+num-traits = "0.2.10"
 
 [dev-dependencies]
 criterion = { version = "0.2.5", default-features = false }

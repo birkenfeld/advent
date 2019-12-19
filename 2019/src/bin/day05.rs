@@ -1,16 +1,15 @@
-use advtools::prelude::Itertools;
 use advtools::input::input_string;
-use advent19::{Machine, Int};
+use advent19::Machine;
 
-const INPUT_1: Int = 1;
-const INPUT_2: Int = 5;
+const AIR_COND: i32 = 1;
+const RADIATOR: i32 = 5;
 
 fn main() {
-    let cells = input_string().trim().split(',').map(|v| v.parse().unwrap()).collect_vec();
+    let code = Machine::parse(&input_string());
 
-    let out = Machine::new(&cells, Some(INPUT_1)).last().unwrap();
-    advtools::print("Output for program 1", out);
+    let out = Machine::new(&code).with_input(Some(AIR_COND)).last().unwrap();
+    advtools::print("Output for air conditioner", out);
 
-    let out = Machine::new(&cells, Some(INPUT_2)).last().unwrap();
-    advtools::print("Output for program 5", out);
+    let out = Machine::new(&code).run(Some(RADIATOR)).unwrap();
+    advtools::print("Output for radiator controller", out);
 }

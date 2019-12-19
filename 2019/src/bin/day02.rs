@@ -1,16 +1,17 @@
-use advtools::prelude::Itertools;
 use advtools::input::input_string;
-use advent19::{Machine, Int};
+use advtools::rayon::prelude::*;
+use advent19::Machine;
 
-const LANDING: Int = 19690720;
+const LANDING: i32 = 19690720;
 
 fn main() {
-    let mut cells = input_string().trim().split(',').map(|v| v.parse().unwrap()).collect_vec();
+    let code = Machine::parse(&input_string());
+    let landing = LANDING.into();
 
-    let mut run_with = |noun, verb| {
-        cells[1] = noun;
-        cells[2] = verb;
-        let mut machine = Machine::new(&cells, None);
+    let run_with = |noun, verb| {
+        let mut machine = Machine::new(&code);
+        machine.set_mem(1, noun);
+        machine.set_mem(2, verb);
         machine.next();
         machine.mem(0)
     };
@@ -19,12 +20,9 @@ fn main() {
     advtools::print("Restored state", run_with(12, 2));
 
     // Part 2: try different nouns/verbs to get the desired landing date.
-    for noun in 0..100 {
-        for verb in 0..100 {
-            if run_with(noun, verb) == LANDING {
-                advtools::print("Correct noun/verb", 100*noun + verb);
-                break;
-            }
-        }
-    }
+    let (noun, verb) = (0..100).into_par_iter().find_map_first(|noun| {
+        (0..100).find(|&verb| run_with(noun, verb) == landing)
+                .map(|verb| (noun, verb))
+    }).unwrap();
+    advtools::print("Correct noun/verb", 100*noun + verb);
 }
