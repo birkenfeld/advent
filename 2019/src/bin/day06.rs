@@ -1,23 +1,39 @@
-use advtools::prelude::HashMap;
-use advtools::input::iter_input_regex;
+use advtools::prelude::{HashMap, HashSet};
+use advtools::{Uids, input::iter_input_regex};
+
+fn calc_indirect(orbits: &HashMap<usize, usize>, indirect: &mut HashMap<usize, i32>, obj: usize) {
+    if indirect.get(&obj).is_none() {
+        calc_indirect(orbits, indirect, orbits[&obj]);
+        indirect.insert(obj.into(), indirect[&orbits[&obj]] + 1);
+    }
+}
 
 fn main() {
-    let mut graph = petgraph::Graph::new_undirected();
-    let mut nodes = HashMap::new();
+    // Create a map of all "orbits" relations from object to its center.
+    let mut ids = Uids::<String>::new();
+    let orbits: HashMap<_, _> = iter_input_regex(r"(\w+)\)(\w+)").map(|(c, o)| {
+        (ids.get_id(o), ids.get_id(c))
+    }).collect();
+    // Extract ids for known objects.
+    let (com, you, san) = (ids["COM"], ids["YOU"], ids["SAN"]);
 
-    // Create the graph.
-    for (a, b) in iter_input_regex::<(String, String)>(r"(\w+)\)(\w+)") {
-        let nodea = *nodes.entry(a).or_insert_with(|| graph.add_node(0));
-        let nodeb = *nodes.entry(b).or_insert_with(|| graph.add_node(0));
-        graph.add_edge(nodea, nodeb, 1.0);
-    }
+    // Determine indirect orbit lengths for each object.
+    let mut indirect = std::iter::once((com, 0)).collect();
+    orbits.keys().for_each(|&obj| calc_indirect(&orbits, &mut indirect, obj));
+    advtools::print("First round", indirect.values().sum::<i32>());
 
-    // Part 1: sum length of paths from root to all nodes.
-    let (weights, _) = petgraph::algo::bellman_ford(&graph, nodes["COM"]).unwrap();
-    advtools::print("First round", weights.into_iter().sum::<f64>());
+    let walk_centers = |mut obj, f: &mut dyn FnMut(usize) -> bool| loop {
+        if obj == com || !f(obj) {
+            return obj;
+        }
+        obj = orbits[&obj];
+    };
 
-    // Part 2: find length of path from YOU to SAN.
-    let map = petgraph::algo::dijkstra(&graph, nodes["YOU"],
-                                       Some(nodes["SAN"]), |e| *e.weight());
-    advtools::print("Second round", map[&nodes["SAN"]] - 2.0);
+    // List all indirect orbit centers for YOU and compare with SAN to get
+    // the path length between the two and the common center.
+    let mut my_centers = HashSet::new();
+    walk_centers(you, &mut |p| my_centers.insert(p));
+    let p = walk_centers(san, &mut |p| !my_centers.contains(&p));
+    let path = indirect[&you] + indirect[&san] - 2*indirect[&p] - 2;
+    advtools::print("Second round", path);
 }
