@@ -16,13 +16,13 @@ fn main() {
     };
 
     // Part 1: just run with a given noun/verb combination.
-    advtools::print("First round", run_with(12, 2));
+    advtools::print("Restored state", run_with(12, 2));
 
     // Part 2: try different nouns/verbs to get the desired landing date.
     for noun in 0..100 {
         for verb in 0..100 {
             if run_with(noun, verb) == LANDING {
-                advtools::print("Second round", 100*noun + verb);
+                advtools::print("Correct noun/verb", 100*noun + verb);
                 break;
             }
         }

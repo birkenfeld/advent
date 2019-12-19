@@ -25,7 +25,7 @@ fn main() {
     let (w1, w2) = input.split('\n').next_tuple().unwrap();
 
     let mut coords = HashMap::new();
-    let mut min_coords = i16::max_value();
+    let mut min_dist = i16::max_value();
     let mut min_steps = i32::max_value();
 
     // Follow the first wire, recording every visited coordinate with the number
@@ -35,10 +35,10 @@ fn main() {
     // Follow the second wire, tracking the minimum scores for both rounds for
     // each crossing.
     follow(&w2, |x, y, s2| if let Some(s1) = coords.get(&(y, x)) {
-        min_coords = min_coords.min(x.abs() + y.abs());
+        min_dist = min_dist.min(x.abs() + y.abs());
         min_steps = min_steps.min(s1 + s2);
     });
 
-    advtools::print("First round", min_coords);
-    advtools::print("Second round", min_steps);
+    advtools::print("Minimum manhattan distance", min_dist);
+    advtools::print("Minimum number of steps", min_steps);
 }

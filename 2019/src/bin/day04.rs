@@ -27,8 +27,9 @@ fn main() {
     // Find all numbers matching the first condition.
     let first: Vec<_> = (min..=max).into_par_iter().map(|x| x.to_string())
                                                    .filter(match1).collect();
-    advtools::print("First round", first.len());
+    advtools::print("Matching first criteria", first.len());
 
     // Now count only those also matching the second condition.
-    advtools::print("Second round", first.iter().filter(match2).count());
+    advtools::print("Matching also second criteria",
+                    first.iter().filter(match2).count());
 }

@@ -13,7 +13,7 @@ fn main() {
         })
     }).max();
 
-    advtools::print("First round", max_signal.unwrap());
+    advtools::print("Max signal", max_signal.unwrap());
 
     // Same spiel as in part 1, but a bit more complex since we have
     // to loop until a machine halts.
@@ -31,5 +31,5 @@ fn main() {
         }
     }).max();
 
-    advtools::print("Second round", max_signal.unwrap());
+    advtools::print("Max signal with feedback", max_signal.unwrap());
 }

@@ -9,8 +9,8 @@ fn main() {
     let cells = input_string().trim().split(',').map(|v| v.parse().unwrap()).collect_vec();
 
     let out = Machine::new(&cells, Some(INPUT_1)).last().unwrap();
-    advtools::print("First round", out);
+    advtools::print("Output for program 1", out);
 
     let out = Machine::new(&cells, Some(INPUT_2)).last().unwrap();
-    advtools::print("Second round", out);
+    advtools::print("Output for program 5", out);
 }

@@ -6,12 +6,12 @@ fn main() {
     let masses = iter_input::<i64>().collect_vec();
     // Just a normal iteration with map() to calculate the total.
     let total: i64 = masses.iter().map(|m| m/3 - 2).sum();
-    advtools::print("First round", total);
+    advtools::print("Fuel for modules", total);
 
     // For part 2, create a subiterator for each mass, and sum up all
     // the masses.  iterate() applies the function over and over.
     let total_2: i64 = masses.iter().flat_map(
         |&m| iterate(m, |&m| m/3 - 2).skip(1).take_while(|&m| m > 0)
     ).sum();
-    advtools::print("Second round", total_2);
+    advtools::print("Total fuel", total_2);
 }
