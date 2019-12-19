@@ -2,6 +2,23 @@ use std::collections::HashMap;
 use std::rc::Rc;
 use num::Integer;
 
+/// Perform a binary search
+pub fn binary_search<I, F>(mut low: I, mut high: I, mut test: F) -> I
+where I: Integer + Copy + From<u8>, F: FnMut(I) -> bool
+{
+    loop {
+        if low + I::one() == high {
+            return high;
+        }
+        let guess = (low + high) / I::from(2);
+        if test(guess) {
+            high = guess;
+        } else {
+            low = guess;
+        }
+    }
+}
+
 /// The Intcode computer.
 #[derive(Clone)]
 pub struct Machine {

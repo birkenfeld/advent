@@ -1,6 +1,7 @@
 use std::mem::replace;
 use advtools::prelude::{Itertools, HashMap, FromIterator};
 use advtools::input::iter_input;
+use advent19::binary_search;
 
 const STOCK: u64 = 1_000_000_000_000;  // 1 trillion
 
@@ -61,18 +62,7 @@ fn main() {
     // Part 2: Make a binary search.  Initial bounds are given by what could
     // be expected from the single-fuel case (which underestimates severely)
     // and twice that amount.
-    let mut lower = STOCK/single_fuel;
-    let mut upper = 2*lower;
-    loop {
-        if upper - lower == 1 {
-            advtools::print("Fuel produced with 1tn ore", lower);
-            return;
-        }
-        let guess = (lower + upper)/2;
-        if ore_to_produce_fuel(guess) > STOCK {
-            upper = guess;
-        } else {
-            lower = guess;
-        }
-    }
+    let exp = STOCK/single_fuel;
+    let result = binary_search(exp, 2*exp, |f| ore_to_produce_fuel(f) > STOCK);
+    advtools::print("Fuel produced with 1tn ore", result - 1);
 }
