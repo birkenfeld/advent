@@ -2,12 +2,14 @@ use advtools::prelude::HashSet;
 use advtools::input::iter_input_regex;
 use num::Integer;
 
+const N: usize = 4;
+
 #[derive(Default)]
 struct Direction {
     cycle: u64,
-    pos: [i32; 4],
-    vel: [i32; 4],
-    seen: HashSet<([i32; 4], [i32; 4])>,
+    pos: [i32; N],
+    vel: [i32; N],
+    seen: HashSet<([i32; N], [i32; N])>,
 }
 
 fn main() {
@@ -31,15 +33,11 @@ fn main() {
             }
 
             // Go over pairs of moons and assign new velocities.
-            for i in 0..dir.pos.len()-1 {
-                for j in i+1..dir.pos.len() {
-                    if dir.pos[i] < dir.pos[j] {
-                        dir.vel[i] += 1;
-                        dir.vel[j] -= 1;
-                    } else if dir.pos[i] > dir.pos[j] {
-                        dir.vel[i] -= 1;
-                        dir.vel[j] += 1;
-                    }
+            for i in 0..N-1 {
+                for j in i+1..N {
+                    let change = (dir.pos[j] - dir.pos[i]).signum();
+                    dir.vel[i] += change;
+                    dir.vel[j] -= change;
                 }
             }
 
@@ -51,7 +49,7 @@ fn main() {
 
         // Determine the total energy for part 1.
         if step == 999 {
-            let energy: i32 = (0..dirs[0].pos.len()).map(|i| {
+            let energy: i32 = (0..N).map(|i| {
                 dirs.iter().map(|d| d.pos[i].abs()).sum::<i32>() *
                     dirs.iter().map(|d| d.vel[i].abs()).sum::<i32>()
             }).sum();

@@ -13,7 +13,6 @@ fn main() {
     let blocks = Machine::new(&code).tuples().filter(|(_, _, tile)| tile == &BLOCK);
     advtools::print("Blocks on screen", blocks.count());
 
-    let mut ball_x;
     let mut paddle_x = 0;
     let mut score = 0;
     let mut machine = Machine::new(&code);
@@ -26,10 +25,9 @@ fn main() {
         } else if out == PADDLE {
             paddle_x = x;
         } else if out == BALL {
-            ball_x = x;
             // After the ball is drawn, supply input to move the paddle in the
             // direction of the ball.
-            machine = machine.with_input(Some((ball_x - paddle_x).signum()));
+            machine = machine.with_input((x - paddle_x).signum());
         }
     }
     advtools::print("Final score", score);

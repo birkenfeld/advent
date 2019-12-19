@@ -25,21 +25,21 @@ fn main() {
         let mut ore_needed = 0;
         // Keep track of elements still required
         let mut to_produce = HashMap::from_iter(Some(("FUEL", fuel_to_produce)));
-        // and leftovers from previous reactions that weren't used up
+        // and leftovers from previous reactions that weren't used up.
         let mut left_over = HashMap::new();
         while !to_produce.is_empty() {
             for (product, mut count) in replace(&mut to_produce, HashMap::new()) {
-                // See if some leftover can be used for this product
+                // See if some leftover can be used for this product.
                 let count_left = left_over.entry(product).or_default();
                 let transfer = count.min(*count_left);
                 count -= transfer;
                 *count_left -= transfer;
                 if count > 0 {
-                    // If we still need to produce, determined the number of reactions
-                    // to get the required number and keep track of the leftovers
+                    // If we still need to produce, determine the number of reactions
+                    // to get the required number and keep track of the leftovers.
                     let (prod_count, reagents) = &recipes[&product];
                     let recipe_times = 1 + (count - 1)/prod_count;
-                    *left_over.entry(product).or_default() += recipe_times*prod_count - count;
+                    *count_left += recipe_times*prod_count - count;
                     for (reagent, ingr_count) in reagents {
                         if reagent == &"ORE" {
                             // Ore is just counted.

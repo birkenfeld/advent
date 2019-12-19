@@ -1,5 +1,5 @@
 use std::fmt::Write;
-use advtools::prelude::{Itertools, HashMap, FromIterator};
+use advtools::prelude::{Itertools, HashMap};
 use advtools::input::input_string;
 use advent19::Machine;
 
@@ -27,7 +27,7 @@ fn main() {
         loop {
             // Determine current color and feed it to the machine.
             let cur_color = tiles.get(&(x, y)).cloned().unwrap_or(Black);
-            let paint = match machine.run(Some(cur_color as i64)) {
+            let paint = match machine.run(cur_color as i64) {
                 Some(p) => if p == 0 { Black } else { White },
                 None => break
             };
@@ -50,7 +50,7 @@ fn main() {
     advtools::print("Painted tiles", tiles.len());
 
     // Walk from a white tile.
-    tiles = HashMap::from_iter(Some(((0, 0), White)));
+    tiles = std::iter::once(((0, 0), White)).collect();
     walk(&mut tiles);
 
     // Determine the extent of the picture and print it.

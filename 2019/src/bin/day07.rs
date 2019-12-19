@@ -9,7 +9,7 @@ fn main() {
     let max_signal = (0..5).permutations(5).map(|phases| {
         // This fold applies the signal to all five machines in order.
         phases.iter().fold(0, |signal, &phase| {
-            Machine::new(&code).run(vec![phase, signal]).unwrap()
+            Machine::new(&code).with_input(phase).run(signal).unwrap()
         })
     }).max();
 
@@ -18,12 +18,12 @@ fn main() {
     // Same spiel as in part 1, but a bit more complex since we have
     // to loop until a machine halts.
     let max_signal = (5..10).permutations(5).map(|phases| {
+        let mut machines = phases.iter().map(|&ph| Machine::new(&code).with_input(ph))
+                                        .collect_vec();
         let mut signal = 0;
-        let mut machines =
-            phases.iter().map(|&ph| Machine::new(&code).with_input(Some(ph))).collect_vec();
         loop {
             for machine in &mut machines {
-                match machine.run(Some(signal)) {
+                match machine.run(signal) {
                     Some(new) => signal = new,
                     None => return signal
                 }

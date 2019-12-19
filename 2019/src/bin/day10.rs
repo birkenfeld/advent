@@ -2,7 +2,7 @@ use advtools::prelude::Itertools;
 use advtools::input::iter_input;
 use float_ord::FloatOrd;
 
-fn iter_asteroids<'s>(map: &'s Vec<Vec<bool>>) -> impl Iterator<Item=(usize, usize)> + 's {
+fn iter_asteroids(map: &[Vec<bool>]) -> impl Iterator<Item=(usize, usize)> + '_ {
     map.iter().enumerate().flat_map(|(y, row)| {
         row.iter().enumerate().filter(|p| *p.1).map(move |(x, _)| (x, y))
     })

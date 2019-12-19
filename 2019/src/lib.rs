@@ -33,33 +33,32 @@ impl Machine {
     }
 
     /// Add some input to the machine.
-    pub fn with_input<I>(mut self, new_input: I) -> Self
-    where I: IntoIterator<Item=i64>
-    {
-        self.input.extend(new_input.into_iter());
+    pub fn with_input(mut self, new_input: i64) -> Self {
+        self.input.push(new_input);
         self
     }
 
     /// Run the machine with some new input until it produces some output.
-    pub fn run<I>(&mut self, new_input: I) -> Option<i64>
-    where I: IntoIterator<Item=i64>
-    {
-        self.input.extend(new_input.into_iter());
+    pub fn run(&mut self, new_input: i64) -> Option<i64> {
+        self.input.push(new_input);
         self.next()
     }
 
     /// Return contents of given memory cell.
+    #[inline]
     pub fn mem(&self, index: i64) -> i64 {
         self.wmem.get(&index).or_else(|| self.mem.get(index as usize)).copied().unwrap_or(0)
     }
 
     /// Set contents of given memory cell.
+    #[inline]
     pub fn set_mem(&mut self, index: i64, value: i64) {
         // We could check if mem already contains the correct value and avoid
         // populating the wmem hashmap, but it is worse across all benchmarks.
         self.wmem.insert(index, value);
     }
 
+    #[inline]
     fn set_par(&mut self, mode: i64, val: i64) {
         let arg_addr = self.ip - 1;
         let addr = match mode {
@@ -71,6 +70,7 @@ impl Machine {
         self.set_mem(addr, val);
     }
 
+    #[inline]
     fn par(&self, mode: i64, off: i64) -> i64 {
         let arg_addr = self.ip + off;
         self.mem(match mode {
@@ -81,6 +81,7 @@ impl Machine {
         })
     }
 
+    #[inline]
     fn binop<F: Fn(i64, i64) -> i64>(&mut self, m1: i64, m2: i64, m3: i64, op: F) {
         self.ip += 3;
         let vs = self.par(m1, -3);
@@ -88,6 +89,7 @@ impl Machine {
         self.set_par(m3, op(vs, vt));
     }
 
+    #[inline]
     fn jumpop<F: Fn(i64) -> bool>(&mut self, m1: i64, m2: i64, cond: F) {
         if cond(self.par(m1, 0)) {
             self.ip = self.par(m2, 1);

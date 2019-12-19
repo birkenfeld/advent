@@ -7,9 +7,9 @@ const RADIATOR: i64 = 5;
 fn main() {
     let code = Machine::parse(&input_string());
 
-    let out = Machine::new(&code).with_input(Some(AIR_COND)).last().unwrap();
+    let out = Machine::new(&code).with_input(AIR_COND).last().unwrap();
     advtools::print("Output for air conditioner", out);
 
-    let out = Machine::new(&code).run(Some(RADIATOR)).unwrap();
+    let out = Machine::new(&code).run(RADIATOR).unwrap();
     advtools::print("Output for radiator controller", out);
 }
