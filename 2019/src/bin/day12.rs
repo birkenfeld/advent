@@ -5,9 +5,9 @@ use num::Integer;
 #[derive(Default)]
 struct Direction {
     cycle: u64,
-    pos: Vec<i32>,
-    vel: Vec<i32>,
-    seen: HashSet<Vec<i32>>,
+    pos: [i32; 4],
+    vel: [i32; 4],
+    seen: HashSet<([i32; 4], [i32; 4])>,
 }
 
 fn main() {
@@ -16,20 +16,16 @@ fn main() {
     // the least common multiple of all three.
     let mut dirs = [Direction::default(), Direction::default(), Direction::default()];
 
-    // Read in positions and add the velocity vector for each moon.
-    for (px, py, pz) in iter_input_regex(r"<x=(-?\d+), y=(-?\d+), z=(-?\d+)>") {
-        dirs[0].pos.push(px); dirs[0].vel.push(0);
-        dirs[1].pos.push(py); dirs[1].vel.push(0);
-        dirs[2].pos.push(pz); dirs[2].vel.push(0);
+    // Read in positions for each of the four moons.
+    for (i, (px, py, pz)) in iter_input_regex(r"<x=(-?\d+), y=(-?\d+), z=(-?\d+)>").enumerate() {
+        dirs[0].pos[i] = px; dirs[1].pos[i] = py; dirs[2].pos[i] = pz;
     }
 
     for step in 0.. {
         for dir in &mut dirs {
             if dir.cycle == 0 {
-                // Collect all coordinates in this spatial direction.
-                let coords = dir.pos.iter().chain(&dir.vel).copied().collect();
                 // If we saw these coordinates before, a cycle is detected.
-                if !dir.seen.insert(coords) {
+                if !dir.seen.insert((dir.pos, dir.vel)) {
                     dir.cycle = step;
                 }
             }
