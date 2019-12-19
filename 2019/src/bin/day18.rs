@@ -1,36 +1,45 @@
+use std::mem::replace;
 use advtools::prelude::{Itertools, HashSet, HashMap};
 use advtools::input::iter_input;
 
+const ALL_KEYS: u32 = (1 << 26) - 1;
+
+enum Cell {
+    Wall,
+    Free,
+    Key(u8),
+    Door(u8),
+}
+use Cell::*;
+
 fn main() {
     let mut grid = Vec::new();
-    let mut start_pos = (0, 0);
-    for (y, line) in iter_input::<String>().enumerate() {
-        if let Some(x) = line.trim().chars().position(|ch| ch == '@') {
-            start_pos = (x, y);
-        }
-        grid.push(line.trim().chars().collect_vec());
+    for line in iter_input::<String>() {
+        grid.push(line.trim().chars().map(|ch| match ch {
+            '#' => Wall,
+            '.' | '@' => Free,
+            'a'..='z' => Key(ch as u8 - b'a'),
+            'A'..='Z' => Door(ch as u8 - b'A'),
+            _ => panic!("invalid char in maze")
+        }).collect_vec());
     }
-
-    advtools::print("Fewest steps with 1 robot", visit_1(&grid, start_pos));
 
     let ny = grid.len()/2;
     let nx = grid[0].len()/2;
 
-    let mut grid2 = grid.clone();
-    grid2[ny][nx] = '#';
-    grid2[ny-1][nx] = '#';
-    grid2[ny][nx-1] = '#';
-    grid2[ny+1][nx] = '#';
-    grid2[ny][nx+1] = '#';
+    advtools::print("Fewest steps with 1 robot", visit_1(&grid, (nx, ny)));
 
-    advtools::print("Fewest steps with 4 robots", visit_4(&grid2,
-                                                          (nx-1, ny-1),
-                                                          (nx-1, ny+1),
-                                                          (nx+1, ny-1),
-                                                          (nx+1, ny+1)));
+    grid[ny][nx] = Wall;
+    grid[ny-1][nx] = Wall;
+    grid[ny][nx-1] = Wall;
+    grid[ny+1][nx] = Wall;
+    grid[ny][nx+1] = Wall;
+
+    let start = [(nx-1, ny-1), (nx-1, ny+1), (nx+1, ny-1), (nx+1, ny+1)];
+    advtools::print("Fewest steps with 4 robots", visit_4(&grid, start));
 }
 
-fn visit_1(maze: &[Vec<char>], start: (usize, usize)) -> u32 {
+fn visit_1(maze: &[Vec<Cell>], start: (usize, usize)) -> u32 {
     let mut known = HashSet::new();
     // known states: position + found keys
     let start = (start.0, start.1, 0);
@@ -43,37 +52,28 @@ fn visit_1(maze: &[Vec<char>], start: (usize, usize)) -> u32 {
             let new_coords = [(x, y - 1), (x, y + 1), (x - 1, y), (x + 1, y)];
             for &(xn, yn) in &new_coords {
                 match maze[yn][xn] {
-                    '#' => continue,
-                    '.' | '@' => (),
-                    ch @ 'a'..='z' => {
-                        let this_key = ch as u32 - b'a' as u32;
-                        if keys & (1 << this_key) == 0 {
-                            // found a new key!
-                            let new_keys = keys | (1 << this_key);
+                    Wall => continue,
+                    Free => (),
+                    Key(this_key) => if keys & (1 << this_key) == 0 {
+                        // found a new key!
+                        let new_keys = keys | (1 << this_key);
 
-                            if new_keys == (1 << 26) - 1 {
-                                return steps;
-                            }
+                        if new_keys == ALL_KEYS {
+                            return steps;
+                        }
 
-                            known.insert((xn, yn, new_keys));
-                            queue.push((xn, yn, new_keys));
-                            continue;
-                        }
+                        known.insert((xn, yn, new_keys));
+                        queue.push((xn, yn, new_keys));
+                        continue;
                     }
-                    ch @ 'A'..='Z' => {
-                        let this_door = ch as u32 - b'A' as u32;
-                        if keys & (1 << this_door) == 0 {
-                            // no such key...
-                            continue;
-                        }
+                    Door(this_door) => if keys & (1 << this_door) == 0 {
+                        // no such key...
+                        continue;
                     }
-                    _ => panic!("invalid char in maze")
                 }
-                if known.contains(&(xn, yn, keys)) {
-                    continue;
+                if known.insert((xn, yn, keys)) {
+                    queue.push((xn, yn, keys));
                 }
-                known.insert((xn, yn, keys));
-                queue.push((xn, yn, keys));
             }
         }
         if queue.is_empty() {
@@ -84,38 +84,37 @@ fn visit_1(maze: &[Vec<char>], start: (usize, usize)) -> u32 {
     unreachable!()
 }
 
-fn visit_4(maze: &[Vec<char>], start1: (usize, usize), start2: (usize, usize),
-           start3: (usize, usize), start4: (usize, usize)) -> u32 {
-    let mut known = HashMap::new();
-    known.insert(0, 0);
-    let start = (start1, start2, start3, start4, 0, 0);
+fn visit_4(maze: &[Vec<Cell>], start: [(usize, usize); 4]) -> u32 {
+    let mut fastest = HashMap::new();
+    let mut possible = HashMap::new();
+    fastest.insert(0, 0);
+    let start = (start, 0, 0);
     let mut queue = vec![start];
-    let all_keys = (1 << 26) - 1;
     let mut min_steps = u32::max_value();
 
+    let mut tmp = HashSet::default();
     loop {
-        for (xy1, xy2, xy3, xy4, keys, steps) in std::mem::replace(&mut queue, Vec::new()) {
+        for (xys, keys, steps) in replace(&mut queue, Vec::new()) {
             if steps > min_steps {
                 continue;
             }
-            if keys == all_keys {
+            if keys == ALL_KEYS {
                 min_steps = min_steps.min(steps);
                 continue;
             }
-            let p1 = possible_keys(&maze, xy1, keys)
-                .map(|(nxy1, nkeys, ksteps)| (nxy1, xy2, xy3, xy4, nkeys, steps + ksteps));
-            let p2 = possible_keys(&maze, xy2, keys)
-                .map(|(nxy2, nkeys, ksteps)| (xy1, nxy2, xy3, xy4, nkeys, steps + ksteps));
-            let p3 = possible_keys(&maze, xy3, keys)
-                .map(|(nxy3, nkeys, ksteps)| (xy1, xy2, nxy3, xy4, nkeys, steps + ksteps));
-            let p4 = possible_keys(&maze, xy4, keys)
-                .map(|(nxy4, nkeys, ksteps)| (xy1, xy2, xy3, nxy4, nkeys, steps + ksteps));
-            for possible in p1.chain(p2).chain(p3).chain(p4) {
-                match known.get(&possible.4) {
-                    Some(&n) if n <= possible.5 => (),
-                    _ => {
-                        known.insert(possible.4, possible.5);
-                        queue.push(possible);
+
+            for (i, &xy) in xys.iter().enumerate() {
+                let pk = possible.entry((xy, keys)).or_insert_with(
+                    || possible_keys(&mut tmp, &maze, xy, keys));
+                for &(nxy, nkeys, ksteps) in pk.iter() {
+                    match fastest.get(&nkeys) {
+                        Some(&n) if n <= steps + ksteps => (),
+                        _ => {
+                            fastest.insert(nkeys, steps + ksteps);
+                            let mut new_xys = xys;
+                            new_xys[i] = nxy;
+                            queue.push((new_xys, nkeys, steps + ksteps));
+                        }
                     }
                 }
             }
@@ -126,54 +125,39 @@ fn visit_4(maze: &[Vec<char>], start1: (usize, usize), start2: (usize, usize),
     }
 }
 
-fn possible_keys(maze: &[Vec<char>], start: (usize, usize), keys: u32)
-                 -> impl Iterator<Item=((usize, usize), u32, u32)> {
-    let mut known = HashSet::new();
-    let start = (start.0, start.1, keys);
+fn possible_keys(known: &mut HashSet<(usize, usize)>, maze: &[Vec<Cell>], start: (usize, usize), keys: u32)
+                 -> Vec<((usize, usize), u32, u32)> {
+    // print!(".");
+    known.clear();
     known.insert(start);
+    let mut keys_found = keys;
+    let mut res = Vec::with_capacity(4);
     let mut queue = vec![start];
-    let mut res = HashMap::new();
 
     for steps in 1.. {
-        for (x, y, keys) in std::mem::replace(&mut queue, Vec::new()) {
+        for (x, y) in replace(&mut queue, Vec::with_capacity(16)) {
             let new_xy = [(x, y - 1), (x, y + 1), (x - 1, y), (x + 1, y)];
             for &(nx, ny) in &new_xy {
                 match maze[ny][nx] {
-                    '#' => continue,
-                    '.' | '@' => (),
-                    ch @ 'a'..='z' => {
-                        let this_key = ch as u32 - b'a' as u32;
-                        if keys & (1 << this_key) == 0 {
-                            // found a new key!
-                            let new_keys = keys | (1 << this_key);
-                            match res.get(&new_keys) {
-                                Some((_, n)) if *n <= steps => (),
-                                _ => { res.insert(new_keys, ((nx, ny), steps)); }
-                            }
-
-                            known.insert((nx, ny, new_keys));
-                            queue.push((nx, ny, new_keys));
-                            continue;
-                        }
-                    }
-                    ch @ 'A'..='Z' => {
-                        let this_door = ch as u32 - b'A' as u32;
-                        if keys & (1 << this_door) == 0 {
-                            // no such key...
-                            continue;
-                        }
-                    }
-                    _ => panic!("invalid char in maze")
+                    Free => (),
+                    Wall => continue,
+                    Key(this_key) => if keys_found & (1 << this_key) == 0 {
+                        keys_found |= 1 << this_key;
+                        res.push(((nx, ny), keys | (1 << this_key), steps));
+                        known.insert((nx, ny));
+                        continue;
+                    },
+                    Door(this_door) => if keys & (1 << this_door) == 0 {
+                        continue;
+                    },
                 }
-                if known.contains(&(nx, ny, keys)) {
-                    continue;
+                if known.insert((nx, ny)) {
+                    queue.push((nx, ny));
                 }
-                known.insert((nx, ny, keys));
-                queue.push((nx, ny, keys));
             }
         }
         if queue.is_empty() {
-            return res.into_iter().map(|(k, v)| (v.0, k, v.1))
+            return res;
         }
     }
     unreachable!()
