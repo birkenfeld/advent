@@ -5,6 +5,8 @@ use advent19::Machine;
 const EMPTY: i64 = 1;
 const GOAL: i64 = 2;
 
+// TODO: use Dir
+
 /// Visit the maze in BFS order, so we have the shortest way as soon as we
 /// find the goal.  Also returns when no more places to explore.
 fn visit(start: (i32, i32, Machine)) -> (i32, Option<(i32, i32, Machine)>) {
