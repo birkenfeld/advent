@@ -1,15 +1,15 @@
 use advtools::prelude::Itertools;
 use advtools::input::input_string;
-use advent19::I32Machine;
+use advent19::Machine;
 
 fn main() {
-    let code = I32Machine::parse(&input_string());
+    let code = Machine::parse(&input_string());
 
     // Find the maximum signal by testing all permutations of 0..5.
     let max_signal = (0..5).permutations(5).map(|phases| {
         // This fold applies the signal to all five machines in order.
-        phases.iter().fold(0.into(), |signal, &phase| {
-            I32Machine::new(&code).run(vec![phase.into(), signal]).unwrap()
+        phases.iter().fold(0, |signal, &phase| {
+            Machine::new(&code).run(vec![phase, signal]).unwrap()
         })
     }).max();
 
@@ -20,10 +20,10 @@ fn main() {
     let max_signal = (5..10).permutations(5).map(|phases| {
         let mut signal = 0;
         let mut machines =
-            phases.iter().map(|&ph| I32Machine::new(&code).with_input(Some(ph))).collect_vec();
+            phases.iter().map(|&ph| Machine::new(&code).with_input(Some(ph))).collect_vec();
         loop {
             for machine in &mut machines {
-                match machine.run(Some(signal.clone())) {
+                match machine.run(Some(signal)) {
                     Some(new) => signal = new,
                     None => return signal
                 }

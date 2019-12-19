@@ -1,7 +1,7 @@
+use std::fmt::Write;
 use advtools::prelude::{Itertools, HashMap, FromIterator};
 use advtools::input::input_string;
-use advent19::I64Machine;
-use num::Zero;
+use advent19::Machine;
 
 #[derive(Clone, PartialEq)]
 enum Color { Black, White }
@@ -19,22 +19,22 @@ impl Dir {
 }
 
 fn main() {
-    let code = I64Machine::parse(&input_string());
-    let mut machine = I64Machine::new(&code);
+    let code = Machine::parse(&input_string());
+    let mut machine = Machine::new(&code);
 
     let mut walk = |tiles: &mut HashMap<(i32, i32), Color>| {
         let (mut x, mut y, mut dir) = (0, 0, U);
         loop {
             // Determine current color and feed it to the machine.
             let cur_color = tiles.get(&(x, y)).cloned().unwrap_or(Black);
-            let paint = match machine.run(Some(cur_color as u8)) {
-                Some(p) => if p.is_zero() { Black } else { White },
+            let paint = match machine.run(Some(cur_color as i64)) {
+                Some(p) => if p == 0 { Black } else { White },
                 None => break
             };
             // Mark this tile as painted, white or black.
             tiles.insert((x, y), paint);
             // Determine direction, turn and advance one step.
-            dir = if machine.next().unwrap().is_zero() { dir.ccw() } else { dir.cw() };
+            dir = if machine.next().unwrap() == 0 { dir.ccw() } else { dir.cw() };
             match dir {
                 U => y -= 1,
                 L => x -= 1,
@@ -56,11 +56,12 @@ fn main() {
     // Determine the extent of the picture and print it.
     let (xmin, xmax) = tiles.keys().map(|k| k.0).minmax().into_option().unwrap();
     let (ymin, ymax) = tiles.keys().map(|k| k.1).minmax().into_option().unwrap();
-    advtools::print("Registration identifier", "");
+    let mut out = String::new();
     for y in ymin..=ymax {
+        writeln!(out).unwrap();
         for x in xmin..=xmax {
-            print!("{}", if tiles.get(&(x, y)) == Some(&White) { "█" } else { " " });
+            write!(out, "{}", if tiles.get(&(x, y)) == Some(&White) { "█" } else { " " }).unwrap();
         }
-        println!();
     }
+    advtools::print("Registration identifier", out);
 }

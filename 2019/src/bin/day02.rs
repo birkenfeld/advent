@@ -1,14 +1,14 @@
 use advtools::input::input_string;
 use advtools::rayon::prelude::*;
-use advent19::I32Machine;
+use advent19::Machine;
 
-const LANDING: i32 = 19690720;
+const LANDING: i64 = 19690720;
 
 fn main() {
-    let code = I32Machine::parse(&input_string());
+    let code = Machine::parse(&input_string());
 
     let run_with = |noun, verb| {
-        let mut machine = I32Machine::new(&code);
+        let mut machine = Machine::new(&code);
         machine.set_mem(1, noun);
         machine.set_mem(2, verb);
         machine.next();
@@ -19,7 +19,7 @@ fn main() {
     advtools::print("Restored state", run_with(12, 2));
 
     // Part 2: try different nouns/verbs to get the desired landing date.
-    let (noun, verb) = (0..100).into_par_iter().find_map_first(|noun| {
+    let (noun, verb) = (0..100i64).into_par_iter().find_map_first(|noun| {
         (0..100).find(|&verb| run_with(noun, verb) == LANDING)
                 .map(|verb| (noun, verb))
     }).unwrap();

@@ -1,3 +1,4 @@
+use std::fmt::Write;
 use advtools::input::input_string;
 
 const COLS: usize = 25;
@@ -20,11 +21,12 @@ fn main() {
     }).min().unwrap();
     advtools::print("Ones*twos in min-zero layer", result.1);
 
-    advtools::print("Message", "");
+    let mut out = String::new();
     for i in 0..SIZE {
+        if i % COLS == 0 { writeln!(out).unwrap(); }
         // Find the first non-transparent pixel when going through the layers.
         let px = img[i..].iter().step_by(SIZE).find(|&&px| px != TRANSPARENT);
-        print!("{}", if px == Some(&WHITE) { '█' } else { ' ' });
-        if i % COLS == COLS-1 { println!(); }
+        write!(out, "{}", if px == Some(&WHITE) { '█' } else { ' ' }).unwrap();
     }
+    advtools::print("Message", out);
 }
