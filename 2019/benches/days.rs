@@ -22,5 +22,5 @@ macro_rules! make_benches {
     };
 }
 
-make_benches!(day02, day05, day07, day09, day11, day13);
+make_benches!(day02, day05, day07, day09, day11, day13, day15);
 criterion_main!(benches);

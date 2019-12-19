@@ -3,6 +3,7 @@ use std::collections::HashMap;
 pub type Mem = HashMap<i64, i64>;
 
 /// The Intcode computer.
+#[derive(Clone)]
 pub struct Machine {
     ip: i64,
     bp: i64,
