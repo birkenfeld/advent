@@ -38,6 +38,14 @@ impl Machine {
         self
     }
 
+    /// Add multiple inputs, in string form, to the machine.
+    pub fn with_input_str(mut self, new_input: &str) -> Self {
+        for ch in new_input.chars() {
+            self.input.push(ch as i64);
+        }
+        self
+    }
+
     /// Run the machine with some new input until it produces some output.
     pub fn run(&mut self, new_input: i64) -> Option<i64> {
         self.input.push(new_input);
