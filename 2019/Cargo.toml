@@ -12,8 +12,10 @@ harness = false
 [dependencies]
 advtools = { version = "0.4.0", path = "../advtools" }
 num = "0.2.0"
+rand = "0.7.2"
 float-ord = "0.2.0"
 generic-array = "0.13.2"
+num_enum = "0.4.2"
 
 [dev-dependencies]
 criterion = { version = "0.3.0", default-features = false }

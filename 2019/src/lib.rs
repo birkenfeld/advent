@@ -1,5 +1,5 @@
 use std::collections::HashMap;
-use std::rc::Rc;
+use std::sync::Arc;
 use num::Integer;
 
 /// Perform a binary search
@@ -24,29 +24,19 @@ where I: Integer + Copy + From<u8>, F: FnMut(I) -> bool
 pub struct Machine {
     ip: i64,
     bp: i64,
-    mem: Rc<Box<[i64]>>,
+    mem: Arc<Box<[i64]>>,
     wmem: HashMap<i64, i64>,
     input: Vec<i64>,
 }
 
 impl Machine {
-    /// Parse stringified intcode (Send version).
-    pub fn parse_raw(code: &str) -> Box<[i64]> {
-        code.trim().split(',').map(|v| v.parse().expect("invalid memory")).collect()
-    }
-
-    /// Create a new machine with given memory cells and initial input.
-    pub fn new_raw(mem: &[i64]) -> Self {
-        Self { ip: 0, bp: 0, mem: Rc::new(mem.into()), wmem: HashMap::new(), input: Vec::new() }
-    }
-
     /// Parse stringified intcode.
-    pub fn parse(code: &str) -> Rc<Box<[i64]>> {
-        Rc::new(Self::parse_raw(code))
+    pub fn parse(code: &str) -> Arc<Box<[i64]>> {
+        Arc::new(code.trim().split(',').map(|v| v.parse().expect("invalid memory")).collect())
     }
 
     /// Create a new machine with given memory cells and initial input.
-    pub fn new(mem: &Rc<Box<[i64]>>) -> Self {
+    pub fn new(mem: &Arc<Box<[i64]>>) -> Self {
         Self { ip: 0, bp: 0, mem: mem.clone(), wmem: HashMap::new(), input: Vec::new() }
     }
 

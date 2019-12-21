@@ -5,10 +5,10 @@ use advent19::Machine;
 const LANDING: i64 = 19690720;
 
 fn main() {
-    let code = Machine::parse_raw(&input_string());
+    let code = Machine::parse(&input_string());
 
     let run_with = |noun, verb| {
-        let mut machine = Machine::new_raw(&code);
+        let mut machine = Machine::new(&code);
         machine.set_mem(1, noun);
         machine.set_mem(2, verb);
         machine.next();
