@@ -7,9 +7,9 @@ const SENSORMODE: i64 = 2;
 fn main() {
     let code = Machine::parse(&input_string());
 
-    let out = Machine::new(&code).run(TESTMODE).unwrap();
+    let out = Machine::new(&code).next_with(TESTMODE).unwrap();
     advtools::print("Boost keycode", out);
 
-    let out = Machine::new(&code).run(SENSORMODE).unwrap();
+    let out = Machine::new(&code).next_with(SENSORMODE).unwrap();
     advtools::print("Distress coordinates", out);
 }

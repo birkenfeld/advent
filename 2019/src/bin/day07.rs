@@ -9,7 +9,7 @@ fn main() {
     let max_signal = (0..5).permutations(5).map(|phases| {
         // This fold applies the signal to all five machines in order.
         phases.iter().fold(0, |signal, &phase| {
-            Machine::new(&code).with_input(phase).run(signal).unwrap()
+            Machine::new(&code).with_input(phase).next_with(signal).unwrap()
         })
     }).max();
 
@@ -23,7 +23,7 @@ fn main() {
         let mut signal = 0;
         loop {
             for machine in &mut machines {
-                match machine.run(signal) {
+                match machine.next_with(signal) {
                     Some(new) => signal = new,
                     None => return signal
                 }

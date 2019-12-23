@@ -19,6 +19,13 @@ where I: Integer + Copy + From<u8>, F: FnMut(I) -> bool
     }
 }
 
+/// Reasons for the intcode machine to stop processing
+pub enum IO {
+    Input,
+    Output(i64),
+    Halt,
+}
+
 /// The Intcode computer.
 #[derive(Clone)]
 pub struct Machine {
@@ -55,9 +62,14 @@ impl Machine {
     }
 
     /// Run the machine with some new input until it produces some output.
-    pub fn run(&mut self, new_input: i64) -> Option<i64> {
+    pub fn next_with(&mut self, new_input: i64) -> Option<i64> {
         self.input.push(new_input);
         self.next()
+    }
+
+    /// Return a mutable reference to the input source.
+    pub fn push_input(&mut self, new_input: i64) {
+        self.input.push(new_input);
     }
 
     /// Return contents of given memory cell.
@@ -113,14 +125,9 @@ impl Machine {
             self.ip += 2;
         }
     }
-}
 
-/// To implement Iterator, every call to next() produces one piece
-/// of output until the machine halts.
-impl Iterator for Machine {
-    type Item = i64;
-
-    fn next(&mut self) -> Option<i64> {
+    /// Run until an I/O event or halt.
+    pub fn run(&mut self) -> IO {
         loop {
             let opcode = self.mem(self.ip);
             self.ip += 1;
@@ -131,16 +138,43 @@ impl Iterator for Machine {
             match op {
                 1 => self.binop(m1, m2, m3, |a, b| a + b),
                 2 => self.binop(m1, m2, m3, |a, b| a * b),
-                3 => { self.ip += 1; let v = self.input.remove(0); self.set_par(m1, v); }
-                4 => { self.ip += 1; return Some(self.par(m1, -1)); }
                 5 => self.jumpop(m1, m2, |a| a != 0),
                 6 => self.jumpop(m1, m2, |a| a == 0),
                 7 => self.binop(m1, m2, m3, |a, b| (a < b) as i64),
                 8 => self.binop(m1, m2, m3, |a, b| (a == b) as i64),
                 9 => { self.ip += 1; self.bp += self.par(m1, -1); },
-                99 => return None,
+                3 => {
+                    if self.input.is_empty() {
+                        self.ip -= 1;
+                        return IO::Input;
+                    } else {
+                        self.ip += 1;
+                        let v = self.input.remove(0);
+                        self.set_par(m1, v);
+                    }
+                }
+                4 => {
+                    self.ip += 1;
+                    return IO::Output(self.par(m1, -1));
+                }
+                99 => return IO::Halt,
                 d => panic!("unknown opcode {}", d)
             }
+        }
+    }
+}
+
+/// To implement Iterator, every call to next() produces one piece
+/// of output until the machine halts.  Further input must not be
+/// requested.
+impl Iterator for Machine {
+    type Item = i64;
+
+    fn next(&mut self) -> Option<i64> {
+        match self.run() {
+            IO::Input => panic!("machine ran out of input"),
+            IO::Output(n) => Some(n),
+            IO::Halt => None,
         }
     }
 }

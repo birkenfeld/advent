@@ -25,7 +25,7 @@ fn visit(start: (i32, i32, Machine)) -> (i32, Option<(i32, i32, Machine)>) {
                 // Get a new machine for each direction, so they can continue
                 // independently.
                 let mut machn = machine.clone();
-                match machn.run(ndir as i64 + 1).unwrap() {
+                match machn.next_with(ndir as i64 + 1).unwrap() {
                     GOAL => return (steps, Some((xn, yn, machn))),
                     EMPTY => queue.push((xn, yn, machn)),
                     _ => ()

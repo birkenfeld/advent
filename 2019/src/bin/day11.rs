@@ -16,7 +16,7 @@ fn main() {
         loop {
             // Determine current color and feed it to the machine.
             let cur_color = tiles.get(&xy).cloned().unwrap_or(Black);
-            let paint = match machine.run(cur_color as i64) {
+            let paint = match machine.next_with(cur_color as i64) {
                 Some(p) => if p == 0 { Black } else { White },
                 None => break
             };
