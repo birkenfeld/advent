@@ -16,6 +16,7 @@ rand = "0.7.2"
 float-ord = "0.2.0"
 generic-array = "0.13.2"
 num_enum = "0.4.2"
+bit = "0.1.1"
 
 [dev-dependencies]
 criterion = { version = "0.3.0", default-features = false }
