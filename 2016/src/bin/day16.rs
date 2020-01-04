@@ -32,6 +32,6 @@ fn process(input: &[u8], target_len: usize) -> String {
 fn main() {
     let input = input_string();
     let input = input.trim().as_bytes();
-    advtools::print("Checksum, short", process(input, LEN));
-    advtools::print("Checksum, long", process(input, LEN2));
+    advtools::verify("Checksum, short", process(input, LEN), "10010100110011100");
+    advtools::verify("Checksum, long", process(input, LEN2), "01100100101101100");
 }

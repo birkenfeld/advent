@@ -136,7 +136,7 @@ fn find_steps(initial: State) -> Option<usize> {
 fn main() {
     rayon::ThreadPoolBuilder::new().num_threads(4).build_global().unwrap();
     let state1 = State::new(vec![0, 0, 0, 0, 0], vec![1, 1, 0, 0, 0]);
-    advtools::print("Min. # steps (5 chips)", find_steps(state1).unwrap());
+    advtools::verify("Min. # steps (5 chips)", find_steps(state1).unwrap(), 47);
     let state2 = State::new(vec![0, 0, 0, 0, 0, 0, 0], vec![1, 1, 0, 0, 0, 0, 0]);
-    advtools::print("Min. # steps (7 chips)", find_steps(state2).unwrap());
+    advtools::verify("Min. # steps (7 chips)", find_steps(state2).unwrap(), 71);
 }

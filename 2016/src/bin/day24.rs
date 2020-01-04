@@ -64,7 +64,8 @@ fn main() {
     let initial = initial.unwrap();
 
     let steps = find_steps(initial, None, &maze);
-    advtools::print("Steps to reach all POIs", steps);
+    advtools::verify("Steps to reach all POIs", steps, 456);
+
     let steps = find_steps(initial, Some((initial.0, initial.1, 255)), &maze);
-    advtools::print("Including return", steps);
+    advtools::verify("Including return", steps, 704);
 }

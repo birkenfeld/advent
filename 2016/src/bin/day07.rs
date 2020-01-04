@@ -30,6 +30,6 @@ fn main() {
             supports_ssl += 1;
         }
     }
-    advtools::print("Addresses with TLS support", supports_tls);
-    advtools::print("Addresses with SSL support", supports_ssl);
+    advtools::verify("Addresses with TLS support", supports_tls, 118);
+    advtools::verify("Addresses with SSL support", supports_ssl, 260);
 }

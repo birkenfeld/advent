@@ -73,6 +73,6 @@ fn find_last_index(input: &[u8], n: usize) -> usize {
 fn main() {
     let input = input_string();
     let input = input.trim().as_bytes();
-    advtools::print("Last index", find_last_index(input, 0));
-    advtools::print("Last index (stretching)", find_last_index(input, 2016));
+    advtools::verify("Last index", find_last_index(input, 0), 18626);
+    advtools::verify("Last index (stretching)", find_last_index(input, 2016), 20092);
 }

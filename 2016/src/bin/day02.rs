@@ -77,6 +77,6 @@ fn find_code<K: Keypad>() -> String {
 
 
 fn main() {
-    advtools::print("Code (normal keypad)", find_code::<NormalKeypad>());
-    advtools::print("Code (fancy keypad)", find_code::<FancyKeypad>());
+    advtools::verify("Code (normal keypad)", find_code::<NormalKeypad>(), 84452);
+    advtools::verify("Code (fancy keypad)", find_code::<FancyKeypad>(), "D65C3");
 }

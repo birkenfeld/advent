@@ -24,6 +24,6 @@ fn count_all_safe(n: usize) -> usize {
 }
 
 fn main() {
-    advtools::print("Safe tiles (40 lines)", count_all_safe(40));
-    advtools::print("Safe tiles (400000 lines)", count_all_safe(400_000));
+    advtools::verify("Safe tiles (40 lines)", count_all_safe(40), 1961);
+    advtools::verify("Safe tiles (400000 lines)", count_all_safe(400_000), 20000795);
 }

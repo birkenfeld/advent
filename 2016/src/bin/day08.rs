@@ -59,6 +59,6 @@ fn main() {
             screen.rotate_col(xby);
         }
     }
-    advtools::print("Lit pixels", screen.lit());
+    advtools::verify("Lit pixels", screen.lit(), 123);
     advtools::print("Code:", screen.print());
 }

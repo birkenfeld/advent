@@ -65,7 +65,7 @@ impl fmt::Display for State {
         for i in 0..self.len() {
             write!(f, "{}", String::from_utf8_lossy(self.dir(i).as_bytes()))?;
         }
-        write!(f, " ({})", self.pos())
+        Ok(())
     }
 }
 
@@ -137,6 +137,6 @@ fn main() {
     rayon::ThreadPoolBuilder::new().num_threads(3).build_global().unwrap();
     let state = State::default();
     let (final_state, max_path) = find_steps(input, state);
-    advtools::print("Shortest path to goal", final_state);
-    advtools::print("Max path length", max_path);
+    advtools::verify("Shortest path to goal", final_state, "DUDRDLRRRD");
+    advtools::verify("Max path length", max_path, 502);
 }

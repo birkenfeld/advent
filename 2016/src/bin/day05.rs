@@ -36,7 +36,7 @@ fn main() {
                                                .filter_map(|v| check(input, v)).collect();
         digits.sort();  // by n, then d6, then d7
         // update passcode for first door, just by order of number
-        pass_door1.extend(digits.iter().map(|d| char::from_digit(d.1 as u32, 16).unwrap()));
+        pass_door1.extend(digits.iter().flat_map(|d| char::from_digit(d.1 as u32, 16)));
         // update passcode for second door, where the index is d6, the code digit
         // is d7, and the first one wins
         for (_, d6, d7) in digits {
@@ -48,7 +48,7 @@ fn main() {
         n += BATCH;
     }
     let pass_door1 = &pass_door1[..LEN];
-    let pass_door2 = pass_door2.into_iter().map(|x| x.unwrap()).collect::<String>();
-    advtools::print("First door", pass_door1);
-    advtools::print("Second door", pass_door2);
+    let pass_door2 = pass_door2.into_iter().flatten().collect::<String>();
+    advtools::verify("First door", pass_door1, "1a3099aa");
+    advtools::verify("Second door", pass_door2, "694190cd");
 }

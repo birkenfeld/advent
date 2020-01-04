@@ -44,6 +44,6 @@ fn main() {
     let input = to_i32(input_string().trim());
     let pos1 = (1, 1);
     let pos2 = (31, 39);
-    advtools::print("Min. # steps to (31,39)", find_steps(input, pos1, Some(pos2), 0).0.unwrap());
-    advtools::print("Unique locations", find_steps(input, pos1, None, 50).1);
+    advtools::verify("Min. # steps to (31,39)", find_steps(input, pos1, Some(pos2), 0).0.unwrap(), 90);
+    advtools::verify("Unique locations", find_steps(input, pos1, None, 50).1, 135);
 }

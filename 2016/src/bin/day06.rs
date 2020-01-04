@@ -14,6 +14,6 @@ fn main() {
         let mut freqs = arr.iter().enumerate().map(|(i, v)| (weight * v, i)).sorted();
         (freqs.next().unwrap().1 as u8 + b'a') as char
     }).collect::<String>();
-    advtools::print("Message (most common)", collect_by_freq(-1));
-    advtools::print("Message (least common)", collect_by_freq(1));
+    advtools::verify("Message (most common)", collect_by_freq(-1), "cyxeoccr");
+    advtools::verify("Message (least common)", collect_by_freq(1), "batwpask");
 }

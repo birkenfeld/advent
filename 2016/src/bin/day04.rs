@@ -32,6 +32,6 @@ fn main() {
             }
         }
     }
-    advtools::print("Sector ID sum", sector_sum);
-    advtools::print("North Pole sector", np_sector);
+    advtools::verify("Sector ID sum", sector_sum, 278221);
+    advtools::verify("North Pole sector", np_sector, 267);
 }

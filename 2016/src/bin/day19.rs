@@ -16,6 +16,6 @@ fn calc_2(n: u64) -> u64 {
 
 fn main() {
     let elves = to_u64(input_string().trim());
-    advtools::print("First mode", calc_1(elves));
-    advtools::print("Second mode", calc_2(elves));
+    advtools::verify("First mode", calc_1(elves), 1834903);
+    advtools::verify("Second mode", calc_2(elves), 1420280);
 }

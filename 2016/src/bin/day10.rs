@@ -37,7 +37,7 @@ fn main() {
             if bot.chips.len() == 2 {
                 let chips = bot.chips.drain(..).sorted().collect_vec();
                 if chips == [17, 61] {
-                    advtools::print("Comparing 17-61", botno);
+                    advtools::verify("Comparing 17-61", botno, 101);
                 }
                 match bot.rule.0 {
                     Rule::Out(low) => { outputs.insert(low, chips[0]); }
@@ -51,5 +51,5 @@ fn main() {
         }
     }
 
-    advtools::print("Outputs 0*1*2", outputs[&0] * outputs[&1] * outputs[&2]);
+    advtools::verify("Outputs 0*1*2", outputs[&0] * outputs[&1] * outputs[&2], 37789);
 }
