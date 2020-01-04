@@ -70,7 +70,7 @@ fn main() {
         }
     }
     let min_p = particles2.into_iter().min_by_key(|(_, p)| p.p.dist()).unwrap();
-    advtools::print("Particle nearest origin", min_p.0);
+    advtools::verify("Particle nearest origin", min_p.0, 308);
 
     // Part 2: Determine how many particles are left after all collisions happened.
     let mut max_turn = 0;
@@ -110,5 +110,5 @@ fn main() {
         }
     }
 
-    advtools::print("Particles left after collisions", particles.len());
+    advtools::verify("Particles left after collisions", particles.len(), 504);
 }

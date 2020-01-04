@@ -1,5 +1,4 @@
-use advtools::prelude::rotate_left;
-use advtools::rotate_right;
+use advtools::prelude::{rotate_left, rotate_right};
 
 pub fn knot_process(input: &[u8], n: u32) -> Vec<u8> {
     let mut marks = (0..).take(256).collect::<Vec<_>>();

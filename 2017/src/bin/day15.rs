@@ -1,4 +1,5 @@
-use advtools::prelude::{Itertools, itertools::iterate};
+use advtools::prelude::Itertools;
+use advtools::itertools::iterate;
 use advtools::input::iter_input;
 
 /// Calculate a*b (mod 2^31-1) without doing a `%` operation, algorithm taken
@@ -25,7 +26,9 @@ fn main() {
     let input = iter_input().collect_tuple().unwrap();
 
     // Part 1: 40m numbers, all are accepted.
-    advtools::print("Accepted #1", compare_seqs(40_000_000, |_| true, |_| true, input));
+    advtools::verify("Accepted #1",
+                     compare_seqs(40_000_000, |_| true, |_| true, input), 600);
     // Part 2: 5m numbers, only accept divisible by 4 / 8, respectively.
-    advtools::print("Accepted #2", compare_seqs(5_000_000, |a| a & 3 == 0, |b| b & 7 == 0, input));
+    advtools::verify("Accepted #2",
+                     compare_seqs(5_000_000, |a| a & 3 == 0, |b| b & 7 == 0, input), 313);
 }

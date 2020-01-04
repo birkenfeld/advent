@@ -25,7 +25,7 @@ fn main() {
     for _ in 1..input {
         pos = next_pos(pos);
     }
-    advtools::print("Distance", pos.0.abs() + pos.1.abs());
+    advtools::verify("Distance", pos.0.abs() + pos.1.abs(), 430);
 
     // Part 2: Walk the spiral and insert all the calculated ambient sums in a map.
     let mut map = HashMap::new();
@@ -42,5 +42,5 @@ fn main() {
         }
         map.insert(pos, write);
     };
-    advtools::print("Value written", value);
+    advtools::verify("Value written", value, 312453);
 }

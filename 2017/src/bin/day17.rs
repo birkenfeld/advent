@@ -15,7 +15,7 @@ fn main() {
         }
     }
     let after_pos = if pos < 2017 { pos + 1 } else { 0 };
-    advtools::print("After 2017", buf[after_pos as usize]);
+    advtools::verify("After 2017", buf[after_pos as usize], 640);
 
     // Part 2: don't actually keep track of the inserted values.  Since we're
     // looking for the value after "0", and "0" always stays at the front of the
@@ -34,5 +34,5 @@ fn main() {
         }
         pos += 1;
     }
-    advtools::print("After zero", after_zero);
+    advtools::verify("After zero", after_zero, 47949463);
 }

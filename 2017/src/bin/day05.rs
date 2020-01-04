@@ -3,7 +3,7 @@ use advtools::input::iter_input;
 
 /// Jump through the list of offsets, with the closure determining how an offset
 /// is modified after it is taken.
-fn jump<F: Fn(i32) -> i32>(jumps: &mut [i32], f: F) -> i32 {
+fn jump(jumps: &mut [i32], f: impl Fn(i32) -> i32) -> i32 {
     let n = jumps.len() as i32;
     let mut pos = 0;
     let mut steps = 0;
@@ -24,9 +24,9 @@ fn main() {
 
     // Part 1: Taken offsets are increased by one.
     let steps1 = jump(&mut jumps.clone(), |ofs| ofs + 1);
-    advtools::print("Steps to outside", steps1);
+    advtools::verify("Steps to outside", steps1, 387096);
 
     // Part 2: Taken offsets are increased or decreased by one.
     let steps2 = jump(&mut jumps, |ofs| if ofs >= 3 { ofs - 1 } else { ofs + 1 });
-    advtools::print("Steps to outside (modified rule)", steps2);
+    advtools::verify("Steps to outside (modified rule)", steps2, 28040648);
 }

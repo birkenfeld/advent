@@ -10,7 +10,7 @@ fn main() {
                                        .map(|(a, _)| a.to_digit(10).unwrap())
                                        .sum::<u32>();
     // Part 1: adjacent items.
-    advtools::print("First round", captcha(1));
+    advtools::verify("First round", captcha(1), 1089);
     // Part 2: "opposite" items on a ring.
-    advtools::print("Second round", captcha(input.len() / 2));
+    advtools::verify("Second round", captcha(input.len() / 2), 1156);
 }

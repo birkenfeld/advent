@@ -23,7 +23,7 @@ fn main() {
         }
     }
     // Part 1: "Score" (sum of nesting levels) of the input.
-    advtools::print("Score", score);
+    advtools::verify("Score", score, 23588);
     // Part 2: Number of characters within garbage.
-    advtools::print("Garbage", ngarbage);
+    advtools::verify("Garbage", ngarbage, 10045);
 }

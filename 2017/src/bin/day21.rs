@@ -175,11 +175,11 @@ fn main() {
     for _ in 0..5 {
         state = advance(state, &repls2x2, &repls3x3);
     }
-    advtools::print("Lights on after 5", state.sum());
+    advtools::verify("Lights on after 5", state.sum(), 160);
 
     // Part 2: 18 iterations.
     for _ in 5..18 {
         state = advance(state, &repls2x2, &repls3x3);
     }
-    advtools::print("Lights on after 18", state.sum());
+    advtools::verify("Lights on after 18", state.sum(), 2271537);
 }

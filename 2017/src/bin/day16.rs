@@ -55,11 +55,11 @@ fn main() {
     // Part 1: execute one dance (the current `dancers` is the state after the
     // cycle, so it's the original state).
     dance_one(&dance, &mut dancers);
-    advtools::print("Order after 1 dance", as_string(&dancers));
+    advtools::verify("Order after 1 dance", as_string(&dancers), "kpfonjglcibaedhm");
 
     // Part 2: execute dances to reach 1bn (mod cycle_len).
     for _ in 0..(1_000_000_000 % cycle_len) - 1 {
         dance_one(&dance, &mut dancers);
     }
-    advtools::print("Order after 1 billion dances", as_string(&dancers));
+    advtools::verify("Order after 1 billion dances", as_string(&dancers), "odiabmplhfgjcekn");
 }

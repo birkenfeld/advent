@@ -34,12 +34,12 @@ fn main() {
         hash.into_iter().rev().enumerate().map(|(ofs, val)| (val as u128) << (ofs*8)).sum::<u128>()
     }).collect_vec();
     // Part 1: Count the number of one-bits.
-    advtools::print("Used bits", disk.iter().map(|b| b.count_ones()).sum::<u32>());
+    advtools::verify("Used bits", disk.iter().map(|b| b.count_ones()).sum::<u32>(), 8140);
 
     // Part 2: Count the number of regions of one-bits.  For each one-bit encountered, call
     // `zero_fill` to zero out all bits in the same region before continuing.
     let regions = (0..128).cartesian_product(0..128).filter(
         |&(y, x)| zero_fill(&mut disk, x, y)
     ).count();
-    advtools::print("Number of regions", regions);
+    advtools::verify("Number of regions", regions, 1182);
 }

@@ -21,10 +21,10 @@ fn main() {
     // Part 1: Find group with the program 0.
     for comp in &components {
         if comp.contains(&NodeIndex::new(0)) {
-            advtools::print("Programs talking to 0", comp.len());
+            advtools::verify("Programs talking to 0", comp.len(), 115);
             break;
         }
     }
     // Part 2: Just the number of components.
-    advtools::print("Number of groups", components.len());
+    advtools::verify("Number of groups", components.len(), 221);
 }

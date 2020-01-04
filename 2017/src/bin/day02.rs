@@ -8,7 +8,7 @@ fn main() {
     let cksum1 = input.iter().map(|cols| cols.iter().minmax().into_option().unwrap())
                              .map(|(min, max)| max - min)
                              .sum::<i32>();
-    advtools::print("Checksum 1", cksum1);
+    advtools::verify("Checksum 1", cksum1, 47136);
 
     // Part 2: For each line, find the combination of two items that are divisible
     // and sum up their quotient.
@@ -19,5 +19,5 @@ fn main() {
             else { None }
         }).next().unwrap()
     }).sum::<i32>();
-    advtools::print("Checksum 2", cksum2);
+    advtools::verify("Checksum 2", cksum2, 250);
 }

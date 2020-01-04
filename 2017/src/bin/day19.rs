@@ -40,7 +40,7 @@ fn main() {
     }
 
     // Part 1: The letters in order of the path.
-    advtools::print("Path", from_utf8(path));
+    advtools::verify("Path", from_utf8(path), "LIWQYKMRP");
     // Part 2: The total number of steps taken.
-    advtools::print("Steps", steps);
+    advtools::verify("Steps", steps, 16764);
 }
