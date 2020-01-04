@@ -32,9 +32,10 @@ fn main() {
         }
         push_pair(&mut new_seq, n, dp);
         seq = new_seq;
-        if i > 35 && i % 10 == 0 {
-            advtools::print(&format!("Resulting length after {} iterations", i),
-                            seq.len());
+        if i == 40 {
+            advtools::verify("Resulting length after 40 iterations", seq.len(), 492982);
+        } else if i == 50 {
+            advtools::verify("Resulting length after 50 iterations", seq.len(), 6989950);
         }
     }
 }

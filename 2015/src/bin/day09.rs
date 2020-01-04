@@ -1,7 +1,6 @@
 use advtools::prelude::Itertools;
 use advtools::input::iter_input_parts;
 use advtools::Uids;
-use permutohedron::Heap;
 
 fn main() {
     let mut table = [[0u16; 8]; 8];
@@ -15,12 +14,11 @@ fn main() {
     }
     let mut shortest = u16::max_value();
     let mut longest = 0;
-    let mut vec = (0..8).collect_vec();
-    for p in Heap::new(&mut vec) {
+    for p in (0..8).permutations(8) {
         let length = p.iter().zip(p.iter().skip(1)).map(|(p1, p2)| table[*p1][*p2]).sum();
         shortest = shortest.min(length);
         longest = longest.max(length);
     }
-    advtools::print("Shortest path", shortest);
-    advtools::print("Longest path", longest);
+    advtools::verify("Shortest path", shortest, 117);
+    advtools::verify("Longest path", longest, 909);
 }

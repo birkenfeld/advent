@@ -13,6 +13,6 @@ fn find(goal: u32, maxhouses: u32, multiplier: u32, n: u32) -> usize {
 fn main() {
     let goal = to_u32(input_string().trim());
     let n = goal / 10;
-    advtools::print("Visiting all houses", find(goal, n, 10, n));
-    advtools::print("Visiting only 50 houses", find(goal, 50, 11, n));
+    advtools::verify("Visiting all houses", find(goal, n, 10, n), 776160);
+    advtools::verify("Visiting only 50 houses", find(goal, 50, 11, n), 786240);
 }

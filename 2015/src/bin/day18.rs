@@ -50,10 +50,12 @@ fn main() {
         }
         step(&mut grid, stuck);
         let number_on: usize = grid.iter().map(
-            |row| row.iter().filter(|&&lamp| lamp).count()).sum();
-        advtools::print(
-            &format!("On after 100 steps{}",
-                     if stuck { " with stuck corners" } else { "" }),
-            number_on);
+            |row| row.iter().filter(|&&lamp| lamp).count()
+        ).sum();
+        if !stuck {
+            advtools::verify("On after 100 steps", number_on, 814);
+        } else {
+            advtools::verify("With stuck corners", number_on, 924);
+        }
     }
 }

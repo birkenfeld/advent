@@ -13,9 +13,13 @@ fn fight_to_the_death(boss: &(i32, i32, i32),
     let mut boss_hp = boss.0;
     loop {
         boss_hp -= (my_dmg - boss.2).max(1);
-        if boss_hp <= 0 { return true; }
+        if boss_hp <= 0 {
+            return true;
+        }
         my_hp -= (boss.1 - my_def).max(1);
-        if my_hp <= 0 { return false; }
+        if my_hp <= 0 {
+            return false;
+        }
     }
 }
 
@@ -42,6 +46,6 @@ fn main() {
             }
         }
     }
-    advtools::print("Min gold for win", min_gold);
-    advtools::print("Max gold for loss", max_gold);
+    advtools::verify("Min gold for win", min_gold, 121);
+    advtools::verify("Max gold for loss", max_gold, 201);
 }

@@ -102,9 +102,11 @@ fn main() {
         let (id, el) = parse_connection(parts);
         circuit.connect(id, el);
     }
+
     let signal_a = circuit.get_value(wire_id("a"));
-    advtools::print("Signal at wire a", signal_a);
+    advtools::verify("Signal at wire a", signal_a, 956);
+
     circuit.reset();
     circuit.reconnect(wire_id("b"), Element::Const(Source::Const(signal_a)));
-    advtools::print("Signal at wire a after modification", circuit.get_value(wire_id("a")));
+    advtools::verify("Signal at wire a after modification", circuit.get_value(wire_id("a")), 40149);
 }

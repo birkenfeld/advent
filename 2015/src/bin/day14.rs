@@ -14,12 +14,12 @@ fn main() {
         let rest_time = INPUT % cycle_time;
         (name.clone(), speed * (cycles * fly_time + rest_time.min(*fly_time)))
     }).max_by_key(|v| v.1).unwrap();
-    advtools::print("Traditional", winner.1);
+    advtools::verify("Traditional", winner.1, 2640);
 
     for time in 0..INPUT {
-        let best = deer.iter_mut().map(|&mut (_, speed, fly_time, cycle_time, ref mut dist, _)| {
-            if time % cycle_time < fly_time {
-                *dist += speed;
+        let best = deer.iter_mut().map(|(_, speed, fly_time, cycle_time, dist, _)| {
+            if time % *cycle_time < *fly_time {
+                *dist += *speed;
             }
             *dist
         }).max().unwrap();
@@ -30,5 +30,5 @@ fn main() {
         }
     }
     let winner = deer.iter().max_by_key(|v| v.5).unwrap();
-    advtools::print("New-style", winner.5);
+    advtools::verify("New-style", winner.5, 1102);
 }

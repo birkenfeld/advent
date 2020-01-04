@@ -14,7 +14,7 @@ fn make_one_replacement(initial: &str, trans: &HashMap<String, Vec<String>>) -> 
     variants
 }
 
-fn find_steps(initial: &str, target: &str, rtbl: &HashMap<String, String>) -> Option<usize> {
+fn find_steps(initial: &str, target: &str, rtbl: &HashMap<&String, &String>) -> Option<usize> {
     let mut repls: Vec<_> = rtbl.keys().collect();
     repls.shuffle(&mut thread_rng());
     let mut steps = 0;
@@ -22,9 +22,9 @@ fn find_steps(initial: &str, target: &str, rtbl: &HashMap<String, String>) -> Op
     loop {
         let old_steps = steps;
         for i in (0..cur.len() - 2).rev() {
-            for repl in &repls {
-                if cur[i..].starts_with(*repl) {
-                    cur = cur[..i].to_owned() + &rtbl[*repl] + &cur[i+repl.len()..];
+            for &&repl in &repls {
+                if cur[i..].starts_with(repl) {
+                    cur = cur[..i].to_owned() + &rtbl[repl] + &cur[i+repl.len()..];
                     steps += 1;
                 }
             }
@@ -39,24 +39,23 @@ fn find_steps(initial: &str, target: &str, rtbl: &HashMap<String, String>) -> Op
 
 fn main() {
     let mut trans: HashMap<String, Vec<String>> = HashMap::new();
-    let mut rtrans = HashMap::new();
     let mut target = String::new();
     for mut line in iter_input::<Vec<String>>() {
         if line.len() == 3 {
             let key = line.remove(0);
             let val = line.remove(1);
-            trans.entry(key.clone()).or_insert(vec![]).push(val.clone());
-            rtrans.insert(val, key);
+            trans.entry(key).or_default().push(val);
         } else {
             target = line.remove(0);
         }
     }
+    let rtrans = trans.iter().flat_map(|(k, vs)| vs.iter().map(move |v| (v, k))).collect();
     let variants = make_one_replacement(&target, &trans);
-    advtools::print("# distinct molecules for calibration", variants.len());
+    advtools::verify("# distinct molecules for calibration", variants.len(), 509);
     loop {
         if let Some(steps) = find_steps(&target, "e", &rtrans) {
-            advtools::print("# steps for making target", steps);
-            break;
+            advtools::verify("# steps for making target", steps, 195);
+            return;
         }
     }
 }

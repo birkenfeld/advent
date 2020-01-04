@@ -16,6 +16,6 @@ fn sum_up(val: &Value, no_reds: bool) -> i64 {
 
 fn main() {
     let doc: Value = from_reader(input_file()).expect("input not valid JSON");
-    advtools::print("Sum with reds", sum_up(&doc, false));
-    advtools::print("Sum without reds", sum_up(&doc, true));
+    advtools::verify("Sum with reds", sum_up(&doc, false), 191164);
+    advtools::verify("Sum without reds", sum_up(&doc, true), 87842);
 }

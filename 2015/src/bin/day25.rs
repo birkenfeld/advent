@@ -18,8 +18,8 @@ fn main() {
         }
         code = (code * FACTOR) % DIVISOR;
         if row == ROW && col == COL {
-            advtools::print("Code at target", code);
-            break;
+            advtools::verify("Code at target", code, 9132360);
+            return;
         }
     }
 }

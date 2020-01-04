@@ -1,12 +1,13 @@
+use advtools::prelude::Itertools;
 use advtools::input::iter_input_regex;
-use std::iter::once;
 use advtools::Uids;
-use permutohedron::Heap;
 
 fn most_happiness(n: usize, table: &[[i16; 9]; 9]) -> i16 {
-    Heap::new(&mut (0..n).collect::<Vec<_>>()).map(|p|
-        once(&p[n-1]).chain(p.iter()).zip(p.iter()).map(
-            |(&p1, &p2)| table[p1][p2] + table[p2][p1]).sum()).max().unwrap()
+    (0..n).permutations(n).map(|p| {
+        p.iter().zip(p.iter().cycle().skip(n - 1)).map(
+            |(&p1, &p2)| table[p1][p2] + table[p2][p1]
+        ).sum()
+    }).max().unwrap()
 }
 
 fn main() {
@@ -19,6 +20,6 @@ fn main() {
         let p2_id = map.get_id(p2);
         table[p1_id][p2_id] = val;
     }
-    advtools::print("Most happiness", most_happiness(8, &table));
-    advtools::print("Most happiness including self", most_happiness(9, &table));
+    advtools::verify("Most happiness", most_happiness(8, &table), 664);
+    advtools::verify("Most happiness including self", most_happiness(9, &table), 640);
 }

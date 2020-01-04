@@ -57,8 +57,8 @@ fn fight((boss_hp, boss_dmg): (i32, i32), dmg_per_turn: i32) -> i32 {
             }
             for (i, &(cost, last)) in [(113, 6), (173, 6), (229, 5)].iter().enumerate() {
                 if mana >= cost && effects[i] == 0 {
-                    let new_effects = effects;
-                    effects[i] = last;
+                    let mut new_effects = effects;
+                    new_effects[i] = last;
                     stack.push((!my_turn, boss_hp, hp, mana - cost, new_effects,
                                 mana_used + cost, rnds + 1));
                 }
@@ -71,6 +71,6 @@ fn fight((boss_hp, boss_dmg): (i32, i32), dmg_per_turn: i32) -> i32 {
 fn main() {
     let boss = iter_input_regex(r".*: (\d+)").collect_tuple().unwrap();
 
-    advtools::print("Min mana for win", fight(boss, 0));
-    advtools::print("Min mana for win with 1 dmg/turn", fight(boss, 1));
+    advtools::verify("Min mana for win", fight(boss, 0), 1269);
+    advtools::verify("Min mana for win with 1 dmg/turn", fight(boss, 1), 1309);
 }

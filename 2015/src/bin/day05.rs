@@ -28,8 +28,7 @@ fn main() {
                 'y' if prev == 'x' => has_naughty = true,
                 _ => ()
             }
-            let prevpair = pairs.get(&(prev, ch)).cloned();
-            if let Some(j) = prevpair {
+            if let Some(j) = pairs.get(&(prev, ch)) {
                 if j + 1 < i {
                     has_doublepair = true;
                 }
@@ -46,6 +45,6 @@ fn main() {
             nice_rule2 += 1;
         }
     }
-    advtools::print("Nice strings (rule 1)", nice_rule1);
-    advtools::print("Nice strings (rule 2)", nice_rule2);
+    advtools::verify("Nice strings (rule 1)", nice_rule1, 236);
+    advtools::verify("Nice strings (rule 2)", nice_rule2, 51);
 }

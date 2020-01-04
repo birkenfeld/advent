@@ -9,6 +9,6 @@ fn main() {
                 _   => (level, basement),
             }
         });
-    advtools::print("Resulting floor", res.0);
-    advtools::print("Basement", res.1.unwrap());
+    advtools::verify("Resulting floor", res.0, 232);
+    advtools::verify("Basement", res.1.unwrap(), 1783);
 }

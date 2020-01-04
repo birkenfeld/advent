@@ -31,6 +31,6 @@ fn main() {
             min6z = min6z.min(number);
         }
     }
-    advtools::print("First 5-zero hash for", min5z);
-    advtools::print("First 6-zero hash for", min6z);
+    advtools::verify("First 5-zero hash for", min5z, 282749);
+    advtools::verify("First 6-zero hash for", min6z, 9962624);
 }

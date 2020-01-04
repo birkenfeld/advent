@@ -22,13 +22,16 @@ fn main() {
         needle.insert((name.clone(), count));
         needle_map.insert(name, count);
     }
+
     let mut haystack = Vec::new();
     for tok in iter_input_trim::<Vec<(String, i32)>>(":,") {
         haystack.push(HashSet::from_iter(tok.into_iter().skip(1)));
     }
+
+    let mut real_aunt = 0;
     for (i, hay) in haystack.into_iter().enumerate() {
         if hay.is_subset(&needle) {
-            advtools::print("Preliminary aunt", i+1);
+            advtools::verify("Preliminary aunt", i+1, 373);
         }
         let all_ok = hay.iter().all(|(name, count)| {
             match &**name {
@@ -38,7 +41,9 @@ fn main() {
             }
         });
         if all_ok {
-            advtools::print("Real aunt", i+1);
+            real_aunt = i+1;
         }
     }
+
+    advtools::verify("Real aunt", real_aunt, 260);
 }

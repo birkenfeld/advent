@@ -15,8 +15,8 @@ fn main() {
             }
             if esc {
                 match ch {
-                    'x' => { skip = 2; }
-                    '"' | '\\' => { extra_len += 1; }
+                    'x' => skip = 2,
+                    '"' | '\\' => extra_len += 1,
                     _ => panic!("unknown escape {} in {}", ch, line)
                 }
                 esc = false;
@@ -32,9 +32,6 @@ fn main() {
         literal_len += line.len();
         reescaped_len += line.len() + extra_len + 4;
     }
-    // advtools::print("Literal length", literal_len);
-    // advtools::print("In-memory length", memory_len);
-    // advtools::print("Re-escaped length", reescaped_len);
-    advtools::print("Difference literal - memory", literal_len - memory_len);
-    advtools::print("Difference reescaped - literal", reescaped_len - literal_len);
+    advtools::verify("Difference literal - memory", literal_len - memory_len, 1333);
+    advtools::verify("Difference reescaped - literal", reescaped_len - literal_len, 2046);
 }
