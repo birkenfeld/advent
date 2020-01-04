@@ -33,7 +33,7 @@ fn main() {
         }
 
         if !seen.insert(new_bugs) {
-            advtools::print("First layout seen twice", new_bugs);
+            advtools::verify("First layout seen twice", new_bugs, 28903899);
             break;
         }
     }
@@ -87,5 +87,5 @@ fn main() {
     }
 
     let total = depths.iter().map(|v| v.count_ones()).sum::<u32>();
-    advtools::print("Bugs after 200 minutes", total);
+    advtools::verify("Bugs after 200 minutes", total, 1896);
 }

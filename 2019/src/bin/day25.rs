@@ -118,8 +118,8 @@ fn main() {
             machine = machine.with_input_str("north\n");
             for line in read_out(&mut machine) {
                 if line.contains("keypad") {
-                    advtools::print("Airlock password",
-                                    line.split_whitespace().nth(11).unwrap());
+                    advtools::verify("Airlock password",
+                                    line.split_whitespace().nth(11).unwrap(), 35717128);
                     return;
                 }
             }

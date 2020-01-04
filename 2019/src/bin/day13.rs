@@ -11,7 +11,7 @@ fn main() {
 
     // Part 1: Count all the blocks drawn.
     let blocks = Machine::new(&code).tuples().filter(|(_, _, tile)| tile == &BLOCK);
-    advtools::print("Blocks on screen", blocks.count());
+    advtools::verify("Blocks on screen", blocks.count(), 369);
 
     let mut paddle_x = 0;
     let mut score = 0;
@@ -30,5 +30,5 @@ fn main() {
             machine = machine.with_input((x - paddle_x).signum());
         }
     }
-    advtools::print("Final score", score);
+    advtools::verify("Final score", score, 19210);
 }

@@ -20,7 +20,7 @@ fn main() {
     // Determine indirect orbit lengths for each object.
     let mut indirect = std::iter::once((com, 0)).collect();
     orbits.keys().for_each(|&obj| calc_indirect(&orbits, &mut indirect, obj));
-    advtools::print("Sum of indirect orbits", indirect.values().sum::<i32>());
+    advtools::verify("Sum of indirect orbits", indirect.values().sum::<i32>(), 150150);
 
     let walk_centers = |mut obj, f: &mut dyn FnMut(usize) -> bool| loop {
         if obj == com || !f(obj) {
@@ -35,5 +35,5 @@ fn main() {
     walk_centers(you, &mut |p| my_centers.insert(p));
     let p = walk_centers(san, &mut |p| !my_centers.contains(&p));
     let path = indirect[&you] + indirect[&san] - 2*indirect[&p] - 2;
-    advtools::print("Travel path length", path);
+    advtools::verify("Travel path length", path, 352);
 }

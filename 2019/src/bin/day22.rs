@@ -56,7 +56,7 @@ fn main() {
         b %= CARDS_1;
     }
     let pos_2019 = (a*TGT_CARD_1 + b).rem_euclid(CARDS_1);
-    advtools::print("Position of card 2019", pos_2019);
+    advtools::verify("Position of card 2019", pos_2019, 8379);
 
     // For part 2, apply the operations backward to find where a particular
     // card position at the end comes from.
@@ -81,5 +81,6 @@ fn main() {
     // Now apply the full sequence to the target position, which gives us the
     // original position in the sorted sequence.
     let in_pos_2020 = (a_n*TGT_POS_2 + b_n).rem_euclid(CARDS_2);
-    advtools::print("Ends up in pos 2020", in_pos_2020);
+    advtools::verify("Ends up in pos 2020", in_pos_2020,
+                     96959315590030_i128);
 }

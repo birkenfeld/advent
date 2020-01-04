@@ -63,8 +63,8 @@ fn main() {
 
     prune_maze(&mut maze);
 
-    advtools::print("Steps to walk to exit", walk(&maze, &portals, entry, false));
-    advtools::print("Steps to walk with depth", walk(&maze, &portals, entry, true));
+    advtools::verify("Steps to walk to exit", walk(&maze, &portals, entry, false), 632);
+    advtools::verify("Steps to walk with depth", walk(&maze, &portals, entry, true), 7162);
 }
 
 /// Prune any cul-de-sacs from the maze.

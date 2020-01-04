@@ -31,7 +31,7 @@ fn main() {
     // Walk from a black tile.
     let mut tiles = HashMap::new();
     walk(&mut tiles);
-    advtools::print("Painted tiles", tiles.len());
+    advtools::verify("Painted tiles", tiles.len(), 1709);
 
     // Walk from a white tile.
     tiles = std::iter::once(((0, 0), White)).collect();

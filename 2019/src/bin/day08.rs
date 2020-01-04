@@ -19,7 +19,7 @@ fn main() {
         // The number of twos must be the remaining...
         (zeros, ones*(layer.len() - zeros - ones))
     }).min().unwrap();
-    advtools::print("Ones*twos in min-zero layer", result.1);
+    advtools::verify("Ones*twos in min-zero layer", result.1, 1452);
 
     let mut out = String::new();
     for i in 0..SIZE {

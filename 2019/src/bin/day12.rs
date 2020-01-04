@@ -53,13 +53,13 @@ fn main() {
                 dirs.iter().map(|d| d.pos[i].abs()).sum::<i32>() *
                     dirs.iter().map(|d| d.vel[i].abs()).sum::<i32>()
             }).sum();
-            advtools::print("Total energy after 1000 steps", energy);
+            advtools::verify("Total energy after 1000 steps", energy, 8454);
         }
 
         // If all three cycles are now known, we are done.
         if dirs.iter().all(|d| d.cycle > 0) {
             let big_cycle = dirs.iter().fold(1, |a, d| a.lcm(&d.cycle));
-            advtools::print("Repeating after", big_cycle);
+            advtools::verify("Repeating after", big_cycle, 362336016722948_u64);
             return;
         }
     }

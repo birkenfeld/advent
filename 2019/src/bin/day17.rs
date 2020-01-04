@@ -55,7 +55,7 @@ fn main() {
     let alignment = (0..grid.width).cartesian_product(0..grid.height).filter(|&xy| {
         Dir::iter().all(|d| grid.neighbor(xy, d).is_some())
     }).map(|(x, y)| x * y).sum::<usize>();
-    advtools::print("Alignment param sum", alignment);
+    advtools::verify("Alignment param sum", alignment, 5940);
 
     let mut machine = Machine::new(&code);
     machine.set_mem(0, 2);
@@ -121,7 +121,8 @@ fn main() {
             for seq in &[&*main, a, b, c] {
                 machine = machine.with_input_str(&seq_fmt(seq));
             }
-            advtools::print("Dust collected", machine.with_input_str("n\n").last().unwrap());
+            advtools::verify("Dust collected",
+                             machine.with_input_str("n\n").last().unwrap(), 923795);
             return;
         }
     }

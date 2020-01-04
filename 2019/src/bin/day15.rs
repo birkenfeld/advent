@@ -47,10 +47,10 @@ fn main() {
 
     // Part 1: find the number of steps to goal.
     let (steps, goal_state) = visit((0, 0, machine));
-    advtools::print("Steps to reach oxygen system", steps);
+    advtools::verify("Steps to reach oxygen system", steps, 218);
 
     // Part 2: find the number of steps to reach every place in the maze.
     // Won't find the goal since we're starting there.
     let (steps, _) = visit(goal_state.unwrap());
-    advtools::print("Steps to fill space with oxygen", steps);
+    advtools::verify("Steps to fill space with oxygen", steps, 544);
 }

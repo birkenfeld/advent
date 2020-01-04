@@ -43,8 +43,8 @@ fn main() {
     let my = maze.len()/2;
     let mx = maze[0].len()/2;
 
-    advtools::print("Fewest steps with 1 robot",
-                    visit_n(&maze, &key_pos, all_keys, arr![XY; (mx, my)]));
+    advtools::verify("Fewest steps with 1 robot",
+                    visit_n(&maze, &key_pos, all_keys, arr![XY; (mx, my)]), 3918);
 
     maze[my-1][mx] = Wall;
     maze[my][mx-1] = Wall;
@@ -52,8 +52,8 @@ fn main() {
     maze[my][mx+1] = Wall;
 
     let start = arr![XY; (mx-1, my-1), (mx-1, my+1), (mx+1, my-1), (mx+1, my+1)];
-    advtools::print("Fewest steps with 4 robots",
-                    visit_n(&maze, &key_pos, all_keys, start));
+    advtools::verify("Fewest steps with 4 robots",
+                    visit_n(&maze, &key_pos, all_keys, start), 2004);
 }
 
 /// Visit a maze with N robots.

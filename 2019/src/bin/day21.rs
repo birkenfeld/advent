@@ -217,8 +217,8 @@ fn main() {
     let code = Machine::parse(&input_string());
 
     let mut gen1 = Generator::new(Machine::new(&code), 6, "WALK\n");
-    advtools::print("Hull damage", gen1.run());
+    advtools::verify("Hull damage", gen1.run(), 19347868);
 
     let mut gen2 = Generator::new(Machine::new(&code), 11, "RUN\n");
-    advtools::print("Hull damage with extended range", gen2.run());
+    advtools::verify("Hull damage with extended range", gen2.run(), 1142479667);
 }

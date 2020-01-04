@@ -28,6 +28,6 @@ fn main() {
         }).sorted().dedup_by(|x, y| x.0 == y.0).collect_vec()
     }).max_by_key(|v| v.len()).unwrap();
 
-    advtools::print("Maximum visible asteroids", visible.len());
-    advtools::print("200th destroyed", 100*visible[199].2 + visible[199].3);
+    advtools::verify("Maximum visible asteroids", visible.len(), 269);
+    advtools::verify("200th destroyed", 100*visible[199].2 + visible[199].3, 612);
 }

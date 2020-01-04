@@ -36,7 +36,7 @@ fn main() {
         // If all machines are waiting, send a NAT packet to machine 0.
         if waiting == machines.len() {
             if nat == last_nat_sent {
-                advtools::print("NAT-Y sent twice in a row", nat.1);
+                advtools::verify("NAT-Y sent twice in a row", nat.1, 12415);
                 return;
             }
             machines[0].push_input(nat.0);
@@ -48,7 +48,7 @@ fn main() {
         for (addr, x, y) in packets.drain(..) {
             if addr == 255 {
                 if nat == (0, 0) {
-                    advtools::print("First NAT-Y received", y);
+                    advtools::verify("First NAT-Y received", y, 17541);
                 }
                 nat = (x, y);
             } else {

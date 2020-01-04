@@ -57,12 +57,12 @@ fn main() {
 
     // Part 1: Just produce one fuel.
     let single_fuel = ore_to_produce_fuel(1);
-    advtools::print("Required ore for 1 fuel", single_fuel);
+    advtools::verify("Required ore for 1 fuel", single_fuel, 346961);
 
     // Part 2: Make a binary search.  Initial bounds are given by what could
     // be expected from the single-fuel case (which underestimates severely)
     // and twice that amount.
     let exp = STOCK/single_fuel;
     let result = binary_search(exp, 2*exp, |f| ore_to_produce_fuel(f) > STOCK);
-    advtools::print("Fuel produced with 1tn ore", result - 1);
+    advtools::verify("Fuel produced with 1tn ore", result - 1, 4065790);
 }

@@ -8,8 +8,8 @@ fn main() {
     let code = Machine::parse(&input_string());
 
     let out = Machine::new(&code).with_input(AIR_COND).last().unwrap();
-    advtools::print("Output for air conditioner", out);
+    advtools::verify("Output for air conditioner", out, 15314507);
 
     let out = Machine::new(&code).next_with(RADIATOR).unwrap();
-    advtools::print("Output for radiator controller", out);
+    advtools::verify("Output for radiator controller", out, 652726);
 }

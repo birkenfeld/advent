@@ -22,7 +22,7 @@ fn main() {
             (digits.iter().zip(coeffs).map(|(x, y)| x * y).sum::<i32>() % 10).abs()
         }).collect();
     }
-    advtools::print("First 8 digits", digits.iter().take(8).join(""));
+    advtools::verify("First 8 digits", digits.iter().take(8).join(""), 40921727);
 
     // Determine the offset for part 2.  Our quick way to solve this part
     // only works with offsets that are in the second half of the input.
@@ -41,5 +41,5 @@ fn main() {
         digits = digits.iter().scan(0, |sum, x| { *sum += x; Some(*sum % 10) }).collect();
     }
     // To get the first 8 digits, we have to take from the end.
-    advtools::print("First 8 digits", digits.iter().rev().take(8).join(""));
+    advtools::verify("First 8 digits", digits.iter().rev().take(8).join(""), 89950138);
 }

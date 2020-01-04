@@ -35,6 +35,6 @@ fn main() {
         min_steps = min_steps.min(s1 + s2);
     });
 
-    advtools::print("Minimum manhattan distance", min_dist);
-    advtools::print("Minimum number of steps", min_steps);
+    advtools::verify("Minimum manhattan distance", min_dist, 896);
+    advtools::verify("Minimum number of steps", min_steps, 16524);
 }

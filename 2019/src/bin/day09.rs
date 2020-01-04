@@ -8,8 +8,8 @@ fn main() {
     let code = Machine::parse(&input_string());
 
     let out = Machine::new(&code).next_with(TESTMODE).unwrap();
-    advtools::print("Boost keycode", out);
+    advtools::verify("Boost keycode", out, 3546494377_i64);
 
     let out = Machine::new(&code).next_with(SENSORMODE).unwrap();
-    advtools::print("Distress coordinates", out);
+    advtools::verify("Distress coordinates", out, 47253);
 }
