@@ -1,7 +1,6 @@
 use std::mem::replace;
-use advtools::prelude::{Itertools, HashMap, FromIterator};
+use advtools::prelude::{Itertools, HashMap, FromIterator, binary_search};
 use advtools::input::iter_input;
-use advent19::binary_search;
 
 const STOCK: u64 = 1_000_000_000_000;  // 1 trillion
 

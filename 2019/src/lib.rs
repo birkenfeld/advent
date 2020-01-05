@@ -1,23 +1,5 @@
 use std::collections::HashMap;
 use std::sync::Arc;
-use num::Integer;
-
-/// Perform a binary search
-pub fn binary_search<I, F>(mut low: I, mut high: I, mut test: F) -> I
-where I: Integer + Copy + From<u8>, F: FnMut(I) -> bool
-{
-    loop {
-        if low + I::one() == high {
-            return high;
-        }
-        let guess = (low + high) / I::from(2);
-        if test(guess) {
-            high = guess;
-        } else {
-            low = guess;
-        }
-    }
-}
 
 /// Reasons for the intcode machine to stop processing
 pub enum IO {
@@ -175,67 +157,6 @@ impl Iterator for Machine {
             IO::Input => panic!("machine ran out of input"),
             IO::Output(n) => Some(n),
             IO::Halt => None,
-        }
-    }
-}
-
-
-#[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
-pub enum Dir {
-    U,
-    L,
-    D,
-    R,
-}
-
-impl Dir {
-    pub fn iter() -> impl Iterator<Item=Self> {
-        [Dir::U, Dir::D, Dir::R, Dir::L].iter().cloned()
-    }
-
-    pub fn left(&self)  -> Self {
-        match self {
-            Dir::U => Dir::L,
-            Dir::L => Dir::D,
-            Dir::D => Dir::R,
-            Dir::R => Dir::U,
-        }
-    }
-
-    pub fn right(&self) -> Self {
-        match self {
-            Dir::U => Dir::R,
-            Dir::R => Dir::D,
-            Dir::D => Dir::L,
-            Dir::L => Dir::U,
-        }
-    }
-
-    pub fn step<N: Integer>(&self, (x, y): (N, N)) -> (N, N) {
-        match self {
-            Dir::U => (x, y-N::one()),
-            Dir::D => (x, y+N::one()),
-            Dir::L => (x-N::one(), y),
-            Dir::R => (x+N::one(), y),
-        }
-    }
-
-    pub fn maybe_step<N: Integer>(&self, (x, y): (N, N), w: N, h: N) -> Option<(N, N)> {
-        match self {
-            Dir::U => if y > N::zero()  { Some((x, y-N::one())) } else { None },
-            Dir::D => if y < h-N::one() { Some((x, y+N::one())) } else { None },
-            Dir::L => if x > N::zero()  { Some((x-N::one(), y)) } else { None },
-            Dir::R => if x < w-N::one() { Some((x+N::one(), y)) } else { None },
-        }
-    }
-
-    pub fn from_str(s: &str) -> Self {
-        match s {
-            "U" => Dir::U,
-            "D" => Dir::D,
-            "L" => Dir::L,
-            "R" => Dir::R,
-            _ => unreachable!("invalid direction")
         }
     }
 }

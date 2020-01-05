@@ -1,5 +1,5 @@
-use advtools::prelude::{HashMap, HashSet};
-use advtools::{Uids, input::iter_input_regex};
+use advtools::prelude::{HashMap, HashSet, Uids};
+use advtools::input::iter_input_regex;
 
 fn calc_indirect(orbits: &HashMap<usize, usize>, indirect: &mut HashMap<usize, i32>, obj: usize) {
     if indirect.get(&obj).is_none() {

@@ -1,6 +1,7 @@
 use std::{io::BufRead, mem::replace};
 use advtools::prelude::{Itertools, HashSet, HashMap};
 use advtools::input::input_file;
+use advtools::grid::{Grid, Pos};
 
 #[derive(PartialEq, Clone, Copy)]
 enum Cell {
@@ -12,8 +13,6 @@ enum Cell {
 }
 use Cell::*;
 
-type XY = (usize, usize);
-
 fn main() {
     let maze_chars = input_file().lines().map(
         |line| line.unwrap().chars().collect_vec()
@@ -21,11 +20,10 @@ fn main() {
     let ny = maze_chars.len();
     let nx = maze_chars[0].len();
 
-    let mut maze = Vec::new();
     let mut portal_pos = HashMap::<_, Vec<_>>::new();
-    let mut entry = (0, 0);
-    for (y, row) in maze_chars.iter().enumerate() {
-        maze.push(row.iter().enumerate().map(|(x, &ch)| match ch {
+    let mut entry = Pos(0, 0);
+    let mut maze = Grid::new(maze_chars.iter().enumerate().map(|(y, row)| {
+        row.iter().enumerate().map(|(x, &ch)| match ch {
             '.' => Free,
             // Keep track of the positions of all portals by name, and if they
             // are inner or outer ones.
@@ -42,17 +40,17 @@ fn main() {
                     return Wall;
                 };
                 if name == ('A', 'A') {
-                    entry = (x, y);
+                    entry = Pos(x as i32, y as i32);
                     return Entry;
                 } else if name == ('Z', 'Z') {
                     return Exit;
                 }
-                portal_pos.entry(name).or_default().push(((x, y), outer));
+                portal_pos.entry(name).or_default().push((Pos(x as i32, y as i32), outer));
                 Portal
             }
             _ => Wall,
-        }).collect_vec());
-    }
+        }).collect()
+    }));
 
     // Connect same-name portals in a new mapping.
     let mut portals = HashMap::new();
@@ -68,22 +66,21 @@ fn main() {
 }
 
 /// Prune any cul-de-sacs from the maze.
-fn prune_maze(maze: &mut [Vec<Cell>]) {
+fn prune_maze(maze: &mut Grid<Cell>) {
     loop {
         let mut changed = 0;
-        for y in 0..maze.len() {
-            for x in 0..maze[0].len() {
-                if maze[y][x] == Free {
-                    let neighbors = [maze[y-1][x],
-                                     maze[y+1][x],
-                                     maze[y][x-1],
-                                     maze[y][x+1]];
-                    if neighbors.iter().filter(|&n| n == &Wall).count() == 3 &&
-                        neighbors.iter().filter(|&n| n == &Free).count() == 1
-                    {
-                        maze[y][x] = Wall;
-                        changed += 1;
-                    }
+        for pos in maze.positions() {
+            if maze[pos] == Free {
+                let mut wall_count = 0;
+                let mut free_count = 0;
+                maze.for_neighbors(pos, |p| match *p {
+                    Wall => wall_count += 1,
+                    Free => free_count += 1,
+                    _ => ()
+                });
+                if wall_count == 3 && free_count == 1 {
+                    maze[pos] = Wall;
+                    changed += 1;
                 }
             }
         }
@@ -93,25 +90,23 @@ fn prune_maze(maze: &mut [Vec<Cell>]) {
     }
 }
 
-fn walk(maze: &[Vec<Cell>], portals: &HashMap<XY, (XY, bool)>, start: XY, recursive: bool) -> u32 {
+fn walk(maze: &Grid<Cell>, portals: &HashMap<Pos, (Pos, bool)>, start: Pos, recursive: bool) -> u32 {
     let mut known = HashSet::with_capacity(1<<17);
-    let mut queue = vec![(start.0, start.1, 0)];
+    let mut queue = vec![(start, 0)];
     known.insert(queue[0]);
 
     for steps in 1.. {
-        for (x, y, depth) in replace(&mut queue, Vec::with_capacity(64)) {
-            let new_xy = [(x, y - 1), (x, y + 1), (x - 1, y), (x + 1, y)];
-            for &(nx, ny) in &new_xy {
-                match maze[ny][nx] {
+        for (pos, depth) in replace(&mut queue, Vec::with_capacity(64)) {
+            for new_pos in pos.neighbors() {
+                match maze[new_pos] {
                     Free => (),
                     Wall | Entry => continue,
                     Portal => {
-                        let ((px, py), outer) = portals[&(nx, ny)];
+                        let (portal_pos, outer) = portals[&new_pos];
 
                         // Find the corridor next to the exit in this step, since
                         // teleporting from corridor to corridor only counts as 1 step.
-                        let &(nx, ny) = [(px, py - 1), (px, py + 1), (px - 1, py), (px + 1, py)]
-                            .iter().find(|&&(xx, yy)| maze[yy][xx] == Free).unwrap();
+                        let actual_pos = portal_pos.neighbors().find(|&xy| maze[xy] == Free).unwrap();
 
                         let new_depth = if recursive {
                             if outer {
@@ -123,8 +118,8 @@ fn walk(maze: &[Vec<Cell>], portals: &HashMap<XY, (XY, bool)>, start: XY, recurs
                             0
                         };
                         if new_depth >= 0 {
-                            if known.insert((nx, ny, new_depth)) {
-                                queue.push((nx, ny, new_depth));
+                            if known.insert((actual_pos, new_depth)) {
+                                queue.push((actual_pos, new_depth));
                             }
                             continue;
                         }
@@ -137,8 +132,8 @@ fn walk(maze: &[Vec<Cell>], portals: &HashMap<XY, (XY, bool)>, start: XY, recurs
                         }
                     }
                 }
-                if known.insert((nx, ny, depth)) {
-                    queue.push((nx, ny, depth));
+                if known.insert((new_pos, depth)) {
+                    queue.push((new_pos, depth));
                 }
             }
         }
