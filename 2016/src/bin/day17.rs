@@ -2,28 +2,17 @@ use std::fmt;
 use md5::{Digest, Md5};
 use advtools::rayon::{self, prelude::*};
 use advtools::input::input_string;
+use advtools::grid::Dir;
 
-#[derive(Clone, Copy)]
-enum Dir { U, D, L, R }
-use self::Dir::*;
+use Dir::*;
 
-impl Dir {
-    fn from_int(i: u64) -> Self {
-        match i {
-            0 => U,
-            1 => D,
-            2 => L,
-            3 => R,
-            _ => unreachable!()
-        }
-    }
-    fn as_bytes(&self) -> &'static [u8] {
-        match *self {
-            U => b"U",
-            D => b"D",
-            L => b"L",
-            R => b"R",
-        }
+fn dir_from_int(i: u64) -> Dir {
+    match i {
+        0 => U,
+        1 => D,
+        2 => L,
+        3 => R,
+        _ => unreachable!()
     }
 }
 
@@ -39,7 +28,7 @@ impl State {
     }
     fn dir(&self, idx: usize) -> Dir {
         let (ai, idx) = (idx / 32, idx % 32);
-        Dir::from_int((self.1[ai] >> (idx * 2)) & 0x3)
+        dir_from_int((self.1[ai] >> (idx * 2)) & 0x3)
     }
     fn move_dir(&self, dir: Dir) -> State {
         let len = self.len();
@@ -63,7 +52,7 @@ impl State {
 impl fmt::Display for State {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         for i in 0..self.len() {
-            write!(f, "{}", String::from_utf8_lossy(self.dir(i).as_bytes()))?;
+            write!(f, "{:?}", self.dir(i))?;
         }
         Ok(())
     }

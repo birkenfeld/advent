@@ -1,15 +1,13 @@
 use advtools::prelude::Itertools;
 use advtools::input::iter_input;
-use strum_macros::EnumString;
+use advtools::grid::Dir;
 
-#[derive(EnumString, Clone, Copy, Debug)]
-enum Direction { U, R, D, L }
-use self::Direction::*;
+use Dir::*;
 
 type Button = i32;
 
 trait Keypad {
-    fn next(_: Button, _: Direction) -> Button;
+    fn next(_: Button, _: Dir) -> Button;
 }
 
 struct NormalKeypad;
@@ -19,7 +17,7 @@ impl Keypad for NormalKeypad {
     // 1 2 3
     // 4 5 6
     // 7 8 9
-    fn next(btn: Button, dir: Direction) -> Button {
+    fn next(btn: Button, dir: Dir) -> Button {
         match (btn, dir) {
             (1..=3, U) |
             (7..=9, D) |
@@ -41,7 +39,7 @@ impl Keypad for FancyKeypad {
     // 5  6  7  8  9
     //   10 11 12
     //      13
-    fn next(btn: Button, dir: Direction) -> Button {
+    fn next(btn: Button, dir: Dir) -> Button {
         match (btn, dir) {
             (5, U) | (2, U) | (1, U) | (4, U) | (9, U) |
             (5, D) | (10, D) | (13, D) | (12, D) | (9, D) |
@@ -67,8 +65,7 @@ fn find_code<K: Keypad>() -> String {
     let mut btn = 5;
     let code = iter_input::<String>().map(|line| {
         for ch in line.chars() {
-            let dir = ch.to_string().parse().unwrap();
-            btn = K::next(btn, dir);
+            btn = K::next(btn, Dir::from_char(ch));
         }
         btn
     });

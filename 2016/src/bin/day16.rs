@@ -1,5 +1,5 @@
 use advtools::prelude::Itertools;
-use advtools::input::input_string;
+use advtools::input::{input_string, from_utf8};
 use advtools::rayon::prelude::*;
 
 const LEN: usize = 272;
@@ -26,7 +26,7 @@ fn process(input: &[u8], target_len: usize) -> String {
     while s.len() % 2 == 0 {
         s = checksum(s);
     }
-    String::from_utf8(s).unwrap()
+    from_utf8(s)
 }
 
 fn main() {

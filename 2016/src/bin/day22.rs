@@ -1,11 +1,10 @@
 use advtools::prelude::{HashSet, Regex};
 use advtools::input::{iter_input, to_i32};
+use advtools::grid::Pos;
 
-type Pos = (i32, i32);
-const DIRECTIONS: [Pos; 4] = [(-1, 0), (0, -1), (1, 0), (0, 1)];
-
-fn is_allowed((x, y): Pos, blockers: &HashSet<Pos>, size: &Pos) -> bool {
-    x >= 0 && x <= size.0 && y >= 0 && y <= size.1 && !blockers.contains(&(x, y))
+fn is_allowed(pos: Pos, blockers: &HashSet<Pos>, size: &Pos) -> bool {
+    pos.x >= 0 && pos.x <= size.x && pos.y >= 0 && pos.y <= size.y &&
+        !blockers.contains(&pos)
 }
 
 fn find_steps(initial: Pos, final_: Pos, blockers: &HashSet<Pos>, size: &Pos) -> usize {
@@ -16,9 +15,8 @@ fn find_steps(initial: Pos, final_: Pos, blockers: &HashSet<Pos>, size: &Pos) ->
     loop {
         generation += 1;
         let mut new_positions = vec![];
-        for (x, y) in positions {
-            for &(dx, dy) in &DIRECTIONS {
-                let new_pos = (x + dx, y + dy);
+        for pos in positions {
+            for new_pos in pos.neighbors() {
                 if is_allowed(new_pos, blockers, size) && seen.insert(new_pos) {
                     if new_pos == final_ {
                         return generation;
@@ -39,7 +37,7 @@ fn main() {
         if let Some(cap) = rx.captures(&line) {
             // (x, y), (size, used)
             nodes.push((
-                (to_i32(&cap[1]), to_i32(&cap[2])),
+                Pos(to_i32(&cap[1]), to_i32(&cap[2])),
                 (to_i32(&cap[3]), to_i32(&cap[4]))
             ));
             smallest_cap = smallest_cap.min((nodes.last().unwrap().1).0);
@@ -48,7 +46,7 @@ fn main() {
     let size = nodes[nodes.len() - 1].0;
     let mut blockers = HashSet::new();
     let mut pairs = 0;
-    let mut hole_pos = (0, 0);
+    let mut hole_pos = Pos(0, 0);
     for n1 in &nodes {
         // determine if it's a blocker
         if (n1.1).1 > smallest_cap {
@@ -57,7 +55,7 @@ fn main() {
 
         // determine initial hole
         if (n1.1).1 == 0 {
-            hole_pos = ((n1.0).0 as i32, (n1.0).1 as i32);
+            hole_pos = n1.0;
         }
 
         // determine viable pairs
@@ -74,16 +72,18 @@ fn main() {
 
     let mut total_steps = 0;
     // move data from (max,0) to (0,0) step by step
-    for target_x in (0 .. size.0).rev() {
+    for target_x in (0 .. size.x).rev() {
+        let target_pos = Pos(target_x, 0);
+        let data_pos = target_pos.right();
         // find shortest way for the hole to move to (tx,0),
         // temporarily blocking the data position (it may not move!)
-        blockers.insert((target_x + 1, 0));
-        let steps = find_steps(hole_pos, (target_x as i32, 0), &blockers, &size);
-        blockers.take(&(target_x + 1, 0));
+        blockers.insert(data_pos);
+        let steps = find_steps(hole_pos, target_pos, &blockers, &size);
+        blockers.take(&data_pos);
 
         // add one additional step (moving the data into the hole)
         total_steps += steps + 1;
-        hole_pos = (target_x as i32 + 1, 0);
+        hole_pos = data_pos;
     }
     advtools::verify("Total # of steps", total_steps, 185);
 }
