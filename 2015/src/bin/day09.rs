@@ -1,6 +1,5 @@
-use advtools::prelude::Itertools;
+use advtools::prelude::{Itertools, Uids};
 use advtools::input::iter_input_parts;
-use advtools::Uids;
 
 fn main() {
     let mut table = [[0u16; 8]; 8];

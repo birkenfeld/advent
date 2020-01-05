@@ -1,6 +1,5 @@
-use advtools::prelude::Itertools;
+use advtools::prelude::{Itertools, Uids};
 use advtools::input::iter_input_regex;
-use advtools::Uids;
 
 fn most_happiness(n: usize, table: &[[i16; 9]; 9]) -> i16 {
     (0..n).permutations(n).map(|p| {

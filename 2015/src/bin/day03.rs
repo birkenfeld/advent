@@ -1,19 +1,13 @@
 use advtools::prelude::HashSet;
 use advtools::input::input_string;
+use advtools::grid::{Pos, Dir};
 
-type Coords = HashSet<(i32, i32)>;
+type Coords = HashSet<Pos>;
 
 fn walk(directions: impl Iterator<Item=char>, mut set: Coords) -> Coords {
-    set.insert((0, 0));
-    set.extend(directions.into_iter().scan((0, 0), |xy, ch| {
-        match ch {
-            '<' => xy.0 -= 1,
-            '>' => xy.0 += 1,
-            'v' => xy.1 -= 1,
-            '^' => xy.1 += 1,
-            _ => ()
-        }
-        Some(*xy)
+    set.insert(Pos(0, 0));
+    set.extend(directions.scan(Pos(0, 0), |xy, ch| {
+        Some(*xy.step(Dir::from_char(ch)))
     }));
     set
 }
