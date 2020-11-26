@@ -60,7 +60,7 @@ impl fmt::Display for State {
 
 fn eval_hash(hash: Md5) -> [bool; 4] {
     let mut dirs = [false; 4];
-    let buf = hash.result();
+    let buf = hash.finalize();
     dirs[0] = (buf[0] >> 4) >= 0xb;
     dirs[1] = (buf[0] & 0xf) >= 0xb;
     dirs[2] = (buf[1] >> 4) >= 0xb;
@@ -74,9 +74,9 @@ fn next_states(input: &[u8], states: Vec<State>) -> Vec<State> {
         .flat_map(|state| {
             let mut res = Vec::with_capacity(4);
             let mut hash = Md5::new();
-            hash.input(input);
+            hash.update(input);
             for i in 0..state.len() {
-                hash.input(state.dir(i).as_bytes());
+                hash.update(state.dir(i).as_bytes());
             }
             let dirs = eval_hash(hash);
             for (dir, ok) in [U, D, L, R].iter().cloned().zip(&dirs) {

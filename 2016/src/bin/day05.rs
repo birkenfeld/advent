@@ -10,9 +10,9 @@ fn check(input: &[u8], i: usize) -> Option<(usize, u8, u8)> {
     let mut ibuf = [0u8; 16];
     let mut hash = Md5::new();
     let n = itoa::write(&mut ibuf[..], i).unwrap();
-    hash.input(input);
-    hash.input(&ibuf[..n]);
-    let buf = hash.result();
+    hash.update(input);
+    hash.update(&ibuf[..n]);
+    let buf = hash.finalize();
     if buf[0] | buf[1] == 0 && buf[2] & 0xF0 == 0 {
         Some((i, buf[2], buf[3] >> 4))
     } else {

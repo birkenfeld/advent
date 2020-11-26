@@ -10,9 +10,9 @@ name = "days"
 harness = false
 
 [dependencies]
-advtools = { version = "0.5.0", path = "../advtools" }
-md-5 = "0.8.0"
-itoa = "0.4.3"
+advtools = { version = "0.6.0", path = "../advtools" }
+md-5 = "0.9.1"
+itoa = "0.4.6"
 
 [dev-dependencies]
-criterion = { version = "0.3.0", default-features = false }
+criterion = { version = "0.3.3", default-features = false }

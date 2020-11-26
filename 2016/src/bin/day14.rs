@@ -8,7 +8,7 @@ const KEYLEN: usize = 64;
 const HEXCHARS: &[u8] = b"0123456789abcdef";
 
 fn hash_to_hex(hash: Md5, sbuf: &mut [u8; 32]) {
-    let buf = hash.result();
+    let buf = hash.finalize();
     for (i, &byte) in buf.iter().enumerate() {
         sbuf[2*i] = HEXCHARS[(byte >> 4) as usize];
         sbuf[2*i+1] = HEXCHARS[(byte & 0xf) as usize];
@@ -24,12 +24,12 @@ fn find_multiples(input: &[u8], i: usize, n: usize) -> Option<(usize, u32)> {
     let mut sbuf = [0; 32];
     let mut hash = Md5::new();
     let m = itoa::write(&mut ibuf[..], i).unwrap();
-    hash.input(input);
-    hash.input(&ibuf[..m]);
+    hash.update(input);
+    hash.update(&ibuf[..m]);
     hash_to_hex(hash, &mut sbuf);
     for _ in 0..n {
         let mut hash = Md5::new();
-        hash.input(&sbuf);
+        hash.update(&sbuf);
         hash_to_hex(hash, &mut sbuf);
     }
     // find the first triplet, mark in lower 16 bits
