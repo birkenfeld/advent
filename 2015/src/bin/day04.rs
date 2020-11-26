@@ -9,9 +9,9 @@ fn check(input: &[u8], i: u64, tx: &mpsc::SyncSender<(u64, bool)>) {
     let mut ibuf = [0u8; 16];
     let mut hash = Md5::new();
     let n = itoa::write(&mut ibuf[..], i).unwrap();
-    hash.input(input);
-    hash.input(&ibuf[..n]);
-    let buf = hash.result();
+    hash.update(input);
+    hash.update(&ibuf[..n]);
+    let buf = hash.finalize();
     if (buf[0] | buf[1] == 0) && (buf[2] & 0xF0 == 0) {
         tx.send((i, buf[2] == 0)).unwrap();
     }
