@@ -93,7 +93,21 @@ impl<N: Integer> std::ops::Add for Pos<N> {
     }
 }
 
-#[derive(Clone)]
+impl<N: Integer + Copy> std::ops::AddAssign for Pos<N> {
+    fn add_assign(&mut self, other: Pos<N>) {
+        self.x = self.x + other.x;
+        self.y = self.y + other.y;
+    }
+}
+
+impl<N: Integer + Copy> std::ops::Mul<N> for Pos<N> {
+    type Output = Self;
+    fn mul(self, other: N) -> Pos<N> {
+        Pos(self.x * other, self.y * other)
+    }
+}
+
+#[derive(Clone, PartialEq)]
 pub struct Grid<T> {
     w: usize,
     h: usize,
