@@ -138,8 +138,12 @@ impl<T> Grid<T> {
         self.h
     }
 
-    pub fn positions(&self) -> impl Iterator<Item=Pos<usize>> + 'static {
-        (0..self.h).cartesian_product(0..self.w).map(|(y, x)| Pos(x, y))
+    pub fn positions<N>(&self) -> impl Iterator<Item=Pos<N>> + 'static
+    where N: Integer + Copy + FromPrimitive + ToPrimitive
+    {
+        (0..self.h).cartesian_product(0..self.w).map(|(y, x)| {
+            Pos(N::from_usize(x).unwrap(), N::from_usize(y).unwrap())
+        })
     }
 
     pub fn find_pos(&self, mut f: impl FnMut(&T) -> bool) -> Option<Pos<usize>> {
@@ -178,6 +182,10 @@ impl<T> Grid<T> {
             }
         }
         None
+    }
+
+    pub fn count(&self, f: impl Fn(&T) -> bool) -> usize {
+        self.v.iter().filter(|t| f(*t)).count()
     }
 }
 
