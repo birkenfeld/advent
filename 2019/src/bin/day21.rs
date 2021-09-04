@@ -31,7 +31,7 @@ type Script = Vec<Instr>;
 
 /// Generate a random number from 0 up to n-1.
 fn rand_n(n: usize) -> usize {
-    thread_rng().gen_range(0, n)
+    thread_rng().gen_range(0..n)
 }
 
 /// Generate a random source register

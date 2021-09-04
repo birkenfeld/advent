@@ -1,8 +1,8 @@
 use std::mem::replace;
-use advtools::prelude::{HashSet, HashMap};
+use std::convert::TryInto;
+use advtools::prelude::*;
 use advtools::input::iter_lines;
 use advtools::grid::{Grid, Pos};
-use generic_array::{GenericArray, ArrayLength, arr, sequence::GenericSequence};
 
 #[derive(PartialEq, Clone, Copy)]
 enum Cell {
@@ -13,7 +13,7 @@ enum Cell {
 }
 use Cell::*;
 
-#[derive(Hash, PartialEq, Eq, Clone, Copy)]
+#[derive(Debug, Hash, PartialEq, Eq, Clone, Copy)]
 enum Loc {
     Start(usize),
     Key(u8),
@@ -40,21 +40,19 @@ fn main() {
     let center = Pos(maze.width() as i32/2, maze.height() as i32/2);
 
     advtools::verify("Fewest steps with 1 robot",
-                    visit_n(&maze, &key_pos, all_keys, arr![Pos; center]), 3918);
+                     visit_n(&maze, &key_pos, all_keys, [center]), 3918);
 
     maze.for_neighbors(center, |p| *p = Wall);
 
-    let start = arr![Pos; center.left().down(), center.left().up(),
-                     center.right().down(), center.right().up()];
+    let start = [center.left().down(), center.left().up(),
+                 center.right().down(), center.right().up()];
     advtools::verify("Fewest steps with 4 robots",
-                    visit_n(&maze, &key_pos, all_keys, start), 2004);
+                     visit_n(&maze, &key_pos, all_keys, start), 2004);
 }
 
 /// Visit a maze with N robots.
-fn visit_n<N>(maze: &Grid<Cell>, key_pos: &HashMap<u8, Pos>, all_keys: u32,
-              start_pos: GenericArray<Pos, N>) -> u32
-    where N: ArrayLength<Pos> + ArrayLength<Loc>
-{
+fn visit_n<const N: usize>(maze: &Grid<Cell>, key_pos: &HashMap<u8, Pos>, all_keys: u32,
+                           start_pos: [Pos; N]) -> u32 {
     let mut fastest = HashMap::new();
     let mut min_steps = u32::max_value();
 
@@ -67,8 +65,7 @@ fn visit_n<N>(maze: &Grid<Cell>, key_pos: &HashMap<u8, Pos>, all_keys: u32,
         key_edges.insert(Loc::Key(key), neighbor_keys(maze, 1 << key, pos));
     }
 
-    // This will be much easier with const generics.
-    let start_pos: GenericArray<Loc, N> = GenericArray::generate(Loc::Start);
+    let start_pos: [Loc; N] = (0..N).map(Loc::Start).collect_vec().try_into().unwrap();
     let start = (start_pos, 0, 0);
     let mut queue = vec![start];
 
