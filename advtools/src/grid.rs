@@ -32,6 +32,15 @@ impl<N: Integer + Copy> Pos<N> {
         Pos(self.x + N::one(), self.y)
     }
 
+    pub fn to(self, dir: Dir) -> Self {
+        match dir {
+            U => self.up(),
+            D => self.down(),
+            L => self.left(),
+            R => self.right()
+        }
+    }
+
     pub fn step_left(&mut self) {
         *self = self.left();
     }
@@ -49,13 +58,8 @@ impl<N: Integer + Copy> Pos<N> {
     }
 
     pub fn step(&mut self, dir: Dir) -> &mut Self {
-        *self = match dir {
-            U => self.up(),
-            D => self.down(),
-            L => self.left(),
-            R => self.right()
-        };
-       self
+        *self = self.to(dir);
+        self
     }
 
     pub fn maybe_step(&self, dir: Dir, w: N, h: N) -> Option<Self> {
@@ -187,6 +191,26 @@ impl<T> Grid<T> {
     pub fn count(&self, f: impl Fn(&T) -> bool) -> usize {
         self.v.iter().filter(|t| f(*t)).count()
     }
+
+    pub fn map<U>(&self, f: impl Fn(&T) -> U) -> Grid<U> {
+        Grid {
+            w: self.w,
+            h: self.h,
+            v: self.v.iter().map(|v| f(v)).collect()
+        }
+    }
+}
+
+impl<T> Grid<Option<T>> {
+    pub fn empty(w: usize, h: usize) -> Self {
+        Self::from_iter(w, (0..w*h).map(|_| None))
+    }
+}
+
+impl Grid<bool> {
+    pub fn empty(w: usize, h: usize) -> Self {
+        Self::from_iter(w, (0..w*h).map(|_| false))
+    }
 }
 
 impl<T, N: ToPrimitive> Index<Pos<N>> for Grid<T> {
@@ -201,6 +225,31 @@ impl<T, N: ToPrimitive> IndexMut<Pos<N>> for Grid<T> {
     fn index_mut(&mut self, Pos { x, y }: Pos<N>) -> &mut T {
         let ix = y.to_usize().expect("invalid Y")*self.w + x.to_usize().expect("invalid X");
         &mut self.v[ix]
+    }
+}
+
+impl<T> Index<(usize, usize)> for Grid<T> {
+    type Output = T;
+    fn index(&self, (x, y): (usize, usize)) -> &T {
+        &self[Pos(x, y)]
+    }
+}
+
+impl<T> IndexMut<(usize, usize)> for Grid<T> {
+    fn index_mut(&mut self, (x, y): (usize, usize)) -> &mut T {
+        &mut self[Pos(x, y)]
+    }
+}
+
+impl fmt::Display for Grid<bool> {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        for (i, val) in self.v.iter().enumerate() {
+            write!(f, "{}", if *val { "#" } else { "." })?;
+            if i % self.w == self.w-1 {
+                writeln!(f)?;
+            }
+        }
+        Ok(())
     }
 }
 
