@@ -142,6 +142,12 @@ impl<T> Grid<T> {
         self.h
     }
 
+    pub fn center<N>(&self) -> Pos<N>
+    where N: Integer + Copy + FromPrimitive + ToPrimitive
+    {
+        Pos(N::from_usize(self.w / 2).unwrap(), N::from_usize(self.h / 2).unwrap())
+    }
+
     pub fn positions<N>(&self) -> impl Iterator<Item=Pos<N>> + 'static
     where N: Integer + Copy + FromPrimitive + ToPrimitive
     {
