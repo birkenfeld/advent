@@ -11,7 +11,7 @@ harness = false
 
 [dependencies]
 advtools = { version = "0.6.0", path = "../advtools" }
-rand = "0.7.3"
+rand = "0.8.4"
 itoa = "0.4.6"
 md-5 = "0.9.1"
 serde_json = "1.0.59"
