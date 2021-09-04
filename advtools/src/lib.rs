@@ -18,7 +18,7 @@ pub mod prelude {
     pub use itertools::{Itertools, iproduct};
     pub use regex::{Regex, Captures};
     pub use odds::slice::rotate_left;
-    pub use arrayvec::{ArrayVec, Array};
+    pub use arrayvec::ArrayVec;
 
     pub fn rotate_right<T>(t: &mut [T], n: usize) {
         let m = t.len() - n;

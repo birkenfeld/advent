@@ -8,12 +8,10 @@ repository = "https://github.com/birkenfeld/advtools"
 edition = "2018"
 
 [dependencies]
-itertools = "0.9.0"
-hashbrown = "0.9.1"
-arrayvec = "0.5.2"
-rayon = "1.5.0"
+itertools = "0.10.1"
+hashbrown = "0.11.2"
+arrayvec = "0.7.1"
+rayon = "1.5.1"
 regex = "1.4.2"
-num = "0.3.1"
+num = "0.4.0"
 odds = { version = "0.4.0", features = ["std-string", "std-vec"] }
-# try
-arraytools = "0.1.5"

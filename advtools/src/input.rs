@@ -6,7 +6,6 @@ use std::marker::PhantomData;
 use std::path::{Path, PathBuf};
 use regex::{Regex, CaptureLocations};
 use itertools::Itertools;
-use arrayvec::Array;
 
 fn input_file_name() -> PathBuf {
     let mut infile = Path::new("input").join(
@@ -167,7 +166,7 @@ pub struct InputIterator<T, R, A> {
     marker: PhantomData<T>,
 }
 
-impl<T: ParseResult, R: BufRead, A: Array<Item=usize>> Iterator for InputIterator<T, R, A> {
+impl<T: ParseResult, R: BufRead, const N: usize> Iterator for InputIterator<T, R, [usize; N]> {
     type Item = T;
 
     fn next(&mut self) -> Option<T> {
@@ -180,7 +179,7 @@ impl<T: ParseResult, R: BufRead, A: Array<Item=usize>> Iterator for InputIterato
                 line.pop();
             }
         }
-        Some(T::read_line(Cow::from(line), &self.trim, self.indices.as_slice()))
+        Some(T::read_line(Cow::from(line), &self.trim, &self.indices[..]))
     }
 }
 
@@ -230,12 +229,12 @@ pub fn iter_input_trim<T: ParseResult>(trim: &str) -> InputIterator<T, impl BufR
                     indices: [], marker: PhantomData }
 }
 
-pub fn iter_input_parts<T: ParseResult, Ix: Array>(ix: Ix) -> InputIterator<T, impl BufRead, Ix> {
+pub fn iter_input_parts<T: ParseResult, Ix, const N: usize>(ix: [Ix; N]) -> InputIterator<T, impl BufRead, [Ix; N]> {
     InputIterator { rdr: input_file(), trim: vec![],
                     indices: ix, marker: PhantomData }
 }
 
-pub fn iter_input_parts_trim<T: ParseResult, Ix: Array>(ix: Ix, trim: &str) -> InputIterator<T, impl BufRead, Ix> {
+pub fn iter_input_parts_trim<T: ParseResult, Ix, const N: usize>(ix: [Ix; N], trim: &str) -> InputIterator<T, impl BufRead, [Ix; N]> {
     InputIterator { rdr: input_file(), trim: trim.chars().collect(),
                     indices: ix, marker: PhantomData }
 }
@@ -250,13 +249,13 @@ pub fn parse_str<T: ParseResult>(part: &str) -> T {
     T::read_token(&mut [part].iter().map(|&v| v)).unwrap()
 }
 
-pub fn parse_parts<T: ParseResult, Ix: Array<Item=usize>>(line: &str, ix: Ix) -> T {
-    T::read_line(line.into(), &[], ix.as_slice())
+pub fn parse_parts<T: ParseResult, const N: usize>(line: &str, ix: [usize; N]) -> T {
+    T::read_line(line.into(), &[], &ix[..])
 }
 
-pub fn parse_parts_trim<T: ParseResult, Ix: Array<Item=usize>>(line: &str, ix: Ix, trim: &str) -> T {
+pub fn parse_parts_trim<T: ParseResult, const N: usize>(line: &str, ix: [usize; N], trim: &str) -> T {
     let trim: Vec<_> = trim.chars().collect();
-    T::read_line(line.into(), &trim, ix.as_slice())
+    T::read_line(line.into(), &trim, &ix[..])
 }
 
 macro_rules! impl_to {
