@@ -1,6 +1,6 @@
 use std::mem::replace;
 use advtools::prelude::{HashSet, HashMap};
-use advtools::input::iter_input;
+use advtools::input::iter_lines;
 use advtools::grid::{Grid, Pos};
 use generic_array::{GenericArray, ArrayLength, arr, sequence::GenericSequence};
 
@@ -23,8 +23,8 @@ fn main() {
     let mut key_pos = HashMap::new();
     let mut all_keys = 0;
     // Keep track of the maze, as well as the positions of all keys.
-    let mut maze = Grid::new(iter_input::<String>().enumerate().map(|(y, line)| {
-        line.trim().chars().enumerate().map(|(x, ch)| match ch {
+    let mut maze = Grid::new(iter_lines().enumerate().map(|(y, line)| {
+        line.chars().enumerate().map(|(x, ch)| match ch {
             '#' => Wall,
             '.' | '@' => Free,
             'a'..='z' => {

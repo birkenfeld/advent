@@ -1,5 +1,5 @@
 use advtools::prelude::Itertools;
-use advtools::input::iter_input;
+use advtools::input::iter_lines;
 
 #[derive(Clone, Copy)]
 enum Op {
@@ -31,7 +31,7 @@ fn mod_div(a: i128, b: i128, m: i128) -> i128 {
 }
 
 fn main() {
-    let ops = iter_input::<String>().map(|line| {
+    let ops = iter_lines().map(|line| {
         let split = line.split_whitespace().collect_vec();
         match (split[0], split[1]) {
             ("cut", x) => Op::Cut(x.parse().unwrap()),

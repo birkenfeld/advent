@@ -1,6 +1,6 @@
 use std::mem::replace;
 use advtools::prelude::{Itertools, HashMap, FromIterator, binary_search};
-use advtools::input::iter_input;
+use advtools::input::iter_lines;
 
 const STOCK: u64 = 1_000_000_000_000;  // 1 trillion
 
@@ -10,7 +10,7 @@ fn quantity(s: &str) -> (&str, u64) {
 }
 
 fn main() {
-    let input = iter_input::<String>().collect_vec();
+    let input = iter_lines().collect_vec();
     let mut recipes = HashMap::new();
 
     for line in &input {

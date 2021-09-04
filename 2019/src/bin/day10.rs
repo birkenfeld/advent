@@ -1,5 +1,5 @@
 use advtools::prelude::Itertools;
-use advtools::input::iter_input;
+use advtools::input::iter_lines;
 use float_ord::FloatOrd;
 
 fn iter_asteroids(map: &[Vec<bool>]) -> impl Iterator<Item=(usize, usize)> + '_ {
@@ -9,8 +9,8 @@ fn iter_asteroids(map: &[Vec<bool>]) -> impl Iterator<Item=(usize, usize)> + '_ 
 }
 
 fn main() {
-    let map = iter_input::<String>().map(
-        |s| s.trim().chars().map(|c| c == '#').collect_vec()
+    let map = iter_lines().map(
+        |line| line.chars().map(|c| c == '#').collect_vec()
     ).collect_vec();
 
     // Iterate over all possible station positions.  The inner iterator returns

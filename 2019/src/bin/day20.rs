@@ -69,7 +69,7 @@ fn main() {
 fn prune_maze(maze: &mut Grid<Cell>) {
     loop {
         let mut changed = 0;
-        for pos in maze.positions() {
+        for pos in maze.positions::<usize>() {
             if maze[pos] == Free {
                 let mut wall_count = 0;
                 let mut free_count = 0;
