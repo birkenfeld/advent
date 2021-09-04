@@ -1,19 +1,35 @@
 use std::borrow::Cow;
 use std::env;
-use std::io::{BufRead, Cursor};
+use std::fs::File;
+use std::io::{BufRead, BufReader, Cursor};
 use std::marker::PhantomData;
-use std::path::Path;
+use std::path::{Path, PathBuf};
 use regex::{Regex, CaptureLocations};
 use itertools::Itertools;
 use arrayvec::Array;
 
+fn input_file_name() -> PathBuf {
+    let mut infile = Path::new("input").join(
+        Path::new(&env::args_os().next().expect("no executable name")
+        ).file_name().expect("no file name?"));
+    infile.set_extension("txt");
+    infile
+}
+
+pub fn input_file() -> Box<dyn BufRead> {
+    crate::INPUT.with(|k| match k.borrow().clone() {
+        Some(s) => Box::new(Cursor::new(s)) as Box<dyn BufRead>,
+        None => {
+            let f = File::open(&input_file_name()).unwrap_or_else(
+                |e| panic!("could not read input file: {}", e));
+            Box::new(BufReader::new(f))
+        }
+    })
+}
+
 pub fn input_string() -> String {
     crate::INPUT.with(|k| k.borrow().clone().unwrap_or_else(|| {
-        let mut infile = Path::new("input").join(
-            Path::new(&env::args_os().next().expect("no executable name")
-            ).file_name().expect("no file name?"));
-        infile.set_extension("txt");
-        std::fs::read_to_string(&infile).unwrap_or_else(
+        std::fs::read_to_string(&input_file_name()).unwrap_or_else(
             |e| panic!("could not read input file: {}", e))
     }))
 }
@@ -199,8 +215,9 @@ impl<T: ParseResult, R: BufRead> Iterator for RegexInputIterator<T, R> {
 }
 
 
-pub fn input_file() -> impl BufRead {
-    Cursor::new(input_string())
+pub fn iter_lines() -> InputIterator<String, impl BufRead, [usize; 0]> {
+    InputIterator { rdr: input_file(), trim: vec![],
+                    indices: [], marker: PhantomData }
 }
 
 pub fn iter_input<T: ParseResult>() -> InputIterator<T, impl BufRead, [usize; 0]> {
