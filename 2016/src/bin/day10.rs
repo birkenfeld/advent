@@ -1,5 +1,5 @@
 use advtools::prelude::{HashMap, Itertools};
-use advtools::input::{iter_input, parse_parts};
+use advtools::input::{iter_lines, parse_parts};
 
 enum Rule {
     Out(u32),
@@ -16,7 +16,7 @@ fn main() {
     let mut outputs = HashMap::<u32, u32>::new();
     let mut changes = Vec::new();
 
-    for line in iter_input::<String>() {
+    for line in iter_lines() {
         if line.starts_with("value") {
             let (val, botno) = parse_parts(&line, [1, 5]);
             changes.push((botno, val));

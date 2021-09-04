@@ -1,5 +1,5 @@
 use advtools::prelude::Itertools;
-use advtools::input::{iter_input, to_usize};
+use advtools::input::{iter_lines, to_usize};
 
 const WIDTH: usize = 50;
 const HEIGHT: usize = 6;
@@ -38,7 +38,7 @@ impl Screen {
         for row in &self.pixels {
             result.push('\n');
             for pixel in &row[..] {
-                result.push(if *pixel { '#' } else { ' ' });
+                result.push(if *pixel { '█' } else { ' ' });
             }
         }
         result
@@ -47,7 +47,7 @@ impl Screen {
 
 fn main() {
     let mut screen = Screen::new();
-    for line in iter_input::<String>() {
+    for line in iter_lines() {
         if line.starts_with("rect") {
             let xy = line[5..].split('x').map(to_usize).collect_tuple().unwrap();
             screen.light_rect(xy);

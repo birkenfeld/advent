@@ -1,5 +1,5 @@
 use advtools::prelude::HashSet;
-use advtools::input::iter_input;
+use advtools::input::iter_lines;
 use advtools::grid::{Grid, Pos};
 
 type State = (Pos<usize>, u8);
@@ -42,7 +42,7 @@ fn find_steps(maze: &Grid<Loc>, initial: State, final_: Option<State>) -> usize 
 }
 
 fn main() {
-    let maze = Grid::new(iter_input::<String>().map(|line| {
+    let maze = Grid::new(iter_lines().map(|line| {
         line.chars().map(|ch| match ch {
             '#' => Loc::Wall,
             '.' => Loc::Free,

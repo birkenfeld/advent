@@ -1,5 +1,5 @@
 use advtools::prelude::Itertools;
-use advtools::input::iter_input;
+use advtools::input::iter_lines;
 
 fn has_abba(s: &&str) -> bool {
     s.chars().tuple_windows().any(|(a, b, c, d)| a == d && b == c && a != b)
@@ -16,7 +16,7 @@ fn has_bab(s: &str, aba: (char, char, char)) -> bool {
 fn main() {
     let mut supports_tls = 0;
     let mut supports_ssl = 0;
-    for line in iter_input::<String>() {
+    for line in iter_lines() {
         let (sup, hyp): (Vec<_>, Vec<_>) = line.split(|c| c == '[' || c == ']')
                                                .enumerate()
                                                .partition(|(i, _)| i % 2 == 0);

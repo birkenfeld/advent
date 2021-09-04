@@ -1,5 +1,5 @@
 use advtools::prelude::{HashSet, Regex};
-use advtools::input::{iter_input, to_i32};
+use advtools::input::{iter_lines, to_i32};
 use advtools::grid::Pos;
 
 fn is_allowed(pos: Pos, blockers: &HashSet<Pos>, size: &Pos) -> bool {
@@ -33,7 +33,7 @@ fn main() {
     let rx = Regex::new(r"node-x(\d+)-y(\d+) +(\d+)T +(\d+)T").unwrap();
     let mut nodes: Vec<(Pos, (i32, i32))> = Vec::new();
     let mut smallest_cap = 1000;
-    for line in iter_input::<String>() {
+    for line in iter_lines() {
         if let Some(cap) = rx.captures(&line) {
             // (x, y), (size, used)
             nodes.push((
