@@ -1,10 +1,10 @@
-use advtools::input::iter_input;
+use advtools::input::iter_lines;
 
 fn main() {
     let mut literal_len = 0;
     let mut memory_len = 0;
     let mut reescaped_len = 0;
-    for line in iter_input::<String>() {
+    for line in iter_lines() {
         let mut esc = false;
         let mut skip = 0;
         let mut extra_len = 0;

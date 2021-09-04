@@ -1,10 +1,10 @@
 use advtools::prelude::HashMap;
-use advtools::input::iter_input;
+use advtools::input::iter_lines;
 
 fn main() {
     let mut nice_rule1 = 0;
     let mut nice_rule2 = 0;
-    for line in iter_input::<String>() {
+    for line in iter_lines() {
         let mut prev = '\n';
         let mut pprev = '\n';
         let mut vowels = 0;
