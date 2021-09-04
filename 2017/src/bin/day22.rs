@@ -1,5 +1,5 @@
 use advtools::prelude::Itertools;
-use advtools::input::iter_input;
+use advtools::input::iter_lines;
 use advtools::grid::{Grid, Pos, Dir};
 
 use Dir::*;
@@ -38,7 +38,7 @@ fn run<F>(n: u32, mut grid: Grid<State>, modify: F) -> u32 where F: Fn(State) ->
 
 fn main() {
     let mut grid = vec![vec![State::Clean; SIZE]; SIZE];
-    let input = iter_input::<String>().collect_vec();
+    let input = iter_lines().collect_vec();
     let start_offset = input.len() / 2;
     let offset = SIZE/2 - start_offset;
     for (y, line) in input.into_iter().enumerate() {
