@@ -15,7 +15,7 @@ pub mod prelude {
     pub use std::iter::{FromIterator, once};
 
     pub use hashbrown::{HashMap, HashSet};
-    pub use itertools::Itertools;
+    pub use itertools::{Itertools, iproduct};
     pub use regex::{Regex, Captures};
     pub use odds::slice::rotate_left;
     pub use arrayvec::{ArrayVec, Array};
