@@ -12,7 +12,7 @@ pub mod grid;
 pub mod prelude {
     pub use std::collections::VecDeque;
     pub use std::collections::hash_map::Entry;
-    pub use std::iter::{FromIterator, once};
+    pub use std::iter::once;
 
     pub use hashbrown::{HashMap, HashSet};
     pub use itertools::{Itertools, iproduct};
