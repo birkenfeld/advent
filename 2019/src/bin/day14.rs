@@ -1,5 +1,5 @@
 use std::mem::replace;
-use advtools::prelude::{Itertools, HashMap, FromIterator, binary_search};
+use advtools::prelude::{Itertools, HashMap, binary_search};
 use advtools::input::iter_lines;
 
 const STOCK: u64 = 1_000_000_000_000;  // 1 trillion

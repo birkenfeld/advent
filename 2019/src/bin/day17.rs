@@ -72,7 +72,7 @@ fn main() {
 
     // Determine possible substrings with useful lengths (max is 10).
     let mut substr = HashSet::new();
-    for &n in &[6, 8, 10] {
+    for n in [6, 8, 10] {
         for i in (0..instrs.len()-n).step_by(2) {
             if seq_len(&instrs[i..i+n]) <= 20 {
                 substr.insert(&instrs[i..i+n]);
