@@ -7,7 +7,7 @@ const STEPS: usize = 100;
 fn step(grid: &mut [[bool; N+2]; N+2], stuck: bool) {
     let outgrid = &mut [[false; N+2]; N+2];
     if stuck {
-        for &(i, j) in &[(1, 1), (1, N), (N, 1), (N, N)] {
+        for (i, j) in [(1, 1), (1, N), (N, 1), (N, N)] {
             grid[i][j] = true;
         }
     }
@@ -31,7 +31,7 @@ fn step(grid: &mut [[bool; N+2]; N+2], stuck: bool) {
             }
         }
         if stuck {
-            for &(i, j) in &[(1, 1), (1, N), (N, 1), (N, N)] {
+            for (i, j) in [(1, 1), (1, N), (N, 1), (N, N)] {
                 outgrid[i][j] = true;
             }
         }
@@ -40,7 +40,7 @@ fn step(grid: &mut [[bool; N+2]; N+2], stuck: bool) {
 }
 
 fn main() {
-    for &stuck in &[false, true] {
+    for stuck in [false, true] {
         let mut grid = [[false; N+2]; N+2];
         for (line, input) in grid.iter_mut().skip(1).zip(iter_lines()) {
             for (loc, ch) in line.iter_mut().skip(1).zip(input.chars()) {

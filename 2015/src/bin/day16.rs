@@ -1,4 +1,4 @@
-use advtools::prelude::{HashMap, HashSet, FromIterator};
+use advtools::prelude::{HashMap, HashSet};
 use advtools::input::{iter_input_trim, parse_parts_trim};
 
 const NEEDLE: &str = "\
