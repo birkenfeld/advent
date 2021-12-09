@@ -73,6 +73,10 @@ thread_local! {
 
 static OUT_CONTROL: AtomicI32 = AtomicI32::new(1);
 
+pub fn set_input(s: &str) {
+    INPUT.with(|k| *k.borrow_mut() = Some(s.into()));
+}
+
 pub fn bench_mode(path: impl AsRef<Path>) {
     OUT_CONTROL.store(0, Ordering::SeqCst);
     INPUT.with(|k| *k.borrow_mut() = Some(
