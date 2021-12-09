@@ -1,31 +1,23 @@
-use advtools::input::{input_string, to_i32};
+use advtools::input::{input_string, to_usize};
 
 fn main() {
-    let mut ages = [0u64; 9];
-    for age in input_string().trim().split(',').map(to_i32) {
-        ages[age as usize] += 1;
+    // Collect initial age timers.
+    let mut ages = vec![0u64; 9];
+    for age in input_string().trim().split(',').map(to_usize) {
+        ages[age] += 1;
     }
 
-    let mut count_80 = 0u64;
-    for gen in 0..256 {
-        ages = [
-            ages[1],
-            ages[2],
-            ages[3],
-            ages[4],
-            ages[5],
-            ages[6],
-            ages[7] + ages[0],
-            ages[8],
-            ages[0],
-        ];
+    for gen in 1..=256 {
+        // Update the counts for each age timer.
+        ages = (0..9).map(|i| ages[(i + 1) % 9]).collect();
+        // The zero timers rolled over to 8 (newborns).  Add the
+        // parent fish again at their new timer value 6.
+        ages[6] += ages[8];
 
-        if gen == 79 {
-            count_80 = ages.iter().sum();
+        if gen == 80 {
+            advtools::verify("After 80 days", ages.iter().sum::<u64>(), 350605);
         }
     }
-    let count_256: u64 = ages.iter().sum();
 
-    advtools::verify("After 80 days", count_80, 350605);
-    advtools::verify("After 256 days", count_256, 1592778185024u64);
+    advtools::verify("After 256 days", ages.iter().sum::<u64>(), 1592778185024u64);
 }

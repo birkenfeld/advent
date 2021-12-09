@@ -1,7 +1,9 @@
 use advtools::prelude::Itertools;
 use advtools::input::{input_string, to_i32};
 
+// Calculates the min fuel for a given fuel cost function.
 fn min_fuel(pos: &[i32], fuel: impl Fn(i32) -> i32) -> i32 {
+    // Get the min/max candidate positions.
     let (minpos, maxpos) = pos.iter().copied().minmax().into_option().unwrap();
     (minpos..=maxpos).map(|q| {
         pos.iter().map(|p| fuel((p - q).abs())).sum::<i32>()

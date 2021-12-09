@@ -2,13 +2,17 @@ use advtools::itertools::Itertools;
 use advtools::input::iter_lines;
 
 fn main() {
-    let corpus = iter_lines().map(|line| u32::from_str_radix(&line, 2).unwrap()).collect_vec();
+    let corpus = iter_lines().map(|line| u32::from_str_radix(&line, 2).unwrap())
+                             .collect_vec();
     let num_bits = 32 - corpus.iter().max().unwrap().leading_zeros();
 
+    // Checks if at position `bit`, we have at least as many ones as zeros over
+    // the whole corpus.
     let more_ones = |corpus: &[u32], bit: u32| {
         2 * corpus.iter().filter(|&s| s & (1 << bit) != 0).count() >= corpus.len()
     };
 
+    // Finds the remaining value for part 2, with `ones` selecting the criterion.
     let find = |mut corpus: Vec<u32>, ones: bool| {
         for bit in (0..num_bits).rev() {
             let goal = more_ones(&corpus, bit) == ones;

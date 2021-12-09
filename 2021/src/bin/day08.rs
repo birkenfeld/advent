@@ -5,17 +5,17 @@ fn main() {
     let mut easy_digits = 0;
     let mut total_sum = 0;
 
+    // Convert abcdefg notation to integers with single bits representing wires.
     let str_to_int = |s: &String| s.chars()
                                    .map(|ch| ch as u8 - b'a')
                                    .fold(0u8, |pat, bit| pat | (1 << bit));
 
     for data in iter_input::<Vec<String>>() {
-        // Convert abcdefg notation to integers with single bits representing wires.
+        // Get the patterns in this order:
+        // [1-pattern, 7-pattern, 4-pattern, (2,5,3)-patterns, (0,6,9)-patterns]
         let all = data[..10].iter().map(str_to_int)
                                    .sorted_by_key(|pat| pat.count_ones()).collect_vec();
 
-        // "all" is now in the order:
-        // [1-pattern, 7-pattern, 4-pattern, (2,5,3)-patterns, (0,6,9)-patterns]
 
         // Find the "c/f" wires: those displayed for 1
         let cf = all[0];
@@ -40,6 +40,7 @@ fn main() {
                 easy_digits += 1;
             }
 
+            // Part 2: decode digit depending on the lit wires
             match (n_lit, pat & e, pat & c, pat & d) {
                 (2, _, _, _) => 1,
                 (3, _, _, _) => 7,
