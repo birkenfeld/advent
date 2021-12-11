@@ -73,11 +73,13 @@ fn prune_maze(maze: &mut Grid<Cell>) {
             if maze[pos] == Free {
                 let mut wall_count = 0;
                 let mut free_count = 0;
-                maze.for_neighbors(pos, |p| match *p {
-                    Wall => wall_count += 1,
-                    Free => free_count += 1,
-                    _ => ()
-                });
+                for npos in maze.neighbors(pos) {
+                    match maze[npos] {
+                        Wall => wall_count += 1,
+                        Free => free_count += 1,
+                        _ => ()
+                    }
+                }
                 if wall_count == 3 && free_count == 1 {
                     maze[pos] = Wall;
                     changed += 1;
@@ -97,7 +99,7 @@ fn walk(maze: &Grid<Cell>, portals: &HashMap<Pos, (Pos, bool)>, start: Pos, recu
 
     for steps in 1.. {
         for (pos, depth) in replace(&mut queue, Vec::with_capacity(64)) {
-            for new_pos in pos.neighbors() {
+            for new_pos in maze.neighbors(pos) {
                 match maze[new_pos] {
                     Free => (),
                     Wall | Entry => continue,

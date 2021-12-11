@@ -42,7 +42,9 @@ fn main() {
     advtools::verify("Fewest steps with 1 robot",
                      visit_n(&maze, &key_pos, all_keys, [center]), 3918);
 
-    maze.for_neighbors(center, |p| *p = Wall);
+    for npos in maze.neighbors(center) {
+        maze[npos] = Wall;
+    }
 
     let start = [center.left().down(), center.left().up(),
                  center.right().down(), center.right().up()];
@@ -117,7 +119,7 @@ fn neighbor_keys(maze: &Grid<Cell>, keys_ignore: u32, start: Pos) -> Vec<(u8, u3
 
     for steps in 1.. {
         for (pos, req_keys) in replace(&mut queue, Vec::with_capacity(16)) {
-            for new_pos in pos.neighbors() {
+            for new_pos in maze.neighbors(pos) {
                 match maze[new_pos] {
                     Free => (),
                     Wall => continue,
