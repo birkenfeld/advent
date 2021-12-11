@@ -134,6 +134,10 @@ impl<T> Grid<T> {
         Self { w, h: v.len() / w, v }
     }
 
+    pub fn len(&self) -> usize {
+        self.w * self.h
+    }
+
     pub fn width(&self) -> usize {
         self.w
     }
@@ -160,20 +164,23 @@ impl<T> Grid<T> {
         self.positions().find(|&p| f(&self[p]))
     }
 
-    pub fn for_neighbors<N>(&mut self, pos: Pos<N>, mut f: impl FnMut(&mut T))
-    where N: Integer + Copy + FromPrimitive + ToPrimitive
-    {
-        let (w, h) = (N::from_usize(self.w).expect("invalid width"),
-                      N::from_usize(self.h).expect("invalid height"));
-        Dir::iter().flat_map(|d| pos.maybe_step(d, w, h)).for_each(|p| f(&mut self[p]));
-    }
-
     pub fn neighbors<N>(&self, pos: Pos<N>) -> impl Iterator<Item=Pos<N>> + 'static
     where N: Integer + Copy + FromPrimitive + ToPrimitive + 'static
     {
         let (w, h) = (N::from_usize(self.w).expect("invalid width"),
                       N::from_usize(self.h).expect("invalid height"));
         Dir::iter().flat_map(move |d| pos.maybe_step(d, w, h))
+    }
+
+    pub fn neighbors_diag<N>(&self, pos: Pos<N>) -> impl Iterator<Item=Pos<N>> + 'static
+    where N: Integer + Copy + FromPrimitive + ToPrimitive + 'static
+    {
+        let (w, h) = (N::from_usize(self.w).expect("invalid width"),
+                      N::from_usize(self.h).expect("invalid height"));
+        Dir::iter().flat_map(move |d| pos.maybe_step(d, w, h)).chain(
+            Dir::iter().flat_map(move |d| pos.maybe_step(d, w, h)
+                .and_then(|p| p.maybe_step(d.left(), w, h)))
+        )
     }
 
     pub fn iter(&self) -> impl Iterator<Item=&[T]> {
