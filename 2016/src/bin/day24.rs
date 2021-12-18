@@ -1,5 +1,5 @@
 use advtools::prelude::HashSet;
-use advtools::input::iter_lines;
+use advtools::input;
 use advtools::grid::{Grid, Pos};
 
 type State = (Pos<usize>, u8);
@@ -8,7 +8,7 @@ type State = (Pos<usize>, u8);
 enum Loc {
     Wall,
     Free,
-    POI(u8),
+    Poi(u8),
 }
 
 fn find_steps(maze: &Grid<Loc>, initial: State, final_: Option<State>) -> usize {
@@ -20,11 +20,11 @@ fn find_steps(maze: &Grid<Loc>, initial: State, final_: Option<State>) -> usize 
         generation += 1;
         let mut new_positions = vec![];
         for (pos, pois) in positions {
-            for new_pos in pos.neighbors() {
+            for new_pos in maze.neighbors(pos) {
                 let new_pos = match maze[new_pos] {
                     Loc::Wall => continue,
                     Loc::Free => (new_pos, pois),
-                    Loc::POI(n) => (new_pos, pois | (1 << n))
+                    Loc::Poi(n) => (new_pos, pois | (1 << n))
                 };
                 if match final_ {
                     Some(p) => new_pos == p,
@@ -42,16 +42,16 @@ fn find_steps(maze: &Grid<Loc>, initial: State, final_: Option<State>) -> usize 
 }
 
 fn main() {
-    let maze = Grid::new(iter_lines().map(|line| {
+    let maze = Grid::new(input::lines().map(|line| {
         line.chars().map(|ch| match ch {
             '#' => Loc::Wall,
             '.' => Loc::Free,
-            '0' ..= '7' => Loc::POI((ch as u8) - b'0'),
+            '0' ..= '7' => Loc::Poi((ch as u8) - b'0'),
             _ => panic!("invalid input: {}", ch)
         }).collect()
     }));
 
-    let initial = maze.find_pos(|p| p == &Loc::POI(0)).unwrap();
+    let initial = maze.find_pos(|p| p == &Loc::Poi(0)).unwrap();
 
     let steps = find_steps(&maze, (initial, 1), None);
     advtools::verify("Steps to reach all POIs", steps, 456);

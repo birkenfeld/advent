@@ -1,9 +1,9 @@
 use advtools::prelude::HashMap;
-use advtools::input::iter_input;
+use advtools::input;
 use advent16::Machine;
 
 fn main() {
-    let mut machine = Machine::new(iter_input());
+    let mut machine = Machine::new(input::parse_lines());
 
     'outer: for i in 0.. {
         let mut sig = Vec::new();

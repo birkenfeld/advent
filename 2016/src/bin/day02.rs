@@ -1,8 +1,6 @@
 use advtools::prelude::Itertools;
-use advtools::input::iter_lines;
-use advtools::grid::Dir;
-
-use Dir::*;
+use advtools::input;
+use advtools::grid::{Dir, Dir::*};
 
 type Button = i32;
 
@@ -63,7 +61,7 @@ impl Keypad for FancyKeypad {
 
 fn find_code<K: Keypad>() -> String {
     let mut btn = 5;
-    let code = iter_lines().map(|line| {
+    let code = input::lines().map(|line| {
         for ch in line.chars() {
             btn = K::next(btn, Dir::from_char(ch));
         }

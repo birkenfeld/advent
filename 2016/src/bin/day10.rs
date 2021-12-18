@@ -1,14 +1,16 @@
 use advtools::prelude::{HashMap, Itertools};
-use advtools::input::{iter_lines, parse_parts};
+use advtools::input;
 
-enum Rule {
+const FORMAT: &str = r"(?:bot (\d+) .* to (\S+) (\d+) .* to (\S+) (\d+)|value (\d+)\D+(\d+))";
+
+enum Tgt {
     Out(u32),
     Bot(u32),
 }
 
 struct Bot {
     chips: Vec<u32>,
-    rule: (Rule, Rule),
+    targets: (Tgt, Tgt),
 }
 
 fn main() {
@@ -16,16 +18,14 @@ fn main() {
     let mut outputs = HashMap::<u32, u32>::new();
     let mut changes = Vec::new();
 
-    for line in iter_lines() {
-        if line.starts_with("value") {
-            let (val, botno) = parse_parts(&line, [1, 5]);
+    for (botrule, valrule) in input::rx_lines::<(Option<_>, Option<_>)>(FORMAT) {
+        if let Some((val, botno)) = valrule {
             changes.push((botno, val));
-        } else {
-            let (botno, lowrule, low, highrule, high): (u32, String, u32, String, u32) =
-                parse_parts(&line, [1, 5, 6, 10, 11]);
-            let lowrule = if lowrule == "output" { Rule::Out(low) } else { Rule::Bot(low) };
-            let highrule = if highrule == "output" { Rule::Out(high) } else { Rule::Bot(high) };
-            bots.insert(botno, Bot { chips: vec![], rule: (lowrule, highrule) });
+        } else if let Some((botno, lowtgt, low, hightgt, high)) = botrule {
+            bots.insert(botno, Bot { chips: vec![], targets: (
+                if matches!(lowtgt, "output") { Tgt::Out(low) } else { Tgt::Bot(low) },
+                if matches!(hightgt, "output") { Tgt::Out(high) } else { Tgt::Bot(high) }
+            ) });
         }
     }
 
@@ -39,13 +39,13 @@ fn main() {
                 if chips == [17, 61] {
                     advtools::verify("Comparing 17-61", botno, 101);
                 }
-                match bot.rule.0 {
-                    Rule::Out(low) => { outputs.insert(low, chips[0]); }
-                    Rule::Bot(low) => { changes.push((low, chips[0])); }
+                match bot.targets.0 {
+                    Tgt::Out(low) => { outputs.insert(low, chips[0]); }
+                    Tgt::Bot(low) => { changes.push((low, chips[0])); }
                 }
-                match bot.rule.1 {
-                    Rule::Out(high) => { outputs.insert(high, chips[1]); }
-                    Rule::Bot(high) => { changes.push((high, chips[1])); }
+                match bot.targets.1 {
+                    Tgt::Out(high) => { outputs.insert(high, chips[1]); }
+                    Tgt::Bot(high) => { changes.push((high, chips[1])); }
                 }
             }
         }

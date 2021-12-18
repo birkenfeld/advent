@@ -1,5 +1,5 @@
 use advtools::prelude::Itertools;
-use advtools::input::iter_input_regex;
+use advtools::input;
 
 fn find_allowed(excluded: &[(u32, u32)], mut el: u32) -> Option<u32> {
     for &(rmin, rmax) in excluded {
@@ -14,7 +14,7 @@ fn find_allowed(excluded: &[(u32, u32)], mut el: u32) -> Option<u32> {
 }
 
 fn main() {
-    let excluded = iter_input_regex("(\\d+)-(\\d+)").sorted().collect_vec();
+    let excluded = input::rx_lines(r"(\d+)-(\d+)").sorted().collect_vec();
     let mut smallest = find_allowed(&excluded, 0);
     advtools::verify("Smallest allowed", smallest.unwrap(), 17348574);
 

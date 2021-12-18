@@ -1,7 +1,7 @@
 use std::char;
 use md5::{Digest, Md5};
 use advtools::rayon::prelude::*;
-use advtools::input::input_string;
+use advtools::input;
 
 const LEN: usize = 8;
 const BATCH: usize = 1_000_000;
@@ -21,8 +21,7 @@ fn check(input: &[u8], i: usize) -> Option<(usize, u8, u8)> {
 }
 
 fn main() {
-    let input = input_string();
-    let input = input.trim().as_bytes();
+    let input = input::string().as_bytes();
     // the first passcode can be collected directly
     let mut pass_door1 = String::new();
     // the second passcode needs to be constructed char by char
@@ -34,7 +33,7 @@ fn main() {
         // get every candidate digit (with 00000 MD5 prefix) in the next batch
         let mut digits: Vec<_> = (n..n + BATCH).into_par_iter()
                                                .filter_map(|v| check(input, v)).collect();
-        digits.sort();  // by n, then d6, then d7
+        digits.sort_unstable();  // by n, then d6, then d7
         // update passcode for first door, just by order of number
         pass_door1.extend(digits.iter().flat_map(|d| char::from_digit(d.1 as u32, 16)));
         // update passcode for second door, where the index is d6, the code digit

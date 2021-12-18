@@ -1,12 +1,11 @@
 use advtools::prelude::Itertools;
-use advtools::input::iter_lines;
+use advtools::input;
 
 fn main() {
-    let mut lines = iter_lines();
-    let first_line = lines.next().unwrap();
+    let first_line = input::lines().next().unwrap();
     let mut arrs = vec![[0; 26]; first_line.len()];
 
-    for line in std::iter::once(first_line).chain(lines) {
+    for line in input::lines() {
         for (arr, ch) in arrs.iter_mut().zip(line.chars()) {
             arr[(ch as u8 - b'a') as usize] += 1;
         }

@@ -1,6 +1,6 @@
 use md5::{Digest, Md5};
 use advtools::rayon::prelude::*;
-use advtools::input::input_string;
+use advtools::input;
 
 const OFFSET: usize = 1000;
 const KEYLEN: usize = 64;
@@ -71,8 +71,7 @@ fn find_last_index(input: &[u8], n: usize) -> usize {
 }
 
 fn main() {
-    let input = input_string();
-    let input = input.trim().as_bytes();
+    let input = input::string().as_bytes();
     advtools::verify("Last index", find_last_index(input, 0), 18626);
     advtools::verify("Last index (stretching)", find_last_index(input, 2016), 20092);
 }

@@ -1,8 +1,15 @@
 use advtools::prelude::{rotate_left, rotate_right};
-use advtools::input::{iter_lines, parse_parts};
+use advtools::input;
 
 const INITIAL: &str = "abcdefgh";
 const FINAL:   &str = "fbgdceah";
+const FORMAT:  &str = "rotate left (.) steps?|\
+                       rotate right (.) steps?|\
+                       rotate based on position of letter (.)|\
+                       swap position (.) with position (.)|\
+                       swap letter (.) with letter (.)|\
+                       reverse positions (.) through (.)|\
+                       move position (.) to position (.)";
 
 #[derive(Clone, Copy, Debug)]
 enum Instr {
@@ -58,30 +65,24 @@ impl Instr {
 
 fn main() {
     let mut recipe = Vec::new();
-    for line in iter_lines() {
-        recipe.push(
-            if line.starts_with("rotate left") {
-                Instr::RotL(parse_parts(&line, [2]))
-            } else if line.starts_with("rotate right") {
-                Instr::RotR(parse_parts(&line, [2]))
-            } else if line.starts_with("rotate based") {
-                Instr::RotLetter(parse_parts(&line, [6]))
-            } else if line.starts_with("swap position") {
-                let (p1, p2) = parse_parts(&line, [2, 5]);
-                Instr::SwapPos(p1, p2)
-            } else if line.starts_with("swap letter") {
-                let (l1, l2) = parse_parts(&line, [2, 5]);
-                Instr::SwapLetter(l1, l2)
-            } else if line.starts_with("reverse positions") {
-                let (p1, p2) = parse_parts(&line, [2, 4]);
-                Instr::Reverse(p1, p2)
-            } else if line.starts_with("move position") {
-                let (p1, p2) = parse_parts(&line, [2, 5]);
-                Instr::Move(p1, p2)
-            } else {
-                panic!("invalid instruction line: {}", line)
-            }
-        );
+    for (rot_l, rot_r, rot_let, sw_pos, sw_let, rev, mov) in input::rx_lines(FORMAT) {
+        recipe.push(if let Some(steps) = rot_l {
+            Instr::RotL(steps)
+        } else if let Some(steps) = rot_r {
+            Instr::RotR(steps)
+        } else if let Some(letter) = rot_let {
+            Instr::RotLetter(letter)
+        } else if let Some((p1, p2)) = sw_pos {
+            Instr::SwapPos(p1, p2)
+        } else if let Some((l1, l2)) = sw_let {
+            Instr::SwapLetter(l1, l2)
+        } else if let Some((p1, p2)) = rev {
+            Instr::Reverse(p1, p2)
+        } else if let Some((p1, p2)) = mov {
+            Instr::Move(p1, p2)
+        } else {
+            unreachable!()
+        });
     }
 
     let mut password: Vec<char> = INITIAL.chars().collect();

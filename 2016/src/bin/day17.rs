@@ -1,10 +1,8 @@
 use std::fmt;
 use md5::{Digest, Md5};
 use advtools::rayon::{self, prelude::*};
-use advtools::input::input_string;
-use advtools::grid::Dir;
-
-use Dir::*;
+use advtools::input;
+use advtools::grid::{Dir, Dir::*};
 
 fn dir_from_int(i: u64) -> Dir {
     match i {
@@ -121,8 +119,7 @@ fn find_steps(input: &[u8], initial: State) -> (State, usize) {
 }
 
 fn main() {
-    let input = input_string();
-    let input = input.trim().as_bytes();
+    let input = input::string().as_bytes();
     rayon::ThreadPoolBuilder::new().num_threads(3).build_global().unwrap();
     let state = State::default();
     let (final_state, max_path) = find_steps(input, state);

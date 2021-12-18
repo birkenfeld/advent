@@ -1,9 +1,9 @@
-use advtools::input::input_string;
+use advtools::input;
 
 fn count_all_safe(n: usize) -> usize {
     // read from input: line = 0...input...0
     let mut line = 0u128;
-    let len = input_string().trim().chars().map(|ch|
+    let len = input::chars().map(|ch|
         line = (if ch == '^' { line | 1 } else { line }) << 1
     ).count();
     // mask = 0111...1110

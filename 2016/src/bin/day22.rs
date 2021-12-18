@@ -1,6 +1,8 @@
-use advtools::prelude::{HashSet, Regex};
-use advtools::input::{iter_lines, to_i32};
+use advtools::prelude::HashSet;
+use advtools::input;
 use advtools::grid::Pos;
+
+const FORMAT: &str = r"/dev/grid/node-x(\d+)-y(\d+) +(\d+)T +(\d+)T|.*";
 
 fn is_allowed(pos: Pos, blockers: &HashSet<Pos>, size: &Pos) -> bool {
     pos.x >= 0 && pos.x <= size.x && pos.y >= 0 && pos.y <= size.y &&
@@ -30,18 +32,11 @@ fn find_steps(initial: Pos, final_: Pos, blockers: &HashSet<Pos>, size: &Pos) ->
 }
 
 fn main() {
-    let rx = Regex::new(r"node-x(\d+)-y(\d+) +(\d+)T +(\d+)T").unwrap();
     let mut nodes: Vec<(Pos, (i32, i32))> = Vec::new();
     let mut smallest_cap = 1000;
-    for line in iter_lines() {
-        if let Some(cap) = rx.captures(&line) {
-            // (x, y), (size, used)
-            nodes.push((
-                Pos(to_i32(&cap[1]), to_i32(&cap[2])),
-                (to_i32(&cap[3]), to_i32(&cap[4]))
-            ));
-            smallest_cap = smallest_cap.min((nodes.last().unwrap().1).0);
-        }
+    for (x, y, size, used) in input::rx_lines::<Option<_>>(FORMAT).flatten() {
+        nodes.push((Pos(x, y), (size, used)));
+        smallest_cap = smallest_cap.min((nodes.last().unwrap().1).0);
     }
     let size = nodes[nodes.len() - 1].0;
     let mut blockers = HashSet::new();

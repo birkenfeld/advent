@@ -1,5 +1,5 @@
 use advtools::prelude::{HashMap, Itertools};
-use advtools::input::iter_input_regex;
+use advtools::input;
 
 const TARGET_ROOM: &str = "northpole object storage";
 const LINE_FMT: &str = r"(.*)-(\d+)\[(.*)\]";
@@ -7,7 +7,7 @@ const LINE_FMT: &str = r"(.*)-(\d+)\[(.*)\]";
 fn main() {
     let mut np_sector = 0;
     let mut sector_sum = 0;
-    for (name, sector, checksum) in iter_input_regex::<(String, u32, String)>(LINE_FMT) {
+    for (name, sector, checksum) in input::rx_lines::<(&str, u32, &str)>(LINE_FMT) {
         // count the digits in the name
         let mut counts = HashMap::new();
         for ch in name.chars().filter(|&ch| ch != '-') {
@@ -17,8 +17,8 @@ fn main() {
         let counts = counts.into_iter().map(|(ch, count)| (-count, ch)).sorted();
 
         // determine checksum from letter counts
-        let real_checksum: String = counts.take(5).map(|x| x.1).collect();
-        if real_checksum == checksum {
+        let real_checksum = counts.take(5).map(|x| x.1);
+        if real_checksum.eq(checksum.chars()) {
             sector_sum += sector;
 
             // decode real name of room

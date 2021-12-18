@@ -33,17 +33,17 @@ fn reg_or_imm(s: &str) -> Arg {
     s.parse().ok().map_or_else(|| Arg::Reg(reg(s)), Arg::Imm)
 }
 
-fn parse(prog: impl Iterator<Item=Vec<String>>) -> Vec<Op> {
-    prog.map(|line| match &*line[0] {
-        "out" => Op::Out(reg(&line[1])),
-        "tgl" => Op::Tgl(reg(&line[1])),
-        "inc" => Op::Inc(reg(&line[1])),
-        "dec" => Op::Dec(reg(&line[1])),
-        "cpy" => Op::Cpy(reg_or_imm(&line[1]),
-                         reg_or_imm(&line[2])),
-        "jnz" => Op::Jnz(reg_or_imm(&line[1]),
-                         reg_or_imm(&line[2])),
-        _ => panic!("unknown op: {}", &line[0])
+fn parse(prog: impl Iterator<Item=Vec<&'static str>>) -> Vec<Op> {
+    prog.map(|line| match line[0] {
+        "out" => Op::Out(reg(line[1])),
+        "tgl" => Op::Tgl(reg(line[1])),
+        "inc" => Op::Inc(reg(line[1])),
+        "dec" => Op::Dec(reg(line[1])),
+        "cpy" => Op::Cpy(reg_or_imm(line[1]),
+                         reg_or_imm(line[2])),
+        "jnz" => Op::Jnz(reg_or_imm(line[1]),
+                         reg_or_imm(line[2])),
+        _ => panic!("unknown op: {}", line[0])
     }).collect()
 }
 
@@ -88,7 +88,7 @@ pub struct Machine {
 }
 
 impl Machine {
-    pub fn new(prog: impl Iterator<Item=Vec<String>>) -> Machine {
+    pub fn new(prog: impl Iterator<Item=Vec<&'static str>>) -> Machine {
         let mut prog = parse(prog);
         opt(&mut prog);
         Machine { prog, .. Machine::default() }

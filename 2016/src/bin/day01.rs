@@ -1,5 +1,5 @@
 use advtools::prelude::HashSet;
-use advtools::input::{input_string, to_u32};
+use advtools::input;
 use advtools::grid::{Pos, Dir};
 
 fn main() {
@@ -7,15 +7,13 @@ fn main() {
     let mut dir = Dir::U;
     let mut visited = HashSet::new();
     let mut visited_twice = None;
-    for instr in input_string().split(',') {
+    for instr in input::string().split(',') {
         let instr = instr.trim();
         dir = if instr.starts_with('R') { dir.right() } else { dir.left() };
-        for _ in 0..to_u32(&instr[1..]) {
+        for _ in 0..input::to_u32(&instr[1..]) {
             pos.step(dir);
-            if visited_twice.is_none() {
-                if !visited.insert(pos) {
-                    visited_twice = Some(pos);
-                }
+            if visited_twice.is_none() && !visited.insert(pos) {
+                visited_twice = Some(pos);
             }
         }
     }
