@@ -1,4 +1,4 @@
-use advtools::input::iter_lines;
+use advtools::input;
 use advtools::grid::{Grid, Pos};
 
 // Recursively set the flash indicator.
@@ -15,7 +15,7 @@ fn maybe_flash(grid: &mut Grid<(u8, bool)>, pos: Pos<u32>) {
 
 fn main() {
     // Parse the initial grid.
-    let mut grid = Grid::new(iter_lines().map(|line| {
+    let mut grid = Grid::new(input::lines().map(|line| {
         line.chars().map(|ch| ((ch as u8 - b'0') as u8, false)).collect()
     }));
 

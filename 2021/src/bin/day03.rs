@@ -1,9 +1,9 @@
 use advtools::itertools::Itertools;
-use advtools::input::iter_lines;
+use advtools::input;
 
 fn main() {
-    let corpus = iter_lines().map(|line| u32::from_str_radix(&line, 2).unwrap())
-                             .collect_vec();
+    let corpus = input::lines().map(|line| u32::from_str_radix(line, 2).unwrap())
+                               .collect_vec();
     let num_bits = 32 - corpus.iter().max().unwrap().leading_zeros();
 
     // Checks if at position `bit`, we have at least as many ones as zeros over

@@ -1,9 +1,9 @@
-use advtools::input::iter_lines;
+use advtools::input;
 
 fn main() {
     let mut error_score = 0u64;
     let mut complete_scores = vec![];
-    'lines: for line in iter_lines() {
+    'lines: for line in input::lines() {
         // Keep a stack of expected closing braces.
         let mut expected = vec![];
         for ch in line.chars() {
@@ -38,7 +38,7 @@ fn main() {
     }
 
     // Get the median completer score for part 2.
-    complete_scores.sort();
+    complete_scores.sort_unstable();
     let complete_score = complete_scores[complete_scores.len() / 2];
 
     advtools::verify("Syntax error score", error_score, 369105);

@@ -1,18 +1,18 @@
 use odds::vec::VecExt;
 use advtools::itertools::Itertools;
-use advtools::input::{iter_lines, to_i32};
+use advtools::input;
 
 fn main() {
-    let mut input = iter_lines().peekable();
+    let mut input = input::lines().peekable();
 
     // Read first line with the drawn numbers.
-    let draws = input.next().unwrap().split(',').map(to_i32).collect_vec();
+    let draws = input.next().unwrap().split(',').map(input::to_i32).collect_vec();
 
     // Read the boards.
     let mut boards = vec![];
     while input.peek().is_some() {
         boards.push(input.by_ref().take(5).map(|line| {
-            line.split_whitespace().map(|i| (to_i32(i), false)).collect_vec()
+            line.split_whitespace().map(|i| (input::to_i32(i), false)).collect_vec()
         }).flatten().collect_vec());
     }
 

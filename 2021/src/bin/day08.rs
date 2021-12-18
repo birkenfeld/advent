@@ -1,16 +1,16 @@
 use advtools::prelude::Itertools;
-use advtools::input::iter_input;
+use advtools::input;
 
 fn main() {
     let mut easy_digits = 0;
     let mut total_sum = 0;
 
     // Convert abcdefg notation to integers with single bits representing wires.
-    let str_to_int = |s: &String| s.chars()
-                                   .map(|ch| ch as u8 - b'a')
-                                   .fold(0u8, |pat, bit| pat | (1 << bit));
+    let str_to_int = |s: &&str| s.chars()
+                                 .map(|ch| ch as u8 - b'a')
+                                 .fold(0u8, |pat, bit| pat | (1 << bit));
 
-    for data in iter_input::<Vec<String>>() {
+    for data in input::parse_lines::<Vec<&str>>() {
         // Get the patterns in this order:
         // [1-pattern, 7-pattern, 4-pattern, (2,5,3)-patterns, (0,6,9)-patterns]
         let all = data[..10].iter().map(str_to_int)

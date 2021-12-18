@@ -1,9 +1,9 @@
-use advtools::input::{input_string, to_usize};
+use advtools::input;
 
 fn main() {
     // Collect initial age timers.
     let mut ages = vec![0u64; 9];
-    for age in input_string().trim().split(',').map(to_usize) {
+    for age in input::string().split(',').map(input::to_usize) {
         ages[age] += 1;
     }
 

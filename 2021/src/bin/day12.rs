@@ -1,5 +1,5 @@
-use advtools::prelude::{Itertools, HashMap, HashSet};
-use advtools::input::iter_lines;
+use advtools::prelude::{HashMap, HashSet};
+use advtools::input;
 
 fn main() {
     // Assign integer indices to cave names, and keep track of which ones are
@@ -15,8 +15,7 @@ fn main() {
 
     // Parse the edges between caves.
     let mut edges = HashMap::<i32, HashSet<i32>>::new();
-    for line in iter_lines() {
-        let (a, b) = line.split('-').collect_tuple().unwrap();
+    for (a, b) in input::rx_lines("(.*)-(.*)") {
         let ix_a = add_node(a);
         let ix_b = add_node(b);
         edges.entry(ix_a).or_default().insert(ix_b);

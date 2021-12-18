@@ -1,9 +1,10 @@
 use advtools::itertools::{iproduct, iterate};
-use advtools::input::iter_input_regex;
+use advtools::input;
+
+const FORMAT: &str = r"target area: x=(\d+)\.\.(\d+), y=([-\d]+)\.\.([-\d]+)";
 
 fn main() {
-    let (x1, x2, y1, y2) = iter_input_regex::<(i32, i32, i32, i32)>(
-        r".*x=(\d+)\.\.(\d+), y=([-\d]+)\.\.([-\d]+)").next().unwrap();
+    let (x1, x2, y1, y2) = input::rx_parse::<(i32, i32, i32, i32)>(FORMAT);
 
     // Theoretically possible vx values are 1 to x2 (otherwise the first step overshoots).
     // For vy, the same holds in the negative direction for y1.  In the positive direction,

@@ -1,26 +1,25 @@
 use std::fmt::Write;
 use advtools::prelude::{Itertools, HashSet};
-use advtools::input::{iter_lines, to_usize};
+use advtools::input;
+
+const FORMAT: &str = r"(\d+),(\d+)|fold along (.)=(\d+)";
 
 fn main() {
     // Parse the input.
     let mut dots = HashSet::new();
     let mut folds = Vec::new();
-    for line in iter_lines() {
-        if line.starts_with("fold along x=") {
-            folds.push((0, to_usize(&line[13..])));
-        } else if line.starts_with("fold along y") {
-            folds.push((1, to_usize(&line[13..])));
-        } else {
-            let (x, y) = line.split(',').map(to_usize).collect_tuple().unwrap();
-            dots.insert((x, y));
+    for (coords, fold) in input::rx_lines::<(Option<(u32, u32)>, Option<(&str, u32)>)>(FORMAT) {
+        if let Some(fold) = fold {
+            folds.push(fold);
+        } else if let Some(coords) = coords {
+            dots.insert(coords);
         }
     }
 
     // Perform the folds.
     let mut max_count = 0;
     for (dir, axis) in folds {
-        dots = if dir == 0 {
+        dots = if dir == "x" {
             dots.into_iter().map(|(x, y)| (x.min(2*axis - x), y)).collect()
         } else {
             dots.into_iter().map(|(x, y)| (x, y.min(2*axis - y))).collect()

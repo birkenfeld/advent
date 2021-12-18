@@ -1,5 +1,5 @@
 use advtools::prelude::HashMap;
-use advtools::input::iter_input_regex;
+use advtools::input;
 
 // Find the overlapping squares with or without diagonal lines.
 fn overlaps(input: impl Iterator<Item=(i32, i32, i32, i32)>, do_diag: bool) -> usize {
@@ -23,8 +23,8 @@ fn overlaps(input: impl Iterator<Item=(i32, i32, i32, i32)>, do_diag: bool) -> u
 }
 
 fn main() {
-    let p1 = overlaps(iter_input_regex(r"(\d+),(\d+) -> (\d+),(\d+)"), false);
-    let p2 = overlaps(iter_input_regex(r"(\d+),(\d+) -> (\d+),(\d+)"), true);
+    let p1 = overlaps(input::rx_lines(r"(\d+),(\d+) -> (\d+),(\d+)"), false);
+    let p2 = overlaps(input::rx_lines(r"(\d+),(\d+) -> (\d+),(\d+)"), true);
 
     advtools::verify("Overlaps", p1, 4421);
     advtools::verify("With diagonals", p2, 18674);

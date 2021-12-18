@@ -1,4 +1,4 @@
-use advtools::input::iter_lines;
+use advtools::input;
 use advtools::grid::{Grid, Pos};
 
 // Flood-fill and mark all reachable neighbors in a basin, and return the number
@@ -17,7 +17,7 @@ fn get_size(grid: &mut Grid<(u32, bool)>, pos: Pos<u32>) -> u32 {
 
 fn main() {
     // Parse the initial grid.
-    let mut grid = Grid::new(iter_lines().map(|line| {
+    let mut grid = Grid::new(input::lines().map(|line| {
         line.chars().map(|ch| ((ch as u8 - b'0') as u32, false)).collect()
     }));
 
@@ -34,7 +34,7 @@ fn main() {
     }
 
     // Determine the biggest basins.
-    basin_sizes.sort();
+    basin_sizes.sort_unstable();
     let biggest_basins: u32 = basin_sizes.iter().rev().take(3).product();
 
     advtools::verify("Risk level", risk_level, 580);

@@ -1,5 +1,5 @@
 use advtools::prelude::{Itertools, HashMap};
-use advtools::input::iter_lines;
+use advtools::input;
 use advtools::grid::{Grid, Pos};
 
 // BFS search through the grid for the minimum-cost way to reach the exit
@@ -35,7 +35,7 @@ fn visit(grid: &Grid<u8>) -> u32 {
 
 fn main() {
     // Parse the initial grid.
-    let grid = Grid::new(iter_lines().map(|line| {
+    let grid = Grid::new(input::lines().map(|line| {
         line.chars().map(|ch| ch as u8 - b'0').collect()
     }));
 

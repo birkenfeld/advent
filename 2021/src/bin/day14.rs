@@ -1,15 +1,16 @@
 use advtools::prelude::{Itertools, HashMap, once};
-use advtools::input::iter_lines;
+use advtools::input;
+
+const FORMAT: &str = "(.)(.) -> (.)|(.+)";
 
 fn main() {
     let mut rules = HashMap::new();
-    let mut iter = iter_lines();
-    let initial_poly = iter.next().unwrap();
+    let mut iter = input::rx_lines::<(Option<_>, &str)>(FORMAT);
+    let initial_poly = iter.next().unwrap().1;
 
     // Read the rules: construct for each element pair the new pairs that will
     // be generated in the next step.
-    for line in iter {
-        let (a, b, _, _, _, _, c) = line.chars().take(7).collect_tuple().unwrap();
+    for (a, b, c) in iter.filter_map(|line| line.0) {
         rules.insert((a, b), ((a, c), (c, b)));
     }
 
@@ -24,7 +25,7 @@ fn main() {
         // Update the counts by consulting the rule for each existing pair.
         let mut new_pairs = HashMap::new();
         for (pair, count) in pairs.iter() {
-            let (new_pair1, new_pair2) = rules[&pair];
+            let (new_pair1, new_pair2) = rules[pair];
             *new_pairs.entry(new_pair1).or_default() += count;
             *new_pairs.entry(new_pair2).or_default() += count;
         }

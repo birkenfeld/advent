@@ -1,5 +1,5 @@
 use advtools::prelude::Itertools;
-use advtools::input::iter_lines;
+use advtools::input;
 
 #[derive(Clone, Copy, Debug)]
 enum El {
@@ -77,7 +77,7 @@ fn magnitude(n: &[El]) -> u32 {
 }
 
 fn main() {
-    let nums = iter_lines().map(|line| {
+    let nums = input::lines().map(|line| {
         line.chars().filter_map(|ch| match ch {
             '0' ..= '9' => Some(El::Dig(ch as u8 - b'0')),
             '[' => Some(El::Nest),
