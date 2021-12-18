@@ -1,124 +1,159 @@
-use std::borrow::Cow;
-use std::env;
-use std::fs::File;
-use std::io::{BufRead, BufReader, Cursor};
-use std::marker::PhantomData;
-use std::path::{Path, PathBuf};
-use regex::{Regex, CaptureLocations};
-use itertools::Itertools;
+use std::{any, env, path};
+use regex::Regex;
 
-fn input_file_name() -> PathBuf {
-    let mut infile = Path::new("input").join(
-        Path::new(&env::args_os().next().expect("no executable name")
+// Main input API
+
+pub fn set(s: &str) {
+    crate::INPUT.with(|k| *k.borrow_mut() = Some(Box::leak(s.into())));
+}
+
+pub fn raw_string() -> &'static str {
+    let mut infile = path::Path::new("input").join(
+        path::Path::new(&env::args_os().next().expect("no executable name")
         ).file_name().expect("no file name?"));
     infile.set_extension("txt");
-    infile
-}
-
-pub fn input_file() -> Box<dyn BufRead> {
-    crate::INPUT.with(|k| match k.borrow().clone() {
-        Some(s) => Box::new(Cursor::new(s)) as Box<dyn BufRead>,
-        None => {
-            let f = File::open(&input_file_name()).unwrap_or_else(
-                |e| panic!("could not read input file: {}", e));
-            Box::new(BufReader::new(f))
-        }
-    })
-}
-
-pub fn input_string() -> String {
     crate::INPUT.with(|k| k.borrow().clone().unwrap_or_else(|| {
-        std::fs::read_to_string(&input_file_name()).unwrap_or_else(
-            |e| panic!("could not read input file: {}", e))
+        Box::leak(
+            std::fs::read_to_string(&infile).unwrap_or_else(
+                |e| panic!("could not read input file: {}", e)).into()
+        )
     }))
 }
 
-pub type TokIter<'t> = dyn Iterator<Item = &'t str> + 't;
-
-pub trait ParseResult where Self: Sized {
-    fn read_line(line: Cow<str>, trim: &[char], mut indices: &[usize]) -> Self {
-        let mut part_iter = line.split_whitespace().map(|v| v.trim_matches(trim));
-        if !indices.is_empty() {
-            let filter_iter = &mut part_iter.enumerate().batching(|it| loop {
-                if indices.is_empty() { return None; }
-                let (ix, item) = it.next().unwrap();
-                if ix == indices[0] {
-                    indices = &indices[1..];
-                    return Some(item);
-                }
-            }) as &mut TokIter;
-            Self::read_token(filter_iter).unwrap()
-        } else {
-            Self::read_token(&mut part_iter).unwrap()
-        }
-    }
-    fn read_token(tok: &mut TokIter) -> Option<Self>;
+pub fn string() -> &'static str {
+    raw_string().trim_end()
 }
 
-impl ParseResult for String {
-    // Special case: reads the whole line.
-    fn read_line(line: Cow<str>, trim: &[char], _: &[usize]) -> String {
-        if trim.is_empty() {
-            line.into_owned()
-        } else {
-            line.trim_matches(trim).to_owned()
-        }
-    }
-    fn read_token(tok: &mut TokIter) -> Option<String> {
-        tok.next().map(ToOwned::to_owned)
+pub fn parse<T: InputItem>() -> T {
+    T::read_part(&mut string().split_whitespace())
+        .unwrap_or_else(|| panic!("input {:?} failed to convert to {}",
+                                  string(), any::type_name::<T>()))
+}
+
+pub fn rx_parse<T: InputItem>(regex: &str) -> T {
+    let rx = Regex::new(regex).expect("given regex is invalid");
+    let caps = rx.captures(string()).unwrap_or_else(
+        || panic!("input {:?} did not match the regex {:?}", string(), rx.as_str()));
+    let mut part_iter = (1..rx.captures_len()).map(|i| {
+        caps.get(i).map(|c| c.as_str()).unwrap_or("")
+    });
+    T::read_part(&mut part_iter)
+        .unwrap_or_else(|| panic!("input {:?} failed to convert to {}",
+                                  string(), any::type_name::<T>()))
+}
+
+pub fn lines() -> impl Iterator<Item=&'static str> {
+    string().lines().map(|l| l.trim_end()).filter(|l| !l.is_empty())
+}
+
+pub fn chars() -> impl Iterator<Item=char> {
+    string().chars()
+}
+
+pub fn parse_vec<T: InputItem>() -> Vec<T> {
+    parse_lines().collect()
+}
+
+pub fn parse_lines<T: InputItem>() -> impl Iterator<Item=T> {
+    lines().map(|line| {
+        T::read_part(&mut line.split_whitespace())
+            .unwrap_or_else(|| panic!("line {:?} failed to convert to {}",
+                                      line, any::type_name::<T>()))
+    })
+}
+
+pub fn rx_lines<T: InputItem>(regex: &str) -> impl Iterator<Item=T> {
+    let rx = Regex::new(regex).expect("given regex is invalid");
+    let mut loc = rx.capture_locations();
+    lines().map(move |line| {
+        let _ = rx.captures_read(&mut loc, line).unwrap_or_else(
+            || panic!("line {:?} did not match the regex {:?}", line, rx.as_str()));
+        let mut part_iter = (1..rx.captures_len()).map(|i| {
+            loc.get(i).map(|(s, e)| &line[s..e]).unwrap_or("")
+        });
+        T::read_part(&mut part_iter)
+            .unwrap_or_else(|| panic!("line {:?} failed to convert to {}",
+                                      line, any::type_name::<T>()))
+    })
+}
+
+
+// InputItem trait
+
+/// Trait implemented for all types that can be parsed from an input line.
+pub trait InputItem where Self: Sized {
+    /// Take parts from the iterator and try to parse them into `Self`.
+    fn read_part(tok: &mut impl Iterator<Item=&'static str>) -> Option<Self>;
+}
+
+// &str: just delivers a single token
+impl<'a> InputItem for &'a str {
+    fn read_part(tok: &mut impl Iterator<Item=&'static str>) -> Option<Self> {
+        tok.next()
     }
 }
 
-impl<T> ParseResult for Vec<T> where T: ParseResult {
-    fn read_token(tok: &mut TokIter) -> Option<Vec<T>> {
+// char: takes the first character of a token
+impl InputItem for char {
+    fn read_part(tok: &mut impl Iterator<Item=&'static str>) -> Option<Self> {
+        tok.next()?.chars().next()
+    }
+}
+
+// unit: discards the value but still consumes a token
+impl InputItem for () {
+    fn read_part(tok: &mut impl Iterator<Item=&'static str>) -> Option<Self> {
+        tok.next().map(drop)
+    }
+}
+
+// simple impls for primitive types
+macro_rules! simple_impl {
+    ($($ty:ty)+) => { $(
+        impl InputItem for $ty {
+            fn read_part(tok: &mut impl Iterator<Item=&'static str>) -> Option<Self> {
+                tok.next()?.trim_matches(&[',', ':'][..]).parse().ok()
+            }
+        }
+        )+
+    }
+}
+
+simple_impl!(u8 u16 u32 u64 u128 usize i8 i16 i32 i64 i128 isize f32 f64 bool);
+
+// Container impls
+
+// Option: allows the sub-type to fail parsing.  This is very useful with
+// regexes parsing inputs that have two or more alternative line types.
+impl<T: InputItem> InputItem for Option<T> {
+    fn read_part(tok: &mut impl Iterator<Item=&'static str>) -> Option<Self> {
+        Some(T::read_part(tok))
+    }
+}
+
+// Vec: takes as many sub-items as possible.
+impl<T> InputItem for Vec<T> where T: InputItem {
+    fn read_part(tok: &mut impl Iterator<Item=&'static str>) -> Option<Self> {
         let mut result = Vec::new();
-        while let Some(item) = T::read_token(tok) {
+        while let Some(item) = T::read_part(tok) {
             result.push(item)
         }
         Some(result)
     }
 }
 
-macro_rules! simple_impl {
-    ($ty:ty) => {
-        impl ParseResult for $ty {
-            fn read_token(tok: &mut TokIter) -> Option<$ty> {
-                Some(tok.next()?.parse().unwrap())
-            }
-        }
-    }
-}
-
-simple_impl!(u8);
-simple_impl!(u16);
-simple_impl!(u32);
-simple_impl!(u64);
-simple_impl!(usize);
-simple_impl!(i8);
-simple_impl!(i16);
-simple_impl!(i32);
-simple_impl!(i64);
-simple_impl!(isize);
-
-impl ParseResult for char {
-    fn read_token(tok: &mut TokIter) -> Option<char> {
-        tok.next()?.chars().next()
-    }
-}
-
-impl ParseResult for () {
-    fn read_token(tok: &mut TokIter) -> Option<()> {
-        tok.next().map(|_| ())
-    }
-}
-
+// Tuple and array: takes the exact number of sub-itesm.
 macro_rules! tuple_impl {
     ($($tys:ident),+) => {
-        impl<$($tys: ParseResult),+> ParseResult for ($($tys),+ ,) {
-            fn read_token(tok: &mut TokIter) -> Option<($($tys),+ ,)> {
-                Some((
-                    $( $tys::read_token(tok)? ),+ ,
-                ))
+        impl<$($tys: InputItem),+> InputItem for ($($tys),+ ,) {
+            #[allow(non_snake_case)]
+            fn read_part(tok: &mut impl Iterator<Item=&'static str>) -> Option<Self> {
+                // Consume all parts for subitems, regardless of if they parse or not.
+                let ( $($tys),+, ) = (
+                    $( $tys::read_part(tok) ),+ ,
+                );
+                // Afterwards apply `?` if one of the subitems failed.
+                Some(( $( $tys? ),+ , ))
             }
         }
     }
@@ -139,10 +174,10 @@ tuple_impl!(T, U, V, W, Y, Z, T1, T2, T3, T4, T5, T6);
 
 macro_rules! array_impl {
     ($ty:ident, $n:expr, $($qm:tt)+) => {
-        impl<$ty: ParseResult> ParseResult for [$ty; $n] {
-            fn read_token(tok: &mut TokIter) -> Option<Self> {
+        impl<$ty: InputItem> InputItem for [$ty; $n] {
+            fn read_part(tok: &mut impl Iterator<Item=&'static str>) -> Option<Self> {
                 Some([
-                    $( $ty::read_token(tok) $qm ),+
+                    $( $ty::read_part(tok) $qm ),+
                 ])
             }
         }
@@ -159,109 +194,14 @@ array_impl!(T, 7, ???????);
 array_impl!(T, 8, ????????);
 array_impl!(T, 9, ?????????);
 
-pub struct InputIterator<T, R, A> {
-    rdr: R,
-    trim: Vec<char>,
-    indices: A,
-    marker: PhantomData<T>,
-}
-
-impl<T: ParseResult, R: BufRead, const N: usize> Iterator for InputIterator<T, R, [usize; N]> {
-    type Item = T;
-
-    fn next(&mut self) -> Option<T> {
-        let mut line = String::new();
-        while line.is_empty() {
-            if self.rdr.read_line(&mut line).unwrap() == 0 {
-                return None;
-            }
-            while line.trim_end() != line {
-                line.pop();
-            }
-        }
-        Some(T::read_line(Cow::from(line), &self.trim, &self.indices[..]))
-    }
-}
-
-pub struct RegexInputIterator<T, R> {
-    rx: Regex,
-    loc: CaptureLocations,
-    rdr: R,
-    marker: PhantomData<T>,
-}
-
-impl<T: ParseResult, R: BufRead> Iterator for RegexInputIterator<T, R> {
-    type Item = T;
-
-    fn next(&mut self) -> Option<T> {
-        let mut line = String::new();
-        while line.is_empty() {
-            if self.rdr.read_line(&mut line).unwrap() == 0 {
-                return None;
-            }
-            while line.trim_end() != line {
-                line.pop();
-            }
-        }
-        let _ = self.rx.captures_read(&mut self.loc, &line).unwrap_or_else(
-            || panic!("line {:?} did not match the input regex {:?}",
-                      line, self.rx.as_str()));
-        let mut tok_iter = (1..self.rx.captures_len()).map(|i| {
-            self.loc.get(i).map(|(s, e)| &line[s..e]).unwrap_or("")
-        });
-        Some(T::read_token(&mut tok_iter).expect("line conversion failed"))
-    }
-}
-
-
-pub fn iter_lines() -> InputIterator<String, impl BufRead, [usize; 0]> {
-    InputIterator { rdr: input_file(), trim: vec![],
-                    indices: [], marker: PhantomData }
-}
-
-pub fn iter_input<T: ParseResult>() -> InputIterator<T, impl BufRead, [usize; 0]> {
-    InputIterator { rdr: input_file(), trim: vec![],
-                    indices: [], marker: PhantomData }
-}
-
-pub fn iter_input_trim<T: ParseResult>(trim: &str) -> InputIterator<T, impl BufRead, [usize; 0]> {
-    InputIterator { rdr: input_file(), trim: trim.chars().collect(),
-                    indices: [], marker: PhantomData }
-}
-
-pub fn iter_input_parts<T: ParseResult, Ix, const N: usize>(ix: [Ix; N]) -> InputIterator<T, impl BufRead, [Ix; N]> {
-    InputIterator { rdr: input_file(), trim: vec![],
-                    indices: ix, marker: PhantomData }
-}
-
-pub fn iter_input_parts_trim<T: ParseResult, Ix, const N: usize>(ix: [Ix; N], trim: &str) -> InputIterator<T, impl BufRead, [Ix; N]> {
-    InputIterator { rdr: input_file(), trim: trim.chars().collect(),
-                    indices: ix, marker: PhantomData }
-}
-
-pub fn iter_input_regex<T: ParseResult>(regex: &str) -> RegexInputIterator<T, impl BufRead> {
-    let rx = Regex::new(regex).expect("given regex is invalid");
-    let loc = rx.capture_locations();
-    RegexInputIterator { rx, loc, rdr: input_file(), marker: PhantomData }
-}
-
-pub fn parse_str<T: ParseResult>(part: &str) -> T {
-    T::read_token(&mut [part].iter().map(|&v| v)).unwrap()
-}
-
-pub fn parse_parts<T: ParseResult, const N: usize>(line: &str, ix: [usize; N]) -> T {
-    T::read_line(line.into(), &[], &ix[..])
-}
-
-pub fn parse_parts_trim<T: ParseResult, const N: usize>(line: &str, ix: [usize; N], trim: &str) -> T {
-    let trim: Vec<_> = trim.chars().collect();
-    T::read_line(line.into(), &trim, &ix[..])
-}
+// Assorted helper functions
 
 macro_rules! impl_to {
     ($fname:ident, $ty:ty) => {
         pub fn $fname<T: AsRef<str>>(s: T) -> $ty {
-            s.as_ref().parse().expect(concat!("expected a ", stringify!($ty)))
+            s.as_ref().parse().unwrap_or_else(
+                |_| panic!("could not parse {:?} into a {}",
+                           s.as_ref(), stringify!($ty)))
         }
     };
 }

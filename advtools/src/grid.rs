@@ -121,9 +121,12 @@ pub struct Grid<T> {
 impl<T> Grid<T> {
     pub fn new(it: impl IntoIterator<Item=Vec<T>>) -> Self {
         let mut v = Vec::new();
-        let mut w = 0;
+        let mut it = it.into_iter();
+        let mut first = it.next().unwrap();
+        let w = first.len();
+        v.append(&mut first);
         for mut item in it {
-            w = item.len();
+            assert_eq!(item.len(), w);
             v.append(&mut item);
         }
         Self { w, h: v.len() / w, v }
