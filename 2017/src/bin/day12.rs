@@ -1,10 +1,9 @@
-use advtools::prelude::Itertools;
-use advtools::input::iter_input_trim;
+use advtools::input;
 use petgraph::prelude::*;
 
 fn main() {
     let mut graph = Graph::new_undirected();
-    let input = iter_input_trim::<(usize, (), Vec<usize>)>(",").collect_vec();
+    let input = input::parse_vec::<(usize, (), Vec<usize>)>();
     // Collect input into a graph.  We don't have any useful weights to assign.
     // This will add all nodes with indices from 0 to len-1.
     for _ in 0..input.len() {

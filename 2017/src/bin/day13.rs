@@ -1,9 +1,8 @@
-use advtools::prelude::Itertools;
-use advtools::input::iter_input_trim;
+use advtools::input;
 use advtools::rayon::prelude::*;
 
 fn main() {
-    let firewall: Vec<(i32, i32)> = iter_input_trim(":").collect_vec();
+    let firewall = input::parse_vec::<(i32, i32)>();
 
     // Part 1: Evaluate severity, determined by Sum(range*depth).
     let severity = firewall.iter().map(|(depth, range)| {

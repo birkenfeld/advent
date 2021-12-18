@@ -1,5 +1,5 @@
 use advtools::prelude::Itertools;
-use advtools::input::iter_input_regex;
+use advtools::input;
 use std::cell::Cell;
 
 fn find_bridges(parts: &[(u32, u32, Cell<bool>)], connect: u32, mut strength: u32, mut length: u32,
@@ -26,7 +26,7 @@ fn find_bridges(parts: &[(u32, u32, Cell<bool>)], connect: u32, mut strength: u3
 }
 
 fn main() {
-    let parts = iter_input_regex("(\\d+)/(\\d+)")
+    let parts = input::rx_lines(r"(\d+)/(\d+)")
         .map(|(a, b)| (a, b, Cell::default())).collect_vec();
 
     let mut strongest = 0;

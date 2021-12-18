@@ -1,5 +1,5 @@
 use advtools::prelude::Itertools;
-use advtools::input::input_string;
+use advtools::input;
 
 /// Zero out all one-bits in the region containing (x,y).
 fn zero_fill(disk: &mut [u128], x: usize, y: usize) -> bool {
@@ -24,13 +24,10 @@ fn zero_fill(disk: &mut [u128], x: usize, y: usize) -> bool {
 }
 
 fn main() {
-    let input = input_string();
-    let input = input.trim_end();
-
     // Build up the disk from 128 rows of 128 cells.  We represent each cell as
     // a bit in a row with type u128.
     let mut disk = (0..128).map(|row| {
-        let hash = advent17::knot_hash(format!("{}-{}", input, row));
+        let hash = advent17::knot_hash(&format!("{}-{}", input::string(), row));
         hash.into_iter().rev().enumerate().map(|(ofs, val)| (val as u128) << (ofs*8)).sum::<u128>()
     }).collect_vec();
     // Part 1: Count the number of one-bits.

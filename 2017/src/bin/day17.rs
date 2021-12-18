@@ -1,7 +1,7 @@
-use advtools::input::{input_string, to_u32};
+use advtools::input;
 
 fn main() {
-    let skip = to_u32(input_string().trim());
+    let skip: u32 = input::parse();
 
     // Part 1: insert values 2018 times as directed.
     let mut buf = vec![0];

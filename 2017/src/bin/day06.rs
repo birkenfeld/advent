@@ -1,8 +1,8 @@
 use advtools::prelude::HashMap;
-use advtools::input::iter_input;
+use advtools::input;
 
 fn main() {
-    let mut banks = iter_input::<Vec<i32>>().next().unwrap();
+    let mut banks = input::parse::<Vec<i32>>();
     let mut seen = HashMap::new();
     let mut steps = 0;
     let len = banks.len();

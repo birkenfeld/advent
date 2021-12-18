@@ -1,4 +1,4 @@
-use advtools::input::input_string;
+use advtools::input;
 
 /// Find distance of a point from the origin in hex steps, max(|x|, |y|, |x+y|)
 /// |x+y| is the maximum if the two coordinates have the same sign: (1,1) is
@@ -12,7 +12,7 @@ fn main() {
     // vectors.  e_y points to the north hex, e_x to the north-east hex.
     let (mut x, mut y) = (0, 0);
     let mut furthest = 0;
-    for dir in input_string().trim().split(',') {
+    for dir in input::string().split(',') {
         match dir {
             "n"  => { y += 1 }
             "ne" => { x += 1 }

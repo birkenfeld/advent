@@ -1,5 +1,5 @@
 use advtools::prelude::{Itertools, VecDeque};
-use advtools::input::iter_input;
+use advtools::input;
 
 type RegNo = usize;
 
@@ -41,7 +41,7 @@ struct Machine<'a> {
 
 impl<'a> Machine<'a> {
     fn new(prog: &[Op], id: i64) -> Machine {
-        let mut m = Machine { prog: prog, regs: [0; 16], pc: 0, snd: VecDeque::new(), nsnd: 0 };
+        let mut m = Machine { prog, regs: [0; 16], pc: 0, snd: VecDeque::new(), nsnd: 0 };
         m.regs[15] = id;
         m
     }
@@ -90,14 +90,14 @@ impl<'a> Machine<'a> {
 }
 
 fn main() {
-    let program = iter_input::<Vec<String>>().map(|line| match &*line[0] {
-        "snd" => Op::Snd(reg_or_imm(&line[1])),
-        "rcv" => Op::Rcv(reg(&line[1])),
-        "set" => Op::Set(reg(&line[1]), reg_or_imm(&line[2])),
-        "add" => Op::Add(reg(&line[1]), reg_or_imm(&line[2])),
-        "mul" => Op::Mul(reg(&line[1]), reg_or_imm(&line[2])),
-        "mod" => Op::Mod(reg(&line[1]), reg_or_imm(&line[2])),
-        "jgz" => Op::Jgz(reg_or_imm(&line[1]), reg_or_imm(&line[2])),
+    let program = input::parse_lines::<Vec<&str>>().map(|line| match line[0] {
+        "snd" => Op::Snd(reg_or_imm(line[1])),
+        "rcv" => Op::Rcv(reg(line[1])),
+        "set" => Op::Set(reg(line[1]), reg_or_imm(line[2])),
+        "add" => Op::Add(reg(line[1]), reg_or_imm(line[2])),
+        "mul" => Op::Mul(reg(line[1]), reg_or_imm(line[2])),
+        "mod" => Op::Mod(reg(line[1]), reg_or_imm(line[2])),
+        "jgz" => Op::Jgz(reg_or_imm(line[1]), reg_or_imm(line[2])),
         _ => panic!("unknown op: {}", line[0])
     }).collect_vec();
 

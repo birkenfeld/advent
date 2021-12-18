@@ -17,8 +17,8 @@ pub fn knot_process(input: &[u8], n: u32) -> Vec<u8> {
     marks
 }
 
-pub fn knot_hash(input: String) -> Vec<u8> {
-    let mut input = input.into_bytes();
+pub fn knot_hash(input: &str) -> Vec<u8> {
+    let mut input = input.as_bytes().to_vec();
     input.extend(&[17, 31, 73, 47, 23]);
     let sparse = knot_process(&input, 64);
     sparse.chunks(16).map(|v| v.iter().fold(0, |a, b| a^b)).collect()

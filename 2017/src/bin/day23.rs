@@ -1,5 +1,5 @@
 use advtools::prelude::Itertools;
-use advtools::input::iter_input;
+use advtools::input;
 
 type RegNo = usize;
 
@@ -37,7 +37,7 @@ struct Machine {
 
 impl Machine {
     fn new(prog: Vec<Op>) -> Machine {
-        Machine { prog: prog, regs: [0; 8], pc: 0, nmul: 0 }
+        Machine { prog, regs: [0; 8], pc: 0, nmul: 0 }
     }
 
     /// Get value represented by operand (register or immediate).
@@ -70,16 +70,16 @@ impl Machine {
 }
 
 fn main() {
-    let program = iter_input::<Vec<String>>().map(|line| match &*line[0] {
-        "set" => Op::Set(reg(&line[1]), reg_or_imm(&line[2])),
-        "sub" => Op::Sub(reg(&line[1]), reg_or_imm(&line[2])),
-        "mul" => Op::Mul(reg(&line[1]), reg_or_imm(&line[2])),
-        "jnz" => Op::Jnz(reg_or_imm(&line[1]), reg_or_imm(&line[2])),
+    let program = input::parse_lines::<Vec<&str>>().map(|line| match line[0] {
+        "set" => Op::Set(reg(line[1]), reg_or_imm(line[2])),
+        "sub" => Op::Sub(reg(line[1]), reg_or_imm(line[2])),
+        "mul" => Op::Mul(reg(line[1]), reg_or_imm(line[2])),
+        "jnz" => Op::Jnz(reg_or_imm(line[1]), reg_or_imm(line[2])),
         _ => panic!("unknown op: {}", line[0])
     }).collect_vec();
 
     // Part 1: Run machine.
-    let mut m = Machine::new(program.clone());
+    let mut m = Machine::new(program);
     m.run();
     advtools::verify("Number of `mul`s", m.nmul, 6724);
 

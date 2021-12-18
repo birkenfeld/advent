@@ -1,5 +1,5 @@
 use advtools::prelude::{HashSet, Itertools, rotate_left};
-use advtools::input::{input_string, to_usize};
+use advtools::input;
 
 enum Move {
     RotLeft(usize),
@@ -28,12 +28,12 @@ fn as_string(dancers: &[u8]) -> String {
 
 fn main() {
     // Parse the dance steps.
-    let dance = input_string().trim().split(',').map(|mov| {
-        if mov.starts_with("s") {
-            Move::RotLeft(16 - to_usize(&mov[1..]))
-        } else if mov.starts_with("x") {
-            let (pos1, pos2) = mov[1..].split('/').collect_tuple().unwrap();
-            Move::Exchange(to_usize(pos1), to_usize(pos2))
+    let dance = input::string().split(',').map(|mov| {
+        if let Some(n) = mov.strip_prefix('s') {
+            Move::RotLeft(16 - input::to_usize(n))
+        } else if let Some(n) = mov.strip_prefix('x') {
+            let (pos1, pos2) = n.split('/').collect_tuple().unwrap();
+            Move::Exchange(input::to_usize(pos1), input::to_usize(pos2))
         } else {
             let (prog1, prog2) = mov[1..].split('/')
                 .map(|s| s.chars().next().unwrap() as u8 - b'a')

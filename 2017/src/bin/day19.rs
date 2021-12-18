@@ -1,10 +1,8 @@
-use advtools::input::{input_string, from_utf8};
-use advtools::grid::{Grid, Dir};
-
-use Dir::*;
+use advtools::input;
+use advtools::grid::{Grid, Dir::*};
 
 fn main() {
-    let map = Grid::new(input_string().lines().map(|s| s.as_bytes().to_vec()));
+    let map = Grid::new(input::raw_string().lines().map(|s| s.as_bytes().to_vec()));
 
     let mut pos = map.find_pos(|&c| c == b'|').unwrap();
     let mut dir = D;
@@ -33,7 +31,7 @@ fn main() {
     }
 
     // Part 1: The letters in order of the path.
-    advtools::verify("Path", from_utf8(path), "LIWQYKMRP");
+    advtools::verify("Path", input::from_utf8(path), "LIWQYKMRP");
     // Part 2: The total number of steps taken.
     advtools::verify("Steps", steps, 16764);
 }

@@ -1,5 +1,5 @@
 use advtools::prelude::Itertools;
-use advtools::input::iter_input_regex;
+use advtools::input;
 use std::ops::Add;
 use std::collections::BTreeSet;
 
@@ -48,7 +48,7 @@ fn cross<F: Fn(&Vector) -> f64>(p1: &Particle, p2: &Particle, f: F) -> f64 {
 fn main() {
     let mut particles = Vec::new();
     let regex = format!("p={vec}, v={vec}, a={vec}", vec = r"<(-?\d+),(-?\d+),(-?\d+)>");
-    for (px, py, pz, vx, vy, vz, ax, ay, az) in iter_input_regex(&regex) {
+    for (px, py, pz, vx, vy, vz, ax, ay, az) in input::rx_lines(&regex) {
         particles.push(Particle {
             p: Vector { x: px, y: py, z: pz },
             v: Vector { x: vx, y: vy, z: vz },

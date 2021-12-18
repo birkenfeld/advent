@@ -1,5 +1,5 @@
 use advtools::prelude::{HashMap, Itertools};
-use advtools::input::iter_input;
+use advtools::input;
 use advtools::rayon::prelude::*;
 
 type S2 = (u8,u8,u8,u8);
@@ -107,10 +107,10 @@ fn advance(state: State, repls2x2: &HashMap<S2, S3>, repls3x3: &HashMap<S3, (S2,
                 // Iterate over 2x2 size-2 squares at at the same time.
                 for ((sq1, sq2), (sq3, sq4)) in rows[0].iter().tuples().zip(rows[1].iter().tuples()) {
                     // Get the 2x2 size-3 squares and make them into 3x3 size-2 squares.
-                    let repl1 = &repls2x2[&sq1];
-                    let repl2 = &repls2x2[&sq2];
-                    let repl3 = &repls2x2[&sq3];
-                    let repl4 = &repls2x2[&sq4];
+                    let repl1 = &repls2x2[sq1];
+                    let repl2 = &repls2x2[sq2];
+                    let repl3 = &repls2x2[sq3];
+                    let repl4 = &repls2x2[sq4];
                     new1.push((repl1.0, repl1.1, repl1.3, repl1.4));
                     new1.push((repl1.2, repl2.0, repl1.5, repl2.3));
                     new1.push((repl2.1, repl2.2, repl2.4, repl2.5));
@@ -150,7 +150,7 @@ fn add_to_map<P, Q>(mut pat: P, repl: Q, flip: fn(P) -> P, rot: fn(P) -> P, map:
 fn main() {
     let mut repls2x2 = HashMap::new();
     let mut repls3x3 = HashMap::new();
-    for line in iter_input::<Vec<String>>() {
+    for line in input::parse_lines::<Vec<&str>>() {
         let rpat = line[0].chars().filter(|&c| c != '/').map(pixel).collect_vec();
         let repl = line[2].chars().filter(|&c| c != '/').map(pixel).collect_vec();
         if line[0].len() == 5 {

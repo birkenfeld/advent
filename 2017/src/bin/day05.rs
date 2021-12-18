@@ -1,5 +1,4 @@
-use advtools::prelude::Itertools;
-use advtools::input::iter_input;
+use advtools::input;
 
 /// Jump through the list of offsets, with the closure determining how an offset
 /// is modified after it is taken.
@@ -20,7 +19,7 @@ fn jump(jumps: &mut [i32], f: impl Fn(i32) -> i32) -> i32 {
 }
 
 fn main() {
-    let mut jumps = iter_input::<i32>().collect_vec();
+    let mut jumps = input::parse_vec::<i32>();
 
     // Part 1: Taken offsets are increased by one.
     let steps1 = jump(&mut jumps.clone(), |ofs| ofs + 1);

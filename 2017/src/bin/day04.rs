@@ -1,8 +1,8 @@
 use advtools::prelude::Itertools;
-use advtools::input::iter_input;
+use advtools::input;
 
 fn main() {
-    let phrases = iter_input::<Vec<String>>().collect_vec();
+    let phrases = input::parse_vec::<Vec<&str>>();
 
     // Part 1: Check if number of unique words == number of words.
     let count1 = phrases.iter().filter(|ph| {

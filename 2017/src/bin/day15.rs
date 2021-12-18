@@ -1,6 +1,5 @@
-use advtools::prelude::Itertools;
 use advtools::itertools::iterate;
-use advtools::input::iter_input;
+use advtools::input;
 
 /// Calculate a*b (mod 2^31-1) without doing a `%` operation, algorithm taken
 /// from http://www.firstpr.com.au/dsp/rand31/#Simpler.
@@ -23,7 +22,7 @@ where FA: Fn(&u64) -> bool, FB: Fn(&u64) -> bool
 }
 
 fn main() {
-    let input = iter_input().collect_tuple().unwrap();
+    let input = input::parse();
 
     // Part 1: 40m numbers, all are accepted.
     advtools::verify("Accepted #1",

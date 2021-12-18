@@ -1,15 +1,15 @@
 use advtools::prelude::HashMap;
-use advtools::input::iter_input;
+use advtools::input;
 
 fn main() {
     let mut regs = HashMap::new();
     let mut any_largest = 0;
-    for line in iter_input::<(String, String, i32, (), String, String, i32)>() {
+    for line in input::parse_lines::<(&str, &str, i32, (), &str, &str, i32)>() {
         let (change_reg, sign, change_amt, _, check_reg, check_cond, check_val) = line;
         // Calculate amount of change.
         let change_amt = change_amt * if sign == "inc" { 1 } else { -1 };
-        let check_reg_val = *regs.get(&check_reg).unwrap_or(&0);
-        if match &*check_cond {
+        let check_reg_val = *regs.get(check_reg).unwrap_or(&0);
+        if match check_cond {
             "==" => check_reg_val == check_val,
             "!=" => check_reg_val != check_val,
             ">"  => check_reg_val >  check_val,

@@ -1,6 +1,8 @@
 use advtools::prelude::HashMap;
-use advtools::input::iter_input_trim;
+use advtools::input;
 use petgraph::prelude::*;
+
+const FORMAT: &str = r"([a-z]+) \((\d+)\)(?: -> (.+))?";
 
 fn main() {
     let mut name2ix = HashMap::new();
@@ -8,16 +10,18 @@ fn main() {
     // Parse input into a directed graph.  The node weight is the weight of the program.
     // The edge weights are later used for cumulative weights of program + children.
     // `name2ix` maps program names to graph Index values.
-    for (name, weight, children) in iter_input_trim::<(String, i32, Vec<String>)>("(),") {
+    for (name, weight, children) in input::rx_lines::<(&str, i32, &str)>(FORMAT) {
         // Since some nodes are mentioned first as children and some as parents,
         // we must check if we need to insert them as a new node.
         let ix = *name2ix.entry(name).or_insert_with(|| graph.add_node(0));
         graph[ix] = weight;
         // Add edges to children (and the child nodes if necessary).  Weight 0 is used
         // until we know the program's weight from its own entry.
-        for childname in children.into_iter().skip(1) {
-            let cix = *name2ix.entry(childname).or_insert_with(|| graph.add_node(0));
-            graph.add_edge(ix, cix, 0i32);
+        if !children.is_empty() {
+            for childname in children.split(", ") {
+                let cix = *name2ix.entry(childname).or_insert_with(|| graph.add_node(0));
+                graph.add_edge(ix, cix, 0i32);
+            }
         }
     }
     // Part 1: The graph root (the node with no incoming edge) is the bottom program.

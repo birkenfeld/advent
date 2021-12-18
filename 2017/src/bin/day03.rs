@@ -1,5 +1,5 @@
 use advtools::prelude::{HashMap, Itertools};
-use advtools::input::{input_string, to_u32};
+use advtools::input;
 use advtools::grid::Pos;
 
 /// Determine next coordinate of the position on the spiral.
@@ -11,15 +11,13 @@ fn next_pos(pos: Pos) -> Pos {
         pos.up()
     } else if y > 0 && (y.abs() > x.abs() || x == y) {
         pos.left()
-    } else if y < 0 && (y.abs() > x.abs() || x == y) {
-        pos.right()
     } else {
         pos.right()
     }
 }
 
 fn main() {
-    let input = to_u32(input_string().trim());
+    let input = input::parse();
 
     // Part 1: Just walk the spiral.  (Could start from the largest full ring,
     // but this is very quick anyway.)
