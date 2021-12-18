@@ -1,6 +1,6 @@
-use std::{io::BufRead, mem::replace};
+use std::mem::replace;
 use advtools::prelude::{Itertools, HashSet, HashMap};
-use advtools::input::input_file;
+use advtools::input;
 use advtools::grid::{Grid, Pos};
 
 #[derive(PartialEq, Clone, Copy)]
@@ -14,8 +14,8 @@ enum Cell {
 use Cell::*;
 
 fn main() {
-    let maze_chars = input_file().lines().map(
-        |line| line.unwrap().chars().collect_vec()
+    let maze_chars = input::raw_string().lines().map(
+        |line| line.chars().collect_vec()
     ).collect_vec();
     let ny = maze_chars.len();
     let nx = maze_chars[0].len();

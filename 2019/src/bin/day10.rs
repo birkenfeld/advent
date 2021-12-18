@@ -1,5 +1,5 @@
 use advtools::prelude::Itertools;
-use advtools::input::iter_lines;
+use advtools::input;
 use float_ord::FloatOrd;
 
 fn iter_asteroids(map: &[Vec<bool>]) -> impl Iterator<Item=(usize, usize)> + '_ {
@@ -9,7 +9,7 @@ fn iter_asteroids(map: &[Vec<bool>]) -> impl Iterator<Item=(usize, usize)> + '_ 
 }
 
 fn main() {
-    let map = iter_lines().map(
+    let map = input::lines().map(
         |line| line.chars().map(|c| c == '#').collect_vec()
     ).collect_vec();
 

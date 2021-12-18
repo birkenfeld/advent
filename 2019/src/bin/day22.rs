@@ -1,5 +1,9 @@
 use advtools::prelude::Itertools;
-use advtools::input::iter_lines;
+use advtools::input;
+
+const FORMAT: &str = "deal with increment (\\d+)|\
+                      cut (-?\\d+)|\
+                      deal into new stack";
 
 #[derive(Clone, Copy)]
 enum Op {
@@ -31,13 +35,10 @@ fn mod_div(a: i128, b: i128, m: i128) -> i128 {
 }
 
 fn main() {
-    let ops = iter_lines().map(|line| {
-        let split = line.split_whitespace().collect_vec();
-        match (split[0], split[1]) {
-            ("cut", x) => Op::Cut(x.parse().unwrap()),
-            ("deal", "into") => Op::NewStack,
-            _ => Op::Deal(split[3].parse().unwrap())
-        }
+    let ops = input::rx_lines::<(Option<_>, Option<_>)>(FORMAT).map(|item| match item {
+        (Some(n), _) => Op::Deal(n),
+        (_, Some(n)) => Op::Cut(n),
+        _            => Op::NewStack,
     }).collect_vec();
 
     // For part 1, apply the operations forward to find where a particular card

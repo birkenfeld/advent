@@ -1,5 +1,5 @@
-use advtools::prelude::{Itertools, HashMap};
-use advtools::input::input_string;
+use advtools::prelude::HashMap;
+use advtools::input;
 use advtools::grid::{Pos, Dir};
 
 /// Step through the positions of a single wire, and call the given
@@ -17,8 +17,7 @@ fn follow<F: FnMut(Pos, i32)>(instr: &str, mut visit: F) {
 }
 
 fn main() {
-    let input = input_string();
-    let (w1, w2) = input.split('\n').next_tuple().unwrap();
+    let (w1, w2) = input::parse();
 
     let mut coords = HashMap::new();
     let mut min_dist = i32::max_value();
@@ -26,11 +25,11 @@ fn main() {
 
     // Follow the first wire, recording every visited coordinate with the number
     // of steps. If visited twice, keep the lower number.
-    follow(&w1, |pos, s1| { coords.entry(pos).or_insert(s1); });
+    follow(w1, |pos, s1| { coords.entry(pos).or_insert(s1); });
 
     // Follow the second wire, tracking the minimum scores for both rounds for
     // each crossing.
-    follow(&w2, |pos, s2| if let Some(s1) = coords.get(&pos) {
+    follow(w2, |pos, s2| if let Some(s1) = coords.get(&pos) {
         min_dist = min_dist.min(pos.manhattan());
         min_steps = min_steps.min(s1 + s2);
     });

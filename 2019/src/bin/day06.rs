@@ -1,17 +1,17 @@
 use advtools::prelude::{HashMap, HashSet, Uids};
-use advtools::input::iter_input_regex;
+use advtools::input;
 
 fn calc_indirect(orbits: &HashMap<usize, usize>, indirect: &mut HashMap<usize, i32>, obj: usize) {
     if indirect.get(&obj).is_none() {
         calc_indirect(orbits, indirect, orbits[&obj]);
-        indirect.insert(obj.into(), indirect[&orbits[&obj]] + 1);
+        indirect.insert(obj, indirect[&orbits[&obj]] + 1);
     }
 }
 
 fn main() {
     // Create a map of all "orbits" relations from object to its center.
-    let mut ids = Uids::<String>::new();
-    let orbits: HashMap<_, _> = iter_input_regex(r"(\w+)\)(\w+)").map(|(c, o)| {
+    let mut ids = Uids::<&str>::new();
+    let orbits: HashMap<_, _> = input::rx_lines(r"(\w+)\)(\w+)").map(|(c, o)| {
         (ids.get_id(o), ids.get_id(c))
     }).collect();
     // Extract ids for known objects.

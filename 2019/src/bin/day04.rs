@@ -1,9 +1,7 @@
 use std::iter::once;
 use advtools::prelude::Itertools;
 use advtools::rayon::prelude::*;
-use advtools::input::to_u32;
-
-const INPUT: &str = "136760-595730";
+use advtools::input;
 
 fn match1(s: &String) -> bool {
     // Test if the digits (chars) are sorted
@@ -22,7 +20,7 @@ fn match2(s: &&String) -> bool {
 }
 
 fn main() {
-    let (min, max) = INPUT.split('-').map(to_u32).next_tuple().unwrap();
+    let (min, max) = input::rx_parse::<(u32, u32)>(r"(\d+)-(\d+)");
 
     // Find all numbers matching the first condition.
     let first: Vec<_> = (min..=max).into_par_iter().map(|x| x.to_string())

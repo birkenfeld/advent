@@ -1,5 +1,5 @@
 use std::fmt::Write;
-use advtools::input::input_string;
+use advtools::input;
 
 const COLS: usize = 25;
 const SIZE: usize = COLS * 6;
@@ -9,8 +9,7 @@ const WHITE: u8 = b'1';
 const TRANSPARENT: u8 = b'2';
 
 fn main() {
-    let img = input_string();
-    let img = img.trim().as_bytes();
+    let img = input::string().as_bytes();
 
     // The chunks iterator is pretty helpful for this.
     let result = img.chunks(SIZE).map(|layer| {

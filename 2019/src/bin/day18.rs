@@ -1,7 +1,5 @@
-use std::mem::replace;
-use std::convert::TryInto;
-use advtools::prelude::*;
-use advtools::input::iter_lines;
+use advtools::prelude::{HashMap, HashSet, Itertools};
+use advtools::input;
 use advtools::grid::{Grid, Pos};
 
 #[derive(PartialEq, Clone, Copy)]
@@ -23,7 +21,7 @@ fn main() {
     let mut key_pos = HashMap::new();
     let mut all_keys = 0;
     // Keep track of the maze, as well as the positions of all keys.
-    let mut maze = Grid::new(iter_lines().enumerate().map(|(y, line)| {
+    let mut maze = Grid::new(input::lines().enumerate().map(|(y, line)| {
         line.chars().enumerate().map(|(x, ch)| match ch {
             '#' => Wall,
             '.' | '@' => Free,
@@ -73,7 +71,7 @@ fn visit_n<const N: usize>(maze: &Grid<Cell>, key_pos: &HashMap<u8, Pos>, all_ke
 
     loop {
         queue.sort_by_key(|k| k.2);
-        for (at_keys, keys, steps) in replace(&mut queue, Vec::new()) {
+        for (at_keys, keys, steps) in std::mem::take(&mut queue) {
             // Found all keys? Find the minimum steps to reach this state.
             if keys == all_keys {
                 min_steps = min_steps.min(steps);
@@ -94,7 +92,7 @@ fn visit_n<const N: usize>(maze: &Grid<Cell>, key_pos: &HashMap<u8, Pos>, all_ke
                             _ => {
                                 // This is the fastest way here. Go on.
                                 fastest.insert((new_key, new_keys), new_steps);
-                                let mut new_at_keys = at_keys.clone();
+                                let mut new_at_keys = at_keys;
                                 new_at_keys[i] = Loc::Key(new_key);
                                 queue.push((new_at_keys, new_keys, new_steps));
                             }
@@ -118,7 +116,7 @@ fn neighbor_keys(maze: &Grid<Cell>, keys_ignore: u32, start: Pos) -> Vec<(u8, u3
     let mut queue = vec![(start, 0)];
 
     for steps in 1.. {
-        for (pos, req_keys) in replace(&mut queue, Vec::with_capacity(16)) {
+        for (pos, req_keys) in std::mem::replace(&mut queue, Vec::with_capacity(16)) {
             for new_pos in maze.neighbors(pos) {
                 match maze[new_pos] {
                     Free => (),

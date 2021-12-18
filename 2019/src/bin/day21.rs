@@ -1,5 +1,5 @@
 use std::convert::TryFrom;
-use advtools::input::input_string;
+use advtools::input;
 use advent19::Machine;
 use num_enum::TryFromPrimitive;
 use rand::{Rng, thread_rng};
@@ -214,7 +214,7 @@ impl Generator {
 }
 
 fn main() {
-    let code = Machine::parse(&input_string());
+    let code = Machine::parse(input::string());
 
     let mut gen1 = Generator::new(Machine::new(&code), 6, "WALK\n");
     advtools::verify("Hull damage", gen1.run(), 19347868);

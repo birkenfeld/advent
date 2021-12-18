@@ -1,5 +1,5 @@
 use advtools::prelude::HashSet;
-use advtools::input::input_string;
+use advtools::input;
 use advtools::grid::Pos;
 use advent19::Machine;
 
@@ -13,7 +13,7 @@ fn visit(start: (Pos, Machine)) -> (i32, Option<(Pos, Machine)>) {
     known.insert(start.0);
     let mut queue = vec![start];
     for steps in 1.. {
-        for (pos, machine) in std::mem::replace(&mut queue, Vec::new()) {
+        for (pos, machine) in std::mem::take(&mut queue) {
             // Go through every (potential) new location and find out if
             // we can go there.
             for (ndir, new_pos) in pos.neighbors().enumerate() {
@@ -40,7 +40,7 @@ fn visit(start: (Pos, Machine)) -> (i32, Option<(Pos, Machine)>) {
 }
 
 fn main() {
-    let code = Machine::parse(&input_string());
+    let code = Machine::parse(input::string());
     let machine = Machine::new(&code);
 
     // Part 1: find the number of steps to goal.

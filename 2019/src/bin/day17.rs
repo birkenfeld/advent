@@ -1,5 +1,5 @@
 use advtools::prelude::{Itertools, HashSet};
-use advtools::input::input_string;
+use advtools::input;
 use advtools::grid::{Grid, Pos, Dir};
 use advent19::Machine;
 
@@ -26,7 +26,7 @@ fn seq_fmt(seq: &[Instr]) -> String {
 
 
 fn main() {
-    let code = Machine::parse(&input_string());
+    let code = Machine::parse(input::string());
     let mut width = usize::max_value();
     let mut robot_pos = Pos(0, 0);
     let mut robot_dir = Dir::U;

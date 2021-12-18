@@ -1,6 +1,5 @@
-use std::mem::replace;
 use advtools::prelude::{Itertools, HashMap};
-use advtools::input::input_string;
+use advtools::input;
 use advent19::{Machine, IO};
 
 fn read_out(machine: &mut Machine) -> Vec<String> {
@@ -9,7 +8,7 @@ fn read_out(machine: &mut Machine) -> Vec<String> {
     loop {
         match machine.run() {
             IO::Output(n) => match n as u8 as char {
-                '\n' => lines.push(replace(&mut out, String::new())),
+                '\n' => lines.push(std::mem::take(&mut out)),
                 ch => out.push(ch),
             }
             IO::Input | IO::Halt => return lines,
@@ -28,14 +27,14 @@ fn inverse(dir: &str) -> &str {
 }
 
 fn main() {
-    let code = Machine::parse(&input_string());
+    let code = Machine::parse(input::string());
 
     // Step 1: Find all the rooms, items and directions.
     let mut rooms = HashMap::new();
     let mut queue = vec![(vec![], Machine::new(&code))];
 
     loop {
-        for (steps, mut mach) in replace(&mut queue, Vec::new()) {
+        for (steps, mut mach) in std::mem::take(&mut queue) {
             let steps: Vec<String> = steps;
             let mut name = String::new();
             let mut doors = vec![];
@@ -45,17 +44,17 @@ fn main() {
                 if line.starts_with("==") {
                     name = line[3..line.len() - 3].into();
                 } else if line == "Doors here lead:" {
-                    while let Some(line) = iter.next() {
-                        if line.starts_with("- ") {
-                            doors.push(format!("{}\n", &line[2..]));
+                    for line in iter.by_ref() {
+                        if let Some(rest ) = line.strip_prefix("- ") {
+                            doors.push(format!("{}\n", rest));
                         } else {
                             break;
                         }
                     }
                 } else if line == "Items here:" {
-                    while let Some(line) = iter.next() {
-                        if line.starts_with("- ") {
-                            items.push(line[2..].to_string());
+                    for line in iter.by_ref() {
+                        if let Some(rest) = line.strip_prefix("- ") {
+                            items.push(rest.to_string());
                         } else {
                             break;
                         }

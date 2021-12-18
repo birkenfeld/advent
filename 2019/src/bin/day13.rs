@@ -1,5 +1,5 @@
 use advtools::prelude::Itertools;
-use advtools::input::input_string;
+use advtools::input;
 use advent19::Machine;
 
 const BLOCK: i64 = 2;
@@ -7,7 +7,7 @@ const PADDLE: i64 = 3;
 const BALL: i64 = 4;
 
 fn main() {
-    let code = Machine::parse(&input_string());
+    let code = Machine::parse(input::string());
 
     // Part 1: Count all the blocks drawn.
     let blocks = Machine::new(&code).tuples().filter(|(_, _, tile)| tile == &BLOCK);

@@ -13,19 +13,20 @@ pub enum IO {
 pub struct Machine {
     ip: i64,
     bp: i64,
-    mem: Arc<Box<[i64]>>,
+    mem: Arc<[i64]>,
     wmem: HashMap<i64, i64>,
     input: Vec<i64>,
 }
 
 impl Machine {
     /// Parse stringified intcode.
-    pub fn parse(code: &str) -> Arc<Box<[i64]>> {
-        Arc::new(code.trim().split(',').map(|v| v.parse().expect("invalid memory")).collect())
+    pub fn parse(code: &str) -> Arc<[i64]> {
+        code.trim().split(',').map(|v| v.parse().expect("invalid memory"))
+                              .collect::<Box<_>>().into()
     }
 
     /// Create a new machine with given memory cells and initial input.
-    pub fn new(mem: &Arc<Box<[i64]>>) -> Self {
+    pub fn new(mem: &Arc<[i64]>) -> Self {
         Self { ip: 0, bp: 0, mem: mem.clone(), wmem: HashMap::new(), input: Vec::new() }
     }
 

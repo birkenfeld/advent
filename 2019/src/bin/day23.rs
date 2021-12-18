@@ -1,11 +1,11 @@
 use advtools::prelude::Itertools;
-use advtools::input::input_string;
+use advtools::input;
 use advent19::{Machine, IO};
 
 const N: i64 = 50;
 
 fn main() {
-    let code = Machine::parse(&input_string());
+    let code = Machine::parse(input::string());
 
     let mut machines = (0..N).map(|addr| {
         // Create machines with initial input (the first -1 is to avoid sending

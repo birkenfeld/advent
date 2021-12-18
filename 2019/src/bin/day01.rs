@@ -1,9 +1,9 @@
-use advtools::itertools::{Itertools, iterate};
-use advtools::input::iter_input;
+use advtools::itertools::iterate;
+use advtools::input;
 
 fn main() {
     // Let the helper library parse all lines and collect them.
-    let masses = iter_input::<i64>().collect_vec();
+    let masses = input::parse_vec::<i64>();
     // Just a normal iteration with map() to calculate the total.
     let total: i64 = masses.iter().map(|m| m/3 - 2).sum();
     advtools::verify("Fuel for modules", total, 3159380);

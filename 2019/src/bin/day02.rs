@@ -1,11 +1,11 @@
-use advtools::input::input_string;
+use advtools::input;
 use advtools::rayon::prelude::*;
 use advent19::Machine;
 
 const LANDING: i64 = 19690720;
 
 fn main() {
-    let code = Machine::parse(&input_string());
+    let code = Machine::parse(input::string());
 
     let run_with = |noun, verb| {
         let mut machine = Machine::new(&code);

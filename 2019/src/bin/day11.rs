@@ -1,6 +1,6 @@
 use std::fmt::Write;
 use advtools::prelude::{Itertools, HashMap};
-use advtools::input::input_string;
+use advtools::input;
 use advtools::grid::{Pos, Dir};
 use advent19::Machine;
 
@@ -9,7 +9,7 @@ enum Color { Black, White }
 use Color::*;
 
 fn main() {
-    let code = Machine::parse(&input_string());
+    let code = Machine::parse(input::string());
     let mut machine = Machine::new(&code);
 
     let mut walk = |tiles: &mut HashMap<Pos, Color>| {

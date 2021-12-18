@@ -1,9 +1,9 @@
 use advtools::prelude::{Itertools, HashMap, binary_search};
-use advtools::input::input_string;
+use advtools::input;
 use advent19::Machine;
 
 fn main() {
-    let code = Machine::parse(&input_string());
+    let code = Machine::parse(input::string());
 
     let is_affected = |x, y| Machine::new(&code).with_input(x)
                                                 .with_input(y).next() == Some(1);

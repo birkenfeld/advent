@@ -1,12 +1,12 @@
 use std::mem::replace;
 use advtools::prelude::HashSet;
-use advtools::input::input_string;
+use advtools::input;
 use bit::BitIndex;
 
 const MINUTES: usize = 200;
 
 fn main() {
-    let bugs: u32 = input_string().chars().filter(|&ch| ch == '#' || ch == '.')
+    let bugs: u32 = input::chars().filter(|&ch| ch != '\n')
         .enumerate()
         .fold(0, |mut bugs, (i, ch)| *bugs.set_bit(i, ch == '#'));
 

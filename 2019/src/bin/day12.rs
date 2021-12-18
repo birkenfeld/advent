@@ -1,5 +1,5 @@
 use advtools::prelude::HashSet;
-use advtools::input::iter_input_regex;
+use advtools::input;
 use num::Integer;
 
 const N: usize = 4;
@@ -19,7 +19,7 @@ fn main() {
     let mut dirs = [Direction::default(), Direction::default(), Direction::default()];
 
     // Read in positions for each of the four moons.
-    for (i, (px, py, pz)) in iter_input_regex(r"<x=(-?\d+), y=(-?\d+), z=(-?\d+)>").enumerate() {
+    for (i, (px, py, pz)) in input::rx_lines(r"<x=(-?\d+), y=(-?\d+), z=(-?\d+)>").enumerate() {
         dirs[0].pos[i] = px; dirs[1].pos[i] = py; dirs[2].pos[i] = pz;
     }
 

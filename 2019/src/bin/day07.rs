@@ -1,9 +1,9 @@
 use advtools::prelude::Itertools;
-use advtools::input::input_string;
+use advtools::input;
 use advent19::Machine;
 
 fn main() {
-    let code = Machine::parse(&input_string());
+    let code = Machine::parse(input::string());
 
     // Find the maximum signal by testing all permutations of 0..5.
     let max_signal = (0..5).permutations(5).map(|phases| {

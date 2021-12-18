@@ -1,10 +1,9 @@
 use std::iter::repeat;
 use advtools::prelude::Itertools;
-use advtools::input::input_string;
+use advtools::input;
 
 fn main() {
-    let instr = input_string();
-    let input = instr.trim().chars().map(|ch| ch.to_digit(10).unwrap() as i32).collect_vec();
+    let input = input::chars().map(|ch| ch.to_digit(10).unwrap() as i32).collect_vec();
     let n = input.len();
 
     // Part 1: straight up do the algorithm as stated in the exercise.
@@ -26,7 +25,7 @@ fn main() {
 
     // Determine the offset for part 2.  Our quick way to solve this part
     // only works with offsets that are in the second half of the input.
-    let offset: usize = instr[..7].parse().unwrap();
+    let offset = input::to_usize(&input::string()[..7]);
     assert!(offset >= 5000*n);
 
     // Take all the digits in the 10000x input *following* the offset,
