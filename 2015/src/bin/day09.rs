@@ -1,11 +1,10 @@
 use advtools::prelude::{Itertools, Uids};
-use advtools::input::iter_input_parts;
+use advtools::input;
 
 fn main() {
     let mut table = [[0u16; 8]; 8];
     let mut map = Uids::new();
-    for row in iter_input_parts([0, 2, 4]) {
-        let (from, to, dist): (String, String, u16) = row;
+    for (from, to, dist) in input::rx_lines::<(&str, &str, u16)>("(.+) to (.+) = (.+)") {
         let from_id = map.get_id(from);
         let to_id = map.get_id(to);
         table[from_id.max(to_id)][from_id.min(to_id)] = dist;

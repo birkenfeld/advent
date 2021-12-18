@@ -1,5 +1,7 @@
 use advtools::prelude::{Itertools, Uids};
-use advtools::input::iter_input_regex;
+use advtools::input;
+
+const FORMAT: &str = r"(.*) would (.*) (\d+) happiness .* to (.*)\.";
 
 fn most_happiness(n: usize, table: &[[i16; 9]; 9]) -> i16 {
     (0..n).permutations(n).map(|p| {
@@ -12,8 +14,7 @@ fn most_happiness(n: usize, table: &[[i16; 9]; 9]) -> i16 {
 fn main() {
     let mut table = [[0i16; 9]; 9];
     let mut map = Uids::new();
-    for row in iter_input_regex(r"(.*) would (.*) (\d+) happiness .* to (.*)\.") {
-        let (p1, verb, val, p2): (String, String, i16, String) = row;
+    for (p1, verb, val, p2) in input::rx_lines::<(&str, &str, i16, &str)>(FORMAT) {
         let val = if verb == "gain" { val } else { -val };
         let p1_id = map.get_id(p1);
         let p2_id = map.get_id(p2);

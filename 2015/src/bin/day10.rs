@@ -1,5 +1,5 @@
 use advtools::prelude::Itertools;
-use advtools::input::input_string;
+use advtools::input;
 
 fn push_pair(v: &mut Vec<u8>, n: u8, d: u8) {
     if n >= 100 {
@@ -16,8 +16,7 @@ fn push_pair(v: &mut Vec<u8>, n: u8, d: u8) {
 }
 
 fn main() {
-    let input = input_string();
-    let mut seq = input.trim().chars().map(|ch| ch as u8 - b'0').collect_vec();
+    let mut seq = input::chars().map(|ch| ch as u8 - b'0').collect_vec();
     for i in 1..=50 {
         let mut new_seq = Vec::with_capacity(2 * seq.len());
         let mut dp = seq[0];

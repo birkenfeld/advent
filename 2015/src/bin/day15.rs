@@ -1,7 +1,10 @@
 use advtools::prelude::Itertools;
-use advtools::input::iter_input_parts_trim;
+use advtools::input;
 
 type Values = [i32; 5];
+
+const FORMAT: &str = ".* capacity ([-0-9]+), durability ([-0-9]+), \
+                      flavor ([-0-9]+), texture ([-0-9]+), calories ([-0-9]+)";
 
 fn add_up(amounts: &[i32], v: &[Values], select: impl Fn(&Values) -> i32) -> i32 {
     amounts.iter().enumerate().map(|(i, a)| a*select(&v[i])).sum()
@@ -38,7 +41,7 @@ fn find_best(goalcal: Option<i32>, v: &[Values]) -> Vec<i32> {
 }
 
 fn main() {
-    let v = iter_input_parts_trim([2, 4, 6, 8, 10], ",").collect_vec();
+    let v = input::rx_lines(FORMAT).collect_vec();
 
     let best = find_best(None, &v);
     advtools::verify("Best", fom(&best, &v), 13882464);

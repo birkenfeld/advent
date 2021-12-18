@@ -1,6 +1,5 @@
-use advtools::input::input_file;
-use serde_json::{Value, from_reader};
-use serde_json::Value::*;
+use advtools::input;
+use serde_json::{Value, Value::*, from_str};
 
 fn sum_up(val: &Value, no_reds: bool) -> i64 {
     match val {
@@ -15,7 +14,7 @@ fn sum_up(val: &Value, no_reds: bool) -> i64 {
 }
 
 fn main() {
-    let doc: Value = from_reader(input_file()).expect("input not valid JSON");
+    let doc: Value = from_str(input::string()).expect("input not valid JSON");
     advtools::verify("Sum with reds", sum_up(&doc, false), 191164);
     advtools::verify("Sum without reds", sum_up(&doc, true), 87842);
 }

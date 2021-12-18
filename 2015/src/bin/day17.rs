@@ -1,4 +1,4 @@
-use advtools::input::iter_input;
+use advtools::input;
 
 const GOAL: i32 = 150;
 const GOALCONT: u32 = 4;
@@ -21,7 +21,7 @@ fn find_with_cont(v: &[i32], rest: i32, ncont: u32) -> u32 {
 }
 
 fn main() {
-    let containers = iter_input().collect::<Vec<i32>>();
+    let containers = input::parse_vec::<i32>();
     advtools::verify("Combinations", find(&containers, GOAL), 1638);
     advtools::verify("Combinations with 4 containers",
              find_with_cont(&containers, GOAL, GOALCONT), 17);

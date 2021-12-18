@@ -1,5 +1,4 @@
-use advtools::prelude::Itertools;
-use advtools::input::iter_input;
+use advtools::input;
 
 fn find_batches(v: &[u32], i: usize, cand: u32, rest: u32,
                 best_count: &mut u32, batches: &mut Vec<(u64, u32)>) {
@@ -26,12 +25,12 @@ fn find_configuration(weights: &[u32], batch_weight: u32) -> u64 {
     let mut candidates = Vec::new();
     let mut best_count = 0;
     find_batches(weights, 0, 0, batch_weight, &mut best_count, &mut candidates);
-    candidates.sort();
+    candidates.sort_unstable();
     candidates[0].0
 }
 
 fn main() {
-    let mut weights = iter_input::<u32>().collect_vec();
+    let mut weights = input::parse_vec::<u32>();
     let total_weight = weights.iter().sum::<u32>();
     weights.reverse();
     advtools::verify(&format!("Lowest QE (batch weight {})", total_weight / 3),

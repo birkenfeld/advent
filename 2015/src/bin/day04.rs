@@ -1,7 +1,7 @@
 use std::sync::mpsc;
 use md5::{Digest, Md5};
 use advtools::rayon::prelude::*;
-use advtools::input::input_string;
+use advtools::input;
 
 const N: u64 = 10_000_000;
 
@@ -18,8 +18,7 @@ fn check(input: &[u8], i: u64, tx: &mpsc::SyncSender<(u64, bool)>) {
 }
 
 fn main() {
-    let input = input_string();
-    let input = input.trim().as_bytes();
+    let input = input::string().as_bytes();
     let (tx, rx) = mpsc::sync_channel(256);
     (0..N).into_par_iter().for_each(|n| check(input, n, &tx));
     drop(tx);

@@ -1,9 +1,9 @@
-use advtools::input::iter_input_regex;
+use advtools::input;
 
 fn main() {
-    let (total_paper, total_ribbon) = iter_input_regex(r"(\d+)x(\d+)x(\d+)").fold(
+    let (total_paper, total_ribbon) = input::rx_lines(r"(\d+)x(\d+)x(\d+)").fold(
         (0, 0), |(paper, ribbon), mut dimensions: [u32; 3]| {
-            dimensions.sort();
+            dimensions.sort_unstable();
             let [l, w, h] = dimensions;
             (paper + 2 * (l*w + w*h + h*l) + l*w, ribbon + l*w*h + 2 * (l + w))
         });

@@ -1,5 +1,5 @@
 use advtools::prelude::HashSet;
-use advtools::input::input_string;
+use advtools::input;
 use advtools::grid::{Pos, Dir};
 
 type Coords = HashSet<Pos>;
@@ -13,7 +13,7 @@ fn walk(directions: impl Iterator<Item=char>, mut set: Coords) -> Coords {
 }
 
 fn main() {
-    let directions = input_string();
+    let directions = input::string();
     advtools::verify("# houses", walk(directions.chars(), HashSet::new()).len(), 2565);
 
     let set = walk(directions.chars().step_by(2), HashSet::new());

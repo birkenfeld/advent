@@ -1,9 +1,7 @@
-use advtools::prelude::Itertools;
-use advtools::input::iter_input_regex;
+use advtools::input;
 
-fn fight((boss_hp, boss_dmg): (i32, i32), dmg_per_turn: i32) -> i32 {
-    let mut stack = Vec::new();
-    stack.push((true, boss_hp, 50_i32, 500_i32, [0; 3], 0_i32, 0_i32));
+fn fight(boss_hp: i32, boss_dmg: i32, dmg_per_turn: i32) -> i32 {
+    let mut stack = vec!((true, boss_hp, 50_i32, 500_i32, [0; 3], 0_i32, 0_i32));
     let mut min_mana = i32::max_value();
     while let Some((my_turn, mut boss_hp, mut hp, mut mana, mut effects, mana_used, rnds)) = stack.pop() {
         if mana_used > min_mana || rnds > 20 {
@@ -69,8 +67,8 @@ fn fight((boss_hp, boss_dmg): (i32, i32), dmg_per_turn: i32) -> i32 {
 }
 
 fn main() {
-    let boss = iter_input_regex(r".*: (\d+)").collect_tuple().unwrap();
+    let (hp, dmg) = input::rx_parse(r"Hit Points: (\d+)\nDamage: (\d+)");
 
-    advtools::verify("Min mana for win", fight(boss, 0), 1269);
-    advtools::verify("Min mana for win with 1 dmg/turn", fight(boss, 1), 1309);
+    advtools::verify("Min mana for win", fight(hp, dmg, 0), 1269);
+    advtools::verify("Min mana for win with 1 dmg/turn", fight(hp, dmg, 1), 1309);
 }

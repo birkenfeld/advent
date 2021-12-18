@@ -1,5 +1,5 @@
 use advtools::prelude::Itertools;
-use advtools::input::{input_string, from_utf8};
+use advtools::input;
 
 fn increment(pw: &mut [u8]) {
     for ch in pw.iter_mut().rev() {
@@ -19,16 +19,16 @@ fn is_ok(pw: &[u8]) -> bool {
 }
 
 fn main() {
-    let mut pw = input_string().trim().as_bytes().to_vec();
+    let mut pw = input::string().as_bytes().to_vec();
     let mut found = false;
     loop {
         increment(&mut pw);
         if is_ok(&pw) {
             if !found {
-                advtools::verify("Next password", from_utf8(&pw), "vzbxxyzz");
+                advtools::verify("Next password", input::from_utf8(&pw), "vzbxxyzz");
                 found = true;
             } else {
-                advtools::verify("Next password", from_utf8(&pw), "vzcaabcc");
+                advtools::verify("Next password", input::from_utf8(&pw), "vzcaabcc");
                 return;
             }
         }

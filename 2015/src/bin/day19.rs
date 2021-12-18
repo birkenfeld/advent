@@ -1,8 +1,8 @@
 use advtools::prelude::{HashMap, HashSet};
-use advtools::input::iter_input;
+use advtools::input;
 use rand::{thread_rng, prelude::SliceRandom};
 
-fn make_one_replacement(initial: &str, trans: &HashMap<String, Vec<String>>) -> HashSet<String> {
+fn make_one_replacement(initial: &str, trans: &HashMap<&str, Vec<&str>>) -> HashSet<String> {
     let mut variants = HashSet::new();
     for (key, repls) in trans {
         for (i, _) in initial.match_indices(key) {
@@ -14,7 +14,7 @@ fn make_one_replacement(initial: &str, trans: &HashMap<String, Vec<String>>) -> 
     variants
 }
 
-fn find_steps(initial: &str, target: &str, rtbl: &HashMap<&String, &String>) -> Option<usize> {
+fn find_steps(initial: &str, target: &str, rtbl: &HashMap<&str, &str>) -> Option<usize> {
     let mut repls: Vec<_> = rtbl.keys().collect();
     repls.shuffle(&mut thread_rng());
     let mut steps = 0;
@@ -22,9 +22,9 @@ fn find_steps(initial: &str, target: &str, rtbl: &HashMap<&String, &String>) -> 
     loop {
         let old_steps = steps;
         for i in (0..cur.len() - 2).rev() {
-            for &&repl in &repls {
+            for &repl in &repls {
                 if cur[i..].starts_with(repl) {
-                    cur = cur[..i].to_owned() + &rtbl[repl] + &cur[i+repl.len()..];
+                    cur = cur[..i].to_owned() + rtbl[repl] + &cur[i+repl.len()..];
                     steps += 1;
                 }
             }
@@ -38,9 +38,9 @@ fn find_steps(initial: &str, target: &str, rtbl: &HashMap<&String, &String>) -> 
 }
 
 fn main() {
-    let mut trans: HashMap<String, Vec<String>> = HashMap::new();
-    let mut target = String::new();
-    for mut line in iter_input::<Vec<String>>() {
+    let mut trans: HashMap<&str, Vec<&str>> = HashMap::new();
+    let mut target = "";
+    for mut line in input::parse_lines::<Vec<&str>>() {
         if line.len() == 3 {
             let key = line.remove(0);
             let val = line.remove(1);
@@ -49,11 +49,11 @@ fn main() {
             target = line.remove(0);
         }
     }
-    let rtrans = trans.iter().flat_map(|(k, vs)| vs.iter().map(move |v| (v, k))).collect();
-    let variants = make_one_replacement(&target, &trans);
+    let rtrans = trans.iter().flat_map(|(k, vs)| vs.iter().map(|v| (*v, *k))).collect();
+    let variants = make_one_replacement(target, &trans);
     advtools::verify("# distinct molecules for calibration", variants.len(), 509);
     loop {
-        if let Some(steps) = find_steps(&target, "e", &rtrans) {
+        if let Some(steps) = find_steps(target, "e", &rtrans) {
             advtools::verify("# steps for making target", steps, 195);
             return;
         }

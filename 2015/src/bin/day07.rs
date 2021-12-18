@@ -1,5 +1,5 @@
 use advtools::prelude::HashMap;
-use advtools::input::iter_lines;
+use advtools::input;
 
 #[derive(Debug, Clone, Copy)]
 enum Source {
@@ -97,8 +97,7 @@ fn parse_connection(tok: Vec<&str>) -> (u16, Element) {
 
 fn main() {
     let mut circuit = Circuit::new();
-    for line in iter_lines() {
-        let parts = line.split_whitespace().collect();
+    for parts in input::parse_lines() {
         let (id, el) = parse_connection(parts);
         circuit.connect(id, el);
     }

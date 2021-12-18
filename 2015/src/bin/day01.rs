@@ -1,7 +1,7 @@
-use advtools::input::input_string;
+use advtools::input;
 
 fn main() {
-    let res = input_string().chars().enumerate().fold(
+    let res = input::chars().enumerate().fold(
         (0, None), |(level, basement), (i, ch)| {
             match ch {
                 '(' => (level + 1, basement),

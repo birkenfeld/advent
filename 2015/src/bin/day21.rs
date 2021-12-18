@@ -1,5 +1,4 @@
-use advtools::prelude::Itertools;
-use advtools::input::iter_input_regex;
+use advtools::input;
 
 type Info = (i32, i32, i32);
 
@@ -24,7 +23,7 @@ fn fight_to_the_death(boss: &(i32, i32, i32),
 }
 
 fn main() {
-    let boss = iter_input_regex(r".*: (\d+)").collect_tuple().unwrap();
+    let boss = input::rx_parse(r"Hit Points: (\d+)\nDamage: (\d+)\nArmor: (\d+)");
 
     let mut min_gold = 0;
     let mut max_gold = 0;
