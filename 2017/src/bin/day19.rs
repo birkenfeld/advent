@@ -31,7 +31,7 @@ fn main() {
     }
 
     // Part 1: The letters in order of the path.
-    advtools::verify("Path", input::from_utf8(path), "LIWQYKMRP");
+    advtools::verify("Path", String::from_utf8_lossy(&path), "LIWQYKMRP");
     // Part 2: The total number of steps taken.
     advtools::verify("Steps", steps, 16764);
 }
