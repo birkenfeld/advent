@@ -25,7 +25,7 @@ fn main() {
 
     // Determine the offset for part 2.  Our quick way to solve this part
     // only works with offsets that are in the second half of the input.
-    let offset = input::to_usize(&input::string()[..7]);
+    let offset: usize = input::string()[..7].parse().unwrap();
     assert!(offset >= 5000*n);
 
     // Take all the digits in the 10000x input *following* the offset,

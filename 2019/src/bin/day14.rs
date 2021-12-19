@@ -12,7 +12,7 @@ fn quantity(s: &str) -> (&str, u64) {
 fn main() {
     let mut recipes = HashMap::new();
 
-    for (input, output) in input::rx_lines::<(&str, _)>("(.+) => (.+)") {
+    for (input, output) in input::rx_lines::<(&str, &str)>("(.+) => (.+)") {
         let (prod_el, prod_count) = quantity(output);
         let reagents = input.split(", ").map(quantity).collect_vec();
         recipes.insert(prod_el, (prod_count, reagents));
