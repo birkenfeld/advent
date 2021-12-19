@@ -7,10 +7,9 @@ fn main() {
     let mut dir = Dir::U;
     let mut visited = HashSet::new();
     let mut visited_twice = None;
-    for instr in input::string().split(',') {
-        let instr = instr.trim();
+    for instr in input::string().split(", ") {
         dir = if instr.starts_with('R') { dir.right() } else { dir.left() };
-        for _ in 0..input::to_u32(&instr[1..]) {
+        for _ in 0..instr[1..].parse().unwrap() {
             pos.step(dir);
             if visited_twice.is_none() && !visited.insert(pos) {
                 visited_twice = Some(pos);

@@ -26,7 +26,7 @@ fn process(input: &[u8], target_len: usize) -> String {
     while s.len() % 2 == 0 {
         s = checksum(s);
     }
-    input::from_utf8(s)
+    String::from_utf8_lossy(&s).into()
 }
 
 fn main() {
