@@ -2,7 +2,7 @@ use advtools::prelude::Itertools;
 use advtools::input;
 
 fn main() {
-    let input = input::string().split(',').map(input::to_u8).collect_vec();
+    let input = input::parse::<input::Csv<u8>>().vec;
 
     // Part 1: Preliminary knot hash.
     let marks = advent17::knot_process(&input, 1);

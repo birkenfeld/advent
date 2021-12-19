@@ -30,10 +30,10 @@ fn main() {
     // Parse the dance steps.
     let dance = input::string().split(',').map(|mov| {
         if let Some(n) = mov.strip_prefix('s') {
-            Move::RotLeft(16 - input::to_usize(n))
+            Move::RotLeft(16 - n.parse::<usize>().unwrap())
         } else if let Some(n) = mov.strip_prefix('x') {
             let (pos1, pos2) = n.split('/').collect_tuple().unwrap();
-            Move::Exchange(input::to_usize(pos1), input::to_usize(pos2))
+            Move::Exchange(pos1.parse().unwrap(), pos2.parse().unwrap())
         } else {
             let (prog1, prog2) = mov[1..].split('/')
                 .map(|s| s.chars().next().unwrap() as u8 - b'a')
