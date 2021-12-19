@@ -3,7 +3,7 @@ use advtools::input;
 fn main() {
     // Collect initial age timers.
     let mut ages = vec![0u64; 9];
-    for age in input::string().split(',').map(input::to_usize) {
+    for age in input::parse::<input::Csv<usize>>().vec {
         ages[age] += 1;
     }
 

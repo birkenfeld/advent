@@ -11,7 +11,7 @@ fn min_fuel(pos: &[i32], fuel: impl Fn(i32) -> i32) -> i32 {
 }
 
 fn main() {
-    let pos = input::string().split(',').map(input::to_i32).collect_vec();
+    let pos = input::parse::<input::Csv<i32>>().vec;
 
     advtools::verify("Linear fuel", min_fuel(&pos, |d| d), 336120);
     advtools::verify("Quadratic fuel", min_fuel(&pos, |d| d*(d+1) / 2), 96864235);

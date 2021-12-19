@@ -3,16 +3,15 @@ use advtools::itertools::Itertools;
 use advtools::input;
 
 fn main() {
-    let mut input = input::lines().peekable();
-
     // Read first line with the drawn numbers.
-    let draws = input.next().unwrap().split(',').map(input::to_i32).collect_vec();
+    let draws = input::parse_lines::<input::Csv<i32>>().next().unwrap().vec;
 
     // Read the boards.
+    let mut input = input::parse_lines::<Option<[i32; 5]>>().skip(1).peekable();
     let mut boards = vec![];
     while input.peek().is_some() {
         boards.push(input.by_ref().take(5).map(|line| {
-            line.split_whitespace().map(|i| (input::to_i32(i), false)).collect_vec()
+            line.unwrap().map(|i| (i, false)).to_vec()
         }).flatten().collect_vec());
     }
 
