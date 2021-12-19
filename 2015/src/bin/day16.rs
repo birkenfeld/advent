@@ -21,7 +21,7 @@ fn main() {
     let mut needle_map = HashMap::new();
     for line in NEEDLE.lines() {
         let (name, count) = line.split(": ").collect_tuple().unwrap();
-        let count = input::to_i32(count);
+        let count = count.parse().unwrap();
         needle.insert((name, count));
         needle_map.insert(name, count);
     }

@@ -25,10 +25,10 @@ fn main() {
         increment(&mut pw);
         if is_ok(&pw) {
             if !found {
-                advtools::verify("Next password", input::from_utf8(&pw), "vzbxxyzz");
+                advtools::verify("Next password", String::from_utf8_lossy(&pw), "vzbxxyzz");
                 found = true;
             } else {
-                advtools::verify("Next password", input::from_utf8(&pw), "vzcaabcc");
+                advtools::verify("Next password", String::from_utf8_lossy(&pw), "vzcaabcc");
                 return;
             }
         }
