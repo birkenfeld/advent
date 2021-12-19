@@ -194,6 +194,25 @@ array_impl!(T, 7, ???????);
 array_impl!(T, 8, ????????);
 array_impl!(T, 9, ?????????);
 
+// Parsing comma-separated values
+
+pub struct Csv<T>{
+    pub vec: Vec<T>
+}
+
+impl<T: InputItem> InputItem for Csv<T> {
+    fn read_part(tok: &mut impl Iterator<Item=&'static str>) -> Option<Self> {
+        let mut vec = vec![];
+        while let Some(item) = tok.next() {
+            let mut parts = item.split(',').map(|t| t.trim()).filter(|c| !c.is_empty());
+            if let Some(res) = <Vec<T>>::read_part(&mut parts) {
+                vec.extend(res);
+            }
+        }
+        Some(Csv { vec })
+    }
+}
+
 // Assorted helper functions
 
 macro_rules! impl_to {
