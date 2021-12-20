@@ -67,7 +67,9 @@ fn main() {
     }
     // Define scanner 0 to be at the origin with known orientation.
     let mut positions: HashMap<_, _> = [(0, Vector(0, 0, 0))].into_iter().collect();
+    // Keep track of all beacons relative to the origin.
     let mut all_beacons: HashSet<_> = beacons[0].iter().cloned().collect();
+    let mut non_matching: HashSet<_> = HashSet::new();
 
     // Loop until all scanner locations and orientations are known.
     'outer:
@@ -76,29 +78,32 @@ fn main() {
             // For each unoriented scanner j, go through the known scanners i
             // and try to find an overlap.
             for &i in positions.keys() {
-                // Go through all possible orientations of scanner j in parallel.
-                if let Some((orient, pos)) = ORIENT.par_iter().find_map_any(|&orient| {
-                    let mut counts = HashMap::<_, u32>::new();
-                    // For each pair of beacons, get the relative vector between
-                    // the two.  If the scanner ranges overlap, at least 12
-                    // beacon pairs will have the same relative vector, which will
-                    // also be the position of scanner j (since all known scanners'
-                    // beacon coordinates were made relative to the origin).
-                    iproduct!(&beacons[i], &beacons[j])
-                        .map(|(&bi, &bj)| bi - orient(bj))
-                        .find_map(|rel_vec| {
-                            let count = counts.entry(rel_vec).or_default();
-                            *count += 1;
-                            if *count == 12 { Some((orient, rel_vec)) } else { None }
-                        })
-                }) {
-                    // Found an overlap: convert this scanners' beacon coords to
-                    // scanner 0's coordinate system, record its position, and
-                    // then start again with the rest.
-                    beacons[j].iter_mut().for_each(|p| *p = pos + orient(*p));
-                    all_beacons.extend(beacons[j].iter().cloned());
-                    positions.insert(j, pos);
-                    continue 'outer;
+                // Try each beacon pair only once.
+                if non_matching.insert((i, j)) {
+                    // Go through all possible orientations of scanner j in parallel.
+                    if let Some((orient, pos)) = ORIENT.par_iter().find_map_any(|&orient| {
+                        let mut counts = HashMap::<_, u32>::new();
+                        // For each pair of beacons, get the relative vector between
+                        // the two.  If the scanner ranges overlap, at least 12
+                        // beacon pairs will have the same relative vector, which will
+                        // also be the position of scanner j (since all known scanners'
+                        // beacon coordinates were made relative to the origin).
+                        iproduct!(&beacons[i], &beacons[j])
+                            .map(|(&bi, &bj)| bi - orient(bj))
+                            .find_map(|rel_vec| {
+                                let count = counts.entry(rel_vec).or_default();
+                                *count += 1;
+                                if *count == 12 { Some((orient, rel_vec)) } else { None }
+                            })
+                    }) {
+                        // Found an overlap: convert this scanners' beacon coords to
+                        // scanner 0's coordinate system, record its position, and
+                        // then start again with the rest.
+                        beacons[j].iter_mut().for_each(|p| *p = pos + orient(*p));
+                        all_beacons.extend(beacons[j].iter().cloned());
+                        positions.insert(j, pos);
+                        continue 'outer;
+                    }
                 }
             }
         }
