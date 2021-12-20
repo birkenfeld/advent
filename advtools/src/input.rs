@@ -212,30 +212,3 @@ impl<T: InputItem> InputItem for Csv<T> {
         Some(Csv { vec })
     }
 }
-
-// Assorted helper functions
-
-macro_rules! impl_to {
-    ($fname:ident, $ty:ty) => {
-        pub fn $fname<T: AsRef<str>>(s: T) -> $ty {
-            s.as_ref().parse().unwrap_or_else(
-                |_| panic!("could not parse {:?} into a {}",
-                           s.as_ref(), stringify!($ty)))
-        }
-    };
-}
-
-impl_to!(to_u8, u8);
-impl_to!(to_u16, u16);
-impl_to!(to_u32, u32);
-impl_to!(to_u64, u64);
-impl_to!(to_usize, usize);
-impl_to!(to_i8, i8);
-impl_to!(to_i16, i16);
-impl_to!(to_i32, i32);
-impl_to!(to_i64, i64);
-impl_to!(to_isize, isize);
-
-pub fn from_utf8<T: AsRef<[u8]>>(s: T) -> String {
-    std::str::from_utf8(s.as_ref()).expect("input is not valid UTF8").into()
-}

@@ -1,5 +1,5 @@
 use std::fmt;
-use std::iter::once;
+use std::iter::{once, repeat};
 use std::ops::{Index, IndexMut};
 use num::{Integer, Signed, FromPrimitive, ToPrimitive};
 use itertools::Itertools;
@@ -222,6 +222,21 @@ impl<T> Grid<T> {
             h: self.h,
             v: self.v.iter().map(|v| f(v)).collect()
         }
+    }
+}
+
+impl<T: Clone> Grid<T> {
+    pub fn enlarge(&mut self, n: usize, el: T) {
+        let mut new_v = vec![el.clone(); (self.w + 2*n) * n];
+        for row in self.iter() {
+            new_v.extend(repeat(el.clone()).take(n)
+                         .chain(row.iter().cloned())
+                         .chain(repeat(el.clone()).take(n)));
+        }
+        new_v.extend(repeat(el).take((self.w + 2*n) * n));
+        self.v = new_v;
+        self.w += 2*n;
+        self.h += 2*n;
     }
 }
 
