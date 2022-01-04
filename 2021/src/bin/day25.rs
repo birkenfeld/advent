@@ -46,7 +46,7 @@ fn main() {
         }
 
         if grid == new_grid && !right_moved {
-            advtools::verify("Last step", i, 0);
+            advtools::verify("Last step", i, 557);
             return;
         }
 
