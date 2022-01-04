@@ -20,7 +20,7 @@ fn main() {
 
     for draw in draws {
         // For each number, remove boards with bingos and record the score.
-        boards.retain_mut(|board| {
+        VecExt::retain_mut(&mut boards, |board| {
             // Mark off the drawn number.
             board.iter_mut().for_each(|(n, marked)| if *n == draw { *marked = true; });
             // Check for bingo: either horizontal or vertical at each position.
