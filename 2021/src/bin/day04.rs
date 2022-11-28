@@ -10,9 +10,9 @@ fn main() {
     let mut input = input::parse_lines::<Option<[i32; 5]>>().skip(1).peekable();
     let mut boards = vec![];
     while input.peek().is_some() {
-        boards.push(input.by_ref().take(5).map(|line| {
-            line.unwrap().map(|i| (i, false)).to_vec()
-        }).flatten().collect_vec());
+        boards.push(input.by_ref().take(5).flat_map(|line| {
+            line.unwrap().map(|i| (i, false))
+        }).collect_vec());
     }
 
     let mut first = None;
