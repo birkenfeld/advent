@@ -29,7 +29,7 @@ fn find_multiples(input: &[u8], i: usize, n: usize) -> Option<(usize, u32)> {
     hash_to_hex(hash, &mut sbuf);
     for _ in 0..n {
         let mut hash = Md5::new();
-        hash.update(&sbuf);
+        hash.update(sbuf);
         hash_to_hex(hash, &mut sbuf);
     }
     // find the first triplet, mark in lower 16 bits
