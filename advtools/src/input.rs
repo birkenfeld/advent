@@ -12,7 +12,7 @@ pub fn raw_string() -> &'static str {
         path::Path::new(&env::args_os().next().expect("no executable name")
         ).file_name().expect("no file name?"));
     infile.set_extension("txt");
-    crate::INPUT.with(|k| k.borrow().clone().unwrap_or_else(|| {
+    crate::INPUT.with(|k| k.borrow().unwrap_or_else(|| {
         Box::leak(
             std::fs::read_to_string(&infile).unwrap_or_else(
                 |e| panic!("could not read input file: {}", e)).into()
@@ -203,7 +203,7 @@ pub struct Csv<T>{
 impl<T: InputItem> InputItem for Csv<T> {
     fn read_part(tok: &mut impl Iterator<Item=&'static str>) -> Option<Self> {
         let mut vec = vec![];
-        while let Some(item) = tok.next() {
+        for item in tok {
             let mut parts = item.split(',').map(|t| t.trim()).filter(|c| !c.is_empty());
             if let Some(res) = <Vec<T>>::read_part(&mut parts) {
                 vec.extend(res);

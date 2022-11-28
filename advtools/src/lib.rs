@@ -25,6 +25,7 @@ pub mod prelude {
         odds::slice::rotate_left(t, m);
     }
 
+    #[derive(Default)]
     pub struct Uids<T> {
         map: hashbrown::HashMap<T, usize>
     }
@@ -45,7 +46,7 @@ pub mod prelude {
     {
         type Output = usize;
         fn index(&self, q: &Q) -> &usize {
-            &self.map[&q]
+            &self.map[q]
         }
     }
 

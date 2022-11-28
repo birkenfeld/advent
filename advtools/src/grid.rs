@@ -111,7 +111,7 @@ impl<N: Integer + Copy> std::ops::Mul<N> for Pos<N> {
     }
 }
 
-#[derive(Clone, PartialEq)]
+#[derive(Clone, PartialEq, Eq)]
 pub struct Grid<T> {
     w: usize,
     h: usize,
@@ -220,7 +220,7 @@ impl<T> Grid<T> {
         Grid {
             w: self.w,
             h: self.h,
-            v: self.v.iter().map(|v| f(v)).collect()
+            v: self.v.iter().map(f).collect()
         }
     }
 }
