@@ -1,6 +1,7 @@
 use advtools::input;
 
 fn main() {
+    // Determine the scores for both parts at the same time.
     let scores = input::lines().fold((0, 0), |scores, pairing| {
         let add = match pairing {
             "A X" => (1 + 3, 3 + 0),
