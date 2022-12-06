@@ -1,5 +1,5 @@
-use advtools::itertools::Itertools;
 use advtools::input;
+use advtools::itertools::Itertools;
 
 /// Find the priority of the common element of all given slices.
 fn common_prio(itemlists: &[impl AsRef<[u8]>]) -> i32 {

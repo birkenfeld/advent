@@ -1,5 +1,5 @@
-use advtools::itertools::Itertools;
 use advtools::input;
+use advtools::itertools::Itertools;
 
 fn main() {
     // Split input by empty lines.
