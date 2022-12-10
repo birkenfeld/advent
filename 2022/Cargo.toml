@@ -1,6 +1,6 @@
 [package]
-name = "advent21"
-description = "Solutions for Advent of Code 2021."
+name = "advent22"
+description = "Solutions for Advent of Code 2022."
 version = "0.1.0"
 authors = ["Georg Brandl <georg@python.org>"]
 edition = "2021"
