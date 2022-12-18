@@ -8,6 +8,7 @@ pub use itertools;
 
 pub mod input;
 pub mod grid;
+pub mod vecs;
 
 pub mod prelude {
     pub use std::collections::VecDeque;
