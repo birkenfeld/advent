@@ -1,32 +1,32 @@
 use advtools::input;
 use advtools::prelude::HashSet;
+use advtools::vecs::i32::*;
 
 const LINE: &str = r"(\d+),(\d+),(\d+)";
 
 fn main() {
     // Parse the cube coordinates, keeping track of min/max coordinates.  Use an
     // offset of +/-1 to keep a full layer of air in our "operating area".
-    let (mut minx, mut maxx, mut miny, mut maxy, mut minz, mut maxz) = (100, 0, 100, 0, 100, 0);
-    let cubes = input::rx_lines::<(i32, i32, i32)>(LINE).inspect(|&(x, y, z)| {
-        minx = minx.min(x - 1);
-        maxx = maxx.max(x + 1);
-        miny = miny.min(y - 1);
-        maxy = maxy.max(y + 1);
-        minz = minz.min(z - 1);
-        maxz = maxz.max(z + 1);
+    let mut min = Vec3::splat(i32::MAX);
+    let mut max = Vec3::splat(i32::MIN);
+    let cubes = input::rx_lines::<(i32, i32, i32)>(LINE).map(|(x, y, z)| {
+        let pos = vec3(x, y, z);
+        min = min.zip(pos, |old, new| old.min(new - 1));
+        max = max.zip(pos, |old, new| old.max(new + 1));
+        pos
     }).collect::<HashSet<_>>();
 
     // A simple function to iterate over all of a cube's neighbors that are
     // within the operating area.
-    let for_neighbors = |(x, y, z)| {
-        let mut v = Vec::with_capacity(6);
-        if x > minx { v.push((x - 1, y, z)); }
-        if x < maxx { v.push((x + 1, y, z)); }
-        if y > miny { v.push((x, y - 1, z)); }
-        if y < maxy { v.push((x, y + 1, z)); }
-        if z > minz { v.push((x, y, z - 1)); }
-        if z < maxz { v.push((x, y, z + 1)); }
-        v.into_iter()
+    let for_neighbors = |pt: Vec3| {
+        let mut r = Vec::with_capacity(6);
+        if pt.x > min.x { r.push(pt - X3); }
+        if pt.x < max.x { r.push(pt + X3); }
+        if pt.y > min.y { r.push(pt - Y3); }
+        if pt.y < max.y { r.push(pt + Y3); }
+        if pt.z > min.z { r.push(pt - Z3); }
+        if pt.z < max.z { r.push(pt + Z3); }
+        r.into_iter()
     };
 
     // Part 1: check each cube side for being not another cube.
@@ -39,7 +39,7 @@ fn main() {
     // can reach.
     let mut water = HashSet::new();
     let mut queue = HashSet::new();
-    queue.insert((minx, miny, minz));
+    queue.insert(min);
     while !queue.is_empty() {
         for pt in std::mem::take(&mut queue) {
             water.insert(pt);

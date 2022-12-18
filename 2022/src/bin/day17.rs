@@ -1,16 +1,19 @@
 use advtools::input;
 use advtools::prelude::{HashSet, Itertools};
+use advtools::vecs::i32::*;
 
-const SHAPES: [(&[(i32, i32)], i32); 5] = [
-    (&[(0, 0), (1, 0), (2, 0), (3, 0)], 1),
-    (&[(1, 2), (0, 1), (1, 1), (2, 1), (1, 0)], 3),
-    (&[(2, 2), (2, 1), (0, 0), (1, 0), (2, 0)], 3),
-    (&[(0, 3), (0, 2), (0, 1), (0, 0)], 4),
-    (&[(0, 1), (1, 1), (0, 0), (1, 0)], 2),
+const SHAPES: [(&[Vec2], i32); 5] = [
+    (&[vec2(0, 0), vec2(1, 0), vec2(2, 0), vec2(3, 0)], 1),
+    (&[vec2(1, 2), vec2(0, 1), vec2(1, 1), vec2(2, 1), vec2(1, 0)], 3),
+    (&[vec2(2, 2), vec2(2, 1), vec2(0, 0), vec2(1, 0), vec2(2, 0)], 3),
+    (&[vec2(0, 3), vec2(0, 2), vec2(0, 1), vec2(0, 0)], 4),
+    (&[vec2(0, 1), vec2(1, 1), vec2(0, 0), vec2(1, 0)], 2),
 ];
 
 fn main() {
-    let jet_pattern = input::chars().map(|ch| 2*(ch == '>') as i32 - 1).collect_vec();
+    let jet_pattern = input::chars().map(
+        |ch| vec2(2*(ch == '>') as i32 - 1, 0)
+    ).collect_vec();
     let mut jets = jet_pattern.into_iter().cycle();
 
     let mut height = 0;
@@ -19,27 +22,26 @@ fn main() {
 
     for ((frags, rock_height), nrocks) in SHAPES.iter().cycle().zip(1..) {
         // New rock, starts at the given coordinates.
-        let mut rx = 2;
-        let mut ry = height + 3;
+        let mut pos = vec2(2, height + 3);
         loop {
             // Apply jet movement.
             let jet = jets.next().unwrap();
-            if !frags.iter().map(|(dx, dy)| (rx + jet + dx, ry + dy))
-                            .any(|p| in_place.contains(&p) || p.0 < 0 || p.0 > 6) {
-                rx += jet;
+            if !frags.iter().map(|d| pos + jet + d)
+                            .any(|p| in_place.contains(&p) || p.x < 0 || p.x > 6) {
+                pos += jet;
             }
             // Fall downward.
-            if frags.iter().map(|(dx, dy)| (rx + dx, ry - 1 + dy))
-                           .any(|p| in_place.contains(&p) || p.1 < 0) {
+            if frags.iter().map(|d| pos + d - Y2)
+                           .any(|p| in_place.contains(&p) || p.y < 0) {
                 break;
             }
-            ry -= 1;
+            pos -= Y2;
         }
         // Fix the current rock in place.
-        frags.iter().for_each(|(dx, dy)| { in_place.insert((dx + rx, dy + ry)); });
+        frags.iter().for_each(|d| { in_place.insert(pos + d); });
 
         // Record the height difference.
-        let new_height = height.max(ry + rock_height);
+        let new_height = height.max(pos.y + rock_height);
         hdiffs.push(new_height - height);
         height = new_height;
 

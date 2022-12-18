@@ -1,6 +1,7 @@
 use advtools::input;
 use advtools::rayon::prelude::*;
 use advtools::prelude::{Itertools, HashSet};
+use advtools::vecs::i64::*;
 
 const RX: &str = r"Sensor at x=(\d+), y=(\d+): .*? at x=(-?\d+), y=(-?\d+)";
 
@@ -9,13 +10,13 @@ const MAX_ROW: i64 = 4_000_000;
 
 /// Find the intervals of excluded x positions at the given y row,
 /// adjusting coordinates by the given closure.
-fn run(sensors: &[(i64, i64, i64)], y: i64, fixup_coord: impl Fn(i64) -> i64)
+fn run(sensors: &[(Vec2, i64)], y: i64, fixup_coord: impl Fn(i64) -> i64)
        -> impl Iterator<Item=(i64, i64)> {
-    sensors.iter().filter_map(|&(sx, sy, dist)| {
+    sensors.iter().filter_map(|&(s, dist)| {
         // Determine if the sensor's exclusion area takes part in this row.
-        let n = dist - (sy - y).abs();
+        let n = dist - (s.y - y).abs();
         // If yes, also clip the x positions by the fixup function (for part 2).
-        (n >= 0).then(|| (fixup_coord(sx - n), fixup_coord(sx + n)))
+        (n >= 0).then(|| (fixup_coord(s.x - n), fixup_coord(s.x + n)))
     }).sorted().coalesce(|first, second| {
         // Since the invtervals are now sorted by beginning, coalesce them
         // by merging overlapping intervals.
@@ -30,14 +31,14 @@ fn run(sensors: &[(i64, i64, i64)], y: i64, fixup_coord: impl Fn(i64) -> i64)
 fn main() {
     let mut sensors = vec![];
     let mut pt1_beacons = HashSet::new();
-    for (sx, sy, bx, by) in input::rx_lines::<(i64, i64, i64, i64)>(RX) {
-        let dist = (sx - bx).abs() + (sy - by).abs();
-        sensors.push((sx, sy, dist));
-        if by == PT1_ROW {
-            pt1_beacons.insert((bx, by));
+    for (sensor, beacon) in input::rx_lines::<(Vec2, Vec2)>(RX) {
+        let dist = (sensor - beacon).manhattan();
+        sensors.push((sensor, dist));
+        if beacon.y == PT1_ROW {
+            pt1_beacons.insert(beacon);
         }
     }
-    sensors.sort();
+    sensors.sort_by_key(|v| v.0.x);
 
     // Part 1: find the number of excluded positions.
     // Need to subtract the actual beacons, since they are in the exclusion
