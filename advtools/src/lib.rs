@@ -5,6 +5,7 @@ use std::sync::atomic::{AtomicI32, Ordering};
 
 pub use rayon;
 pub use itertools;
+pub use petgraph;
 
 pub mod input;
 pub mod grid;

@@ -15,4 +15,4 @@ cgmath = "0.18.0"
 rayon = "1.5.1"
 regex = "1.4.2"
 num = "0.4.0"
-odds = { version = "0.4.0", features = ["std-string", "std-vec"] }
+petgraph = "0.6.0"
