@@ -18,13 +18,7 @@ pub mod prelude {
     pub use hashbrown::{HashMap, HashSet};
     pub use itertools::{Itertools, iproduct};
     pub use regex::{Regex, Captures};
-    pub use odds::slice::rotate_left;
     pub use arrayvec::ArrayVec;
-
-    pub fn rotate_right<T>(t: &mut [T], n: usize) {
-        let m = t.len() - n;
-        odds::slice::rotate_left(t, m);
-    }
 
     #[derive(Default)]
     pub struct Uids<T> {
