@@ -1,6 +1,6 @@
 use advtools::input;
 use advtools::prelude::HashMap;
-use petgraph::prelude::{*, NodeIndex as Ix};
+use advtools::petgraph::prelude::{*, NodeIndex as Ix};
 
 const RX: &str = r"Valve (..) has flow rate=(\d+); .* valves? (.*)";
 
@@ -67,7 +67,7 @@ fn main() {
 
     // Calculate the shortest paths between all "useful" nodes.
     for (&n1, (_, costs)) in &mut valves {
-        costs.extend(petgraph::algo::dijkstra(&graph, n1, None, |_| 1));
+        costs.extend(advtools::petgraph::algo::dijkstra(&graph, n1, None, |_| 1));
     }
 
     // Part 1: BFS search for optimal path visiting valves to open.
