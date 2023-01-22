@@ -1,6 +1,6 @@
 use advtools::prelude::HashMap;
 use advtools::input;
-use petgraph::prelude::*;
+use advtools::petgraph::prelude::*;
 
 const FORMAT: &str = r"([a-z]+) \((\d+)\)(?: -> (.+))?";
 

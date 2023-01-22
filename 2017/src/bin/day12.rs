@@ -1,5 +1,5 @@
 use advtools::input;
-use petgraph::prelude::*;
+use advtools::petgraph::prelude::*;
 
 fn main() {
     let mut graph = Graph::new_undirected();
@@ -16,7 +16,7 @@ fn main() {
         }
     }
     // Find strongly connected components, which correspond to "groups".
-    let components = petgraph::algo::kosaraju_scc(&graph);
+    let components = advtools::petgraph::algo::kosaraju_scc(&graph);
     // Part 1: Find group with the program 0.
     for comp in &components {
         if comp.contains(&NodeIndex::new(0)) {

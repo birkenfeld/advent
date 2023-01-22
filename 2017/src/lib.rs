@@ -1,5 +1,3 @@
-use advtools::prelude::{rotate_left, rotate_right};
-
 pub fn knot_process(input: &[u8], n: u32) -> Vec<u8> {
     let mut marks = (0..).take(256).collect::<Vec<_>>();
     let mut skip = 0;
@@ -8,12 +6,12 @@ pub fn knot_process(input: &[u8], n: u32) -> Vec<u8> {
         for &length in input {
             marks[..length as usize].reverse();
             let pos = length.wrapping_add(skip);
-            rotate_left(&mut marks, pos as usize);
+            marks.rotate_left(pos as usize);
             total_rot += pos as usize;
             skip += 1;
         }
     }
-    rotate_right(&mut marks, total_rot % 256);
+    marks.rotate_right(total_rot % 256);
     marks
 }
 

@@ -10,8 +10,7 @@ name = "days"
 harness = false
 
 [dependencies]
-advtools = { version = "0.8.0", path = "../advtools" }
-petgraph = "0.6.0"
+advtools = { version = "0.9.0", path = "../advtools" }
 
 [dev-dependencies]
 criterion = { version = "0.3.3", default-features = false }

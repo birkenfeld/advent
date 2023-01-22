@@ -1,4 +1,4 @@
-use advtools::prelude::{HashSet, Itertools, rotate_left};
+use advtools::prelude::{HashSet, Itertools};
 use advtools::input;
 
 enum Move {
@@ -11,7 +11,7 @@ enum Move {
 fn dance_one(dance: &[Move], dancers: &mut [u8]) {
     for move_ in dance {
         match *move_ {
-            Move::RotLeft(n) => rotate_left(dancers, n),
+            Move::RotLeft(n) => dancers.rotate_left(n),
             Move::Exchange(i, j) => dancers.swap(i, j),
             Move::Partner(a, b) => for place in dancers.iter_mut() {
                 if *place == a { *place = b; }
