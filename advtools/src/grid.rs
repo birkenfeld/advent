@@ -223,6 +223,15 @@ impl<T> Grid<T> {
             v: self.v.iter().map(f).collect()
         }
     }
+
+    pub fn debug(&self, f: impl Fn(&T) -> char) {
+        for row in self.iter() {
+            for item in row {
+                print!("{}", f(item));
+            }
+            println!();
+        }
+    }
 }
 
 impl<T: Clone> Grid<T> {
@@ -339,6 +348,6 @@ impl Dir {
     }
 
     pub fn iter() -> impl Iterator<Item=Self> {
-        [U, D, R, L].iter().cloned()
+        [U, D, R, L].into_iter()
     }
 }
