@@ -1,5 +1,5 @@
 use advtools::input;
-use advtools::prelude::{Itertools, rotate_left, rotate_right};
+use advtools::prelude::Itertools;
 
 const KEY: i64 = 811589153;
 
@@ -19,9 +19,9 @@ fn run(numbers: &[i64], key: i64, iters: usize) -> i64 {
             let new_pos = ((cur_pos as i64) + shift).rem_euclid(cycle) as usize;
             // Do the movement by rotating the element into place.
             if new_pos < cur_pos {
-                rotate_right(&mut current[new_pos..cur_pos+1], 1);
+                current[new_pos..=cur_pos].rotate_right(1);
             } else {
-                rotate_left(&mut current[cur_pos..new_pos+1], 1);
+                current[cur_pos..=new_pos].rotate_left(1);
             }
         }
     }
