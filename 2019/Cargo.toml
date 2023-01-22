@@ -1,0 +1,21 @@
+[package]
+name = "advent19"
+description = "Solutions for Advent of Code 2019."
+version = "0.1.0"
+authors = ["Georg Brandl <georg@python.org>"]
+edition = "2021"
+
+[[bench]]
+name = "days"
+harness = false
+
+[dependencies]
+advtools = { version = "0.9.0", path = "../advtools" }
+num = "0.4.0"
+rand = "0.8.4"
+float-ord = "0.3.2"
+num_enum = "0.5.4"
+bit = "0.1.1"
+
+[dev-dependencies]
+criterion = { version = "0.4.0", default-features = false }
