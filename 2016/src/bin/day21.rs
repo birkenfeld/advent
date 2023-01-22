@@ -1,4 +1,3 @@
-use advtools::prelude::{rotate_left, rotate_right};
 use advtools::input;
 
 const INITIAL: &str = "abcdefgh";
@@ -25,8 +24,8 @@ enum Instr {
 impl Instr {
     fn exec(self, v: &mut [char], forward: bool) {
         match (self, forward) {
-            (Instr::RotL(n), true) | (Instr::RotR(n), false) => rotate_left(v, n),
-            (Instr::RotR(n), true) | (Instr::RotL(n), false) => rotate_right(v, n),
+            (Instr::RotL(n), true) | (Instr::RotR(n), false) => v.rotate_left(n),
+            (Instr::RotR(n), true) | (Instr::RotL(n), false) => v.rotate_right(n),
             (Instr::SwapPos(i1, i2), _) => v.swap(i1, i2),
             (Instr::SwapLetter(c1, c2), _) => for ch in v {
                 if *ch == c1 { *ch = c2; }
@@ -36,7 +35,7 @@ impl Instr {
             (Instr::RotLetter(c), true) => {
                 let mut n = v.iter().position(|&ch| ch == c).unwrap();
                 n += if n >= 4 { 2 } else { 1 };
-                rotate_right(v, n % v.len());
+                v.rotate_right(n % v.len());
             },
             (Instr::RotLetter(c), false) => {
                 let mut n = v.iter().position(|&ch| ch == c).unwrap();
@@ -47,17 +46,17 @@ impl Instr {
                 } else {
                     n = 1 + n/2;
                 }
-                rotate_left(v, n);
+                v.rotate_left(n);
             }
             (Instr::Move(i1, i2), true) => if i1 < i2 {
-                rotate_left(&mut v[i1..=i2], 1);
+                v[i1..=i2].rotate_left(1);
             } else {
-                rotate_right(&mut v[i2..=i1], 1);
+                v[i2..=i1].rotate_right(1);
             },
             (Instr::Move(i1, i2), false) => if i1 < i2 {
-                rotate_right(&mut v[i1..=i2], 1);
+                v[i1..=i2].rotate_right(1);
             } else {
-                rotate_left(&mut v[i2..=i1], 1);
+                v[i2..=i1].rotate_left(1);
             },
         }
     }
