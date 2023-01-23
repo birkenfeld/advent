@@ -8,9 +8,14 @@ pub fn set(s: &str) {
 }
 
 pub fn raw_string() -> &'static str {
+    let mut args = env::args_os();
     let mut infile = path::Path::new("input").join(
-        path::Path::new(&env::args_os().next().expect("no executable name")
+        path::Path::new(&args.next().expect("no executable name")
         ).file_name().expect("no file name?"));
+    // Allow giving explicit input file name on the command line
+    if let Some(arg) = args.next() {
+        infile = path::Path::new(&arg).into();
+    }
     infile.set_extension("txt");
     crate::INPUT.with(|k| k.borrow().unwrap_or_else(|| {
         Box::leak(

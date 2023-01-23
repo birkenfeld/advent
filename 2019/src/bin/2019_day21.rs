@@ -1,6 +1,6 @@
 use std::convert::TryFrom;
 use advtools::input;
-use advent19::Machine;
+use advent_2019::Machine;
 use num_enum::TryFromPrimitive;
 use rand::{Rng, thread_rng};
 

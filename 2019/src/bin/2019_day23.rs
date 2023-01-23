@@ -1,6 +1,6 @@
 use advtools::prelude::Itertools;
 use advtools::input;
-use advent19::{Machine, IO};
+use advent_2019::{Machine, IO};
 
 const N: i64 = 50;
 

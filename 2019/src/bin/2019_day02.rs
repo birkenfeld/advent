@@ -1,6 +1,6 @@
 use advtools::input;
 use advtools::rayon::prelude::*;
-use advent19::Machine;
+use advent_2019::Machine;
 
 const LANDING: i64 = 19690720;
 

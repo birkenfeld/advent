@@ -1,5 +1,5 @@
 use advtools::input;
-use advent19::Machine;
+use advent_2019::Machine;
 
 const TESTMODE: i64 = 1;
 const SENSORMODE: i64 = 2;

@@ -1,5 +1,5 @@
 use advtools::input;
-use advent16::Machine;
+use advent_2016::Machine;
 
 fn main() {
     let mut machine = Machine::new(input::parse_lines());

@@ -27,7 +27,7 @@ fn main() {
     // Build up the disk from 128 rows of 128 cells.  We represent each cell as
     // a bit in a row with type u128.
     let mut disk = (0..128).map(|row| {
-        let hash = advent17::knot_hash(&format!("{}-{}", input::string(), row));
+        let hash = advent_2017::knot_hash(&format!("{}-{}", input::string(), row));
         hash.into_iter().rev().enumerate().map(|(ofs, val)| (val as u128) << (ofs*8)).sum::<u128>()
     }).collect_vec();
     // Part 1: Count the number of one-bits.

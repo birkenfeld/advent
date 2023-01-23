@@ -1,5 +1,5 @@
 use advtools::input;
-use advent19::Machine;
+use advent_2019::Machine;
 
 const AIR_COND: i64 = 1;
 const RADIATOR: i64 = 5;

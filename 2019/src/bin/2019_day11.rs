@@ -2,7 +2,7 @@ use std::fmt::Write;
 use advtools::prelude::{Itertools, HashMap};
 use advtools::input;
 use advtools::grid::{Pos, Dir};
-use advent19::Machine;
+use advent_2019::Machine;
 
 #[derive(Clone, PartialEq)]
 enum Color { Black, White }

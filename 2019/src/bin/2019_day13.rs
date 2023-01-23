@@ -1,6 +1,6 @@
 use advtools::prelude::Itertools;
 use advtools::input;
-use advent19::Machine;
+use advent_2019::Machine;
 
 const BLOCK: i64 = 2;
 const PADDLE: i64 = 3;

@@ -1,7 +1,7 @@
 use advtools::prelude::{Itertools, HashSet};
 use advtools::input;
 use advtools::grid::{Grid, Pos, Dir};
-use advent19::Machine;
+use advent_2019::Machine;
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
 enum Instr { Fwd(usize), L, R, A, B, C }

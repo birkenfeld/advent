@@ -1,12 +1,7 @@
-SHELL = /bin/bash
-MODE = release
-ifeq ($(MODE),release)
-	MODEARG = --release
-endif
+.PHONY: all
 
 all:
-	@cargo build $(MODEARG)
-	@for s in src/bin/day*; do t=`basename $$s .rs`; echo -e '\n\x1b[01m'$$t'\x1b[0m'; target/$(MODE)/$$t || exit 1; done
+	@$(MAKE) --no-print-directory -C .. `basename $$PWD`
+
 time:
-	@cargo build $(MODEARG)
-	@for s in src/bin/day*; do t=`basename $$s .rs`; echo -e '\n\x1b[01m'$$t'\x1b[0m'; perf stat --null target/$(MODE)/$$t 2>&1 | grep elapsed; done
+	@$(MAKE) --no-print-directory -C .. time-`basename $$PWD`

@@ -1,16 +1,16 @@
 [package]
-name = "advent17"
-description = "Solutions for Advent of Code 2017."
-version = "0.1.0"
-authors = ["Georg Brandl <georg@python.org>"]
-edition = "2021"
+name = "advent-2017"
+description.workspace = true
+version.workspace = true
+authors.workspace = true
+edition.workspace = true
 
 [[bench]]
 name = "days"
 harness = false
 
 [dependencies]
-advtools = { version = "0.9.0", path = "../advtools" }
+advtools.workspace = true
 
 [dev-dependencies]
 criterion = { version = "0.3.3", default-features = false }

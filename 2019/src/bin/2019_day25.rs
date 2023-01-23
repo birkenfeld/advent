@@ -1,6 +1,6 @@
 use advtools::prelude::{Itertools, HashMap};
 use advtools::input;
-use advent19::{Machine, IO};
+use advent_2019::{Machine, IO};
 
 fn read_out(machine: &mut Machine) -> Vec<String> {
     let mut out = String::new();

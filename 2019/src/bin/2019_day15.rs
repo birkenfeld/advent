@@ -1,7 +1,7 @@
 use advtools::prelude::HashSet;
 use advtools::input;
 use advtools::grid::Pos;
-use advent19::Machine;
+use advent_2019::Machine;
 
 const EMPTY: i64 = 1;
 const GOAL: i64 = 2;

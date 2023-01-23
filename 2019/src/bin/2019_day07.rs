@@ -1,6 +1,6 @@
 use advtools::prelude::Itertools;
 use advtools::input;
-use advent19::Machine;
+use advent_2019::Machine;
 
 fn main() {
     let code = Machine::parse(input::string());

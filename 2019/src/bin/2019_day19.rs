@@ -1,6 +1,6 @@
 use advtools::prelude::{Itertools, HashMap, binary_search};
 use advtools::input;
-use advent19::Machine;
+use advent_2019::Machine;
 
 fn main() {
     let code = Machine::parse(input::string());
