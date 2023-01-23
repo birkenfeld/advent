@@ -1,10 +1,14 @@
-const ROW: usize = 2981;
-const COL: usize = 3075;
+use advtools::input;
+
 const FIRST: u64 = 20_151_125;
 const FACTOR: u64 = 252_533;
 const DIVISOR: u64 = 33_554_393;
 
+const RX: &str = r".* at row (\d+), column (\d+).";
+
 fn main() {
+    let (target_row, target_col) = input::rx_parse::<(u64, u64)>(RX);
+
     let mut col = 1;
     let mut row = 1;
     let mut code = FIRST;
@@ -17,7 +21,7 @@ fn main() {
             col += 1;
         }
         code = (code * FACTOR) % DIVISOR;
-        if row == ROW && col == COL {
+        if row == target_row && col == target_col {
             advtools::verify("Code at target", code, 9132360);
             return;
         }

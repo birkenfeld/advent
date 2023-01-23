@@ -1,34 +1,36 @@
-use std::{any, env, path::Path};
+use std::{any, path::Path};
 use regex::Regex;
 
 // Main input API
 
 pub fn set(s: &str) {
-    crate::INPUT.with(|k| *k.borrow_mut() = Some(Box::leak(s.into())));
+    crate::Timer::start();
+    *crate::INPUT.lock().unwrap() = Some(Box::leak(s.into()));
 }
 
 pub fn raw_string() -> &'static str {
-    let mut args = env::args_os();
-    let exe = args.next().expect("no executable name");
-    let exe = Path::new(&exe).file_name().expect("no file name?");
-    let exe = exe.to_str().expect("not utf-8");
-    // Try directly here
-    let mut infile = Path::new("input").join(&exe);
-    // Try in yearly subdirectory
-    if !infile.is_file() {
-        infile = Path::new(&exe[..4]).join("input").join(&exe);
-    }
-    // Allow giving explicit input file name on the command line
-    if let Some(arg) = args.next() {
-        infile = Path::new(&arg).into();
-    }
-    infile.set_extension("txt");
-    crate::INPUT.with(|k| k.borrow().unwrap_or_else(|| {
+    crate::INPUT.lock().unwrap().get_or_insert_with(|| {
+        let mut args = std::env::args_os();
+        let exe = args.next().expect("no executable name");
+        let exe = Path::new(&exe).file_name().expect("no file name?");
+        let exe = exe.to_str().expect("not utf-8");
+        // Try directly here
+        let mut infile = Path::new("input").join(&exe);
+        // Try in yearly subdirectory
+        if !infile.is_file() {
+            infile = Path::new(&exe[..4]).join("input").join(&exe);
+        }
+        // Allow giving explicit input file name on the command line
+        if let Some(arg) = args.next() {
+            infile = Path::new(&arg).into();
+        }
+        infile.set_extension("txt");
+        crate::Timer::start();
         Box::leak(
             std::fs::read_to_string(&infile).unwrap_or_else(
                 |e| panic!("could not read input file: {}", e)).into()
         )
-    }))
+    })
 }
 
 pub fn string() -> &'static str {

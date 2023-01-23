@@ -1,7 +1,7 @@
 use std::cell::RefCell;
-use std::path::Path;
 use std::fmt::Display;
-use std::sync::atomic::{AtomicI32, Ordering};
+use std::sync::{Mutex, atomic::{AtomicI32, Ordering}};
+use std::time::Instant;
 
 pub use rayon;
 pub use itertools;
@@ -64,21 +64,28 @@ pub mod prelude {
     }
 }
 
-thread_local! {
-    static INPUT: RefCell<Option<&'static str>> = Default::default();
+static INPUT: Mutex<Option<&'static str>> = Mutex::new(None);
+
+
+// Some magic to automatically print elapsed time on exit.
+
+struct Timer(Instant);
+
+thread_local!(static TIMER: RefCell<Option<Timer>> = RefCell::new(None));
+
+impl Timer {
+    fn start() {
+        TIMER.with(|k| *k.borrow_mut() = Some(Timer(Instant::now())));
+    }
+}
+
+impl Drop for Timer {
+    fn drop(&mut self) {
+        println!("   Elapsed: {:?}", self.0.elapsed());
+    }
 }
 
 static OUT_CONTROL: AtomicI32 = AtomicI32::new(1);
-
-pub fn bench_mode(path: impl AsRef<Path>) {
-    OUT_CONTROL.store(0, Ordering::SeqCst);
-    INPUT.with(|k| *k.borrow_mut() = Some(
-        Box::leak(
-            std::fs::read_to_string(path.as_ref()).unwrap_or_else(
-                |e| panic!("could not read input file: {}", e)).into()
-        )
-    ));
-}
 
 pub fn print(part: &str, value: impl Display) {
     if OUT_CONTROL.load(Ordering::SeqCst) > 0 {
