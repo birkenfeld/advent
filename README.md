@@ -20,7 +20,7 @@ For tasks that require nontrivial datastructures or algorithms, I try to find
 and use a third-party crate to show off the ease of using Rust's crates
 infrastructures, e.g. `petgraph`.
 
-### Building/benchmarking
+### Building
 
 All code is contained in a single Cargo workspace, with a different binary
 target for each day.  Solutions are printed to stdout.

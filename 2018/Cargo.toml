@@ -5,10 +5,6 @@ version.workspace = true
 authors.workspace = true
 edition.workspace = true
 
-[[bench]]
-name = "days"
-harness = false
-
 [dependencies]
 advtools.workspace = true
 strum = "0.21.0"
