@@ -18,3 +18,7 @@ edition = "2021"
 
 [workspace.dependencies]
 advtools = { version = "0.9.0", path = "advtools" }
+
+[profile.lto]
+inherits = "release"
+lto = "thin"
