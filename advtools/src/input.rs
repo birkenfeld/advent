@@ -1,4 +1,4 @@
-use std::{any, env, path};
+use std::{any, env, path::Path};
 use regex::Regex;
 
 // Main input API
@@ -9,12 +9,18 @@ pub fn set(s: &str) {
 
 pub fn raw_string() -> &'static str {
     let mut args = env::args_os();
-    let mut infile = path::Path::new("input").join(
-        path::Path::new(&args.next().expect("no executable name")
-        ).file_name().expect("no file name?"));
+    let exe = args.next().expect("no executable name");
+    let exe = Path::new(&exe).file_name().expect("no file name?");
+    let exe = exe.to_str().expect("not utf-8");
+    // Try directly here
+    let mut infile = Path::new("input").join(&exe);
+    // Try in yearly subdirectory
+    if !infile.is_file() {
+        infile = Path::new(&exe[..4]).join("input").join(&exe);
+    }
     // Allow giving explicit input file name on the command line
     if let Some(arg) = args.next() {
-        infile = path::Path::new(&arg).into();
+        infile = Path::new(&arg).into();
     }
     infile.set_extension("txt");
     crate::INPUT.with(|k| k.borrow().unwrap_or_else(|| {

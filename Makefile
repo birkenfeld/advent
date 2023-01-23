@@ -13,7 +13,7 @@ build:
 	@for source in $@/src/bin/$@_day*; do \
 	     day=`basename $$source .rs`; \
 	     echo -e '\n\x1b[01m'$$day'\x1b[0m'; \
-	     target/release/$$day $@/input/$$day || exit 1; \
+	     target/release/$$day || exit 1; \
 	 done
 
 time-%:
@@ -21,5 +21,5 @@ time-%:
 	@for source in $*/src/bin/$*_day*; do \
 	     day=`basename $$source .rs`; \
 	     echo -e '\n\x1b[01m'$$t'\x1b[0m'; \
-	     perf stat --null target/release/$$t $*/input/$$t 2>&1 | grep elapsed; \
+	     perf stat --null target/release/$$t 2>&1 | grep elapsed; \
 	 done
