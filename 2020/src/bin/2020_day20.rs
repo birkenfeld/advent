@@ -42,7 +42,7 @@ fn edges_match(tile1: &Tile, dir: Dir, tile2: &Tile, t2: Trans) -> bool {
 
 fn place_neighbors(tiles: &mut Vec<Tile>, grid: &mut Grid<Option<Tile>>, pos: Pos) {
     'directions:
-    for dir in Dir::iter() {
+    for dir in Dir::all() {
         let new_pos = pos + dir;
         // If the grid in the given orientation is still empty, try to find some tile
         // which in some orientation fits the respective edge of cur_tile

@@ -77,7 +77,7 @@ fn next_states(input: &[u8], states: Vec<State>) -> Vec<State> {
                 hash.update(state.dir(i).as_bytes());
             }
             let dirs = eval_hash(hash);
-            for (dir, ok) in [U, D, L, R].iter().cloned().zip(&dirs) {
+            for (dir, ok) in [U, D, L, R].into_iter().zip(&dirs) {
                 match (*ok, state.pos(), dir) {
                     (false, _, _) |
                     (_, 0, U)  | (_, 1, U)  | (_, 2, U)  | (_, 3, U) |

@@ -43,7 +43,7 @@ fn main() {
     // Part 1: determine the sum of "alignment parameters" which are intersections
     // in the scaffold, i.e. all neighbors are present.
     let alignment = grid.positions().filter(|&xy| {
-        Dir::iter().all(|d| neighbor(&grid, xy, d).is_some())
+        Dir::all().all(|d| neighbor(&grid, xy, d).is_some())
     }).map(|pos| pos.x * pos.y).sum::<usize>();
     advtools::verify("Alignment param sum", alignment, 5940);
 

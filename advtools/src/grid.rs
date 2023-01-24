@@ -209,7 +209,7 @@ impl<T> Grid<T> {
     {
         let (w, h) = (N::from_usize(self.w).expect("invalid width"),
                       N::from_usize(self.h).expect("invalid height"));
-        Dir::iter().flat_map(move |d| pos.maybe_to(d, w, h))
+        Dir::all().flat_map(move |d| pos.maybe_to(d, w, h))
     }
 
     /// Iterate over all orthogonal and diagonal neighbors of the cell.
@@ -218,8 +218,8 @@ impl<T> Grid<T> {
     {
         let (w, h) = (N::from_usize(self.w).expect("invalid width"),
                       N::from_usize(self.h).expect("invalid height"));
-        Dir::iter().flat_map(move |d| pos.maybe_to(d, w, h)).chain(
-            Dir::iter().flat_map(move |d| pos.maybe_to(d, w, h)
+        Dir::all().flat_map(move |d| pos.maybe_to(d, w, h)).chain(
+            Dir::all().flat_map(move |d| pos.maybe_to(d, w, h)
                 .and_then(|p| p.maybe_to(d.left(), w, h)))
         )
     }
@@ -341,7 +341,7 @@ impl Dir {
         }
     }
 
-    pub fn iter() -> impl Iterator<Item=Self> {
+    pub fn all() -> impl Iterator<Item=Self> {
         [U, D, R, L].into_iter()
     }
 }
