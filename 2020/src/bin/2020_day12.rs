@@ -7,11 +7,11 @@ fn main() {
 
     for line in input::rx_lines(r"(.)(\d+)") {
         match line {
-            ("F", n) => for _ in 0..n { pos.step(dir); }
-            ("N", n) => for _ in 0..n { pos.step_up(); }
-            ("S", n) => for _ in 0..n { pos.step_down(); }
-            ("E", n) => for _ in 0..n { pos.step_right(); }
-            ("W", n) => for _ in 0..n { pos.step_left(); }
+            ("F", n) => for _ in 0..n { pos = pos.to(dir); }
+            ("N", n) => for _ in 0..n { pos = pos.up(); }
+            ("S", n) => for _ in 0..n { pos = pos.down(); }
+            ("E", n) => for _ in 0..n { pos = pos.right(); }
+            ("W", n) => for _ in 0..n { pos = pos.left(); }
             ("L", 90) | ("R", 270) => dir = dir.left(),
             ("R", 90) | ("L", 270) => dir = dir.right(),
             ("R", 180) | ("L", 180) => dir = dir.flip(),
@@ -27,10 +27,10 @@ fn main() {
     for line in input::rx_lines(r"(.)(\d+)") {
         match line {
             ("F", n) => pos += wpos * n,
-            ("N", n) => for _ in 0..n { wpos.step_up(); }
-            ("S", n) => for _ in 0..n { wpos.step_down(); }
-            ("E", n) => for _ in 0..n { wpos.step_right(); }
-            ("W", n) => for _ in 0..n { wpos.step_left(); }
+            ("N", n) => for _ in 0..n { wpos = wpos.up(); }
+            ("S", n) => for _ in 0..n { wpos = wpos.down(); }
+            ("E", n) => for _ in 0..n { wpos = wpos.right(); }
+            ("W", n) => for _ in 0..n { wpos = wpos.left(); }
             ("L", 90) | ("R", 270) => wpos = Pos(wpos.y, -wpos.x),
             ("R", 90) | ("L", 270) => wpos = Pos(-wpos.y, wpos.x),
             ("R", 180) | ("L", 180) => wpos = Pos(-wpos.x, -wpos.y),

@@ -60,7 +60,7 @@ fn run(size: i32, moves: &[Move], sides: &[Side]) -> i32 {
             Move::Turn(false) => dir = dir.right(),
             Move::Go(n) => for _ in 0..n {
                 // Find the next location, first try to step within the current side.
-                let step = pos.maybe_step(dir, size, size);
+                let step = pos.maybe_to(dir, size, size);
                 let (new_side, new_dir, new_pos) = if let Some(step_pos) = step {
                     // Can stay on this side.
                     (side, dir, step_pos)

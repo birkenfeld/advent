@@ -7,7 +7,7 @@ type Coords = HashSet<Pos>;
 fn walk(directions: impl Iterator<Item=char>, mut set: Coords) -> Coords {
     set.insert(Pos(0, 0));
     set.extend(directions.scan(Pos(0, 0), |xy, ch| {
-        Some(*xy.step(Dir::from_char(ch)))
+        Some({ *xy = xy.to(Dir::from_char(ch)); *xy })
     }));
     set
 }

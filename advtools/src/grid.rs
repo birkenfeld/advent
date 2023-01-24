@@ -4,12 +4,18 @@ use std::ops::{Index, IndexMut};
 use num::{Integer, Signed, FromPrimitive, ToPrimitive};
 use itertools::Itertools;
 
+/// An (x,y) position within a grid.
+///
+/// The `N` type can be selected freely depending on need; overflow must be
+/// considered carefully if it is unsigned.
 #[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct Pos<N = i32> {
     pub y: N,
     pub x: N,
 }
 
+/// Helper constructor to allow `Pos(x, y)` although `Pos` is not a tuple
+/// struct.
 #[allow(non_snake_case)]
 pub const fn Pos<N>(x: N, y: N) -> Pos<N> {
     Pos { x, y }
@@ -41,28 +47,7 @@ impl<N: Integer + Copy> Pos<N> {
         }
     }
 
-    pub fn step_left(&mut self) {
-        *self = self.left();
-    }
-
-    pub fn step_right(&mut self) {
-        *self = self.right();
-    }
-
-    pub fn step_up(&mut self) {
-        *self = self.up();
-    }
-
-    pub fn step_down(&mut self) {
-        *self = self.down();
-    }
-
-    pub fn step(&mut self, dir: Dir) -> &mut Self {
-        *self = self.to(dir);
-        self
-    }
-
-    pub fn maybe_step(&self, dir: Dir, w: N, h: N) -> Option<Self> {
+    pub fn maybe_to(&self, dir: Dir, w: N, h: N) -> Option<Self> {
         match dir {
             U => if self.y > N::zero()  { Some(self.up()) } else { None },
             D => if self.y < h-N::one() { Some(self.down()) } else { None },
@@ -211,7 +196,7 @@ impl<T> Grid<T> {
     {
         let (w, h) = (N::from_usize(self.w).expect("invalid width"),
                       N::from_usize(self.h).expect("invalid height"));
-        Dir::iter().flat_map(move |d| pos.maybe_step(d, w, h))
+        Dir::iter().flat_map(move |d| pos.maybe_to(d, w, h))
     }
 
     /// Iterate over all orthogonal and diagonal neighbors of the cell.
@@ -220,9 +205,9 @@ impl<T> Grid<T> {
     {
         let (w, h) = (N::from_usize(self.w).expect("invalid width"),
                       N::from_usize(self.h).expect("invalid height"));
-        Dir::iter().flat_map(move |d| pos.maybe_step(d, w, h)).chain(
-            Dir::iter().flat_map(move |d| pos.maybe_step(d, w, h)
-                .and_then(|p| p.maybe_step(d.left(), w, h)))
+        Dir::iter().flat_map(move |d| pos.maybe_to(d, w, h)).chain(
+            Dir::iter().flat_map(move |d| pos.maybe_to(d, w, h)
+                .and_then(|p| p.maybe_to(d.left(), w, h)))
         )
     }
 
@@ -295,6 +280,7 @@ impl<T> IndexMut<(usize, usize)> for Grid<T> {
         &mut self[Pos(x, y)]
     }
 }
+
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
 pub enum Dir {

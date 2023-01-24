@@ -12,7 +12,7 @@ fn run(n: usize) -> usize {
     for (dir, ndir) in input::rx_lines::<(char, i32)>(r"(.) (\d+)") {
         for _ in 0..ndir {
             // The first knot steps in the given direction.
-            pos[0].step(Dir::from_char(dir));
+            pos[0] = pos[0].to(Dir::from_char(dir));
             for i in 1..n {
                 let deltax = pos[i-1].x - pos[i].x;
                 let deltay = pos[i-1].y - pos[i].y;

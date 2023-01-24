@@ -27,7 +27,7 @@ fn main() {
             c => path.push(c),
         }
         steps += 1;
-        pos.step(dir);
+        pos = pos.to(dir);
     }
 
     // Part 1: The letters in order of the path.

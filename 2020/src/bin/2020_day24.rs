@@ -11,15 +11,15 @@ fn main() {
         let mut chars = line.chars();
         while let Some(ch) = chars.next() {
             match ch {
-                'e' => pos.step_right(),
-                'w' => pos.step_left(),
+                'e' => pos = pos.right(),
+                'w' => pos = pos.left(),
                 's' => {
-                    pos.step_down();
-                    if chars.next() == Some('w') { pos.step_left() }
+                    pos = pos.down();
+                    if chars.next() == Some('w') { pos = pos.left(); }
                 }
                 'n' => {
-                    pos.step_up();
-                    if chars.next() == Some('e') { pos.step_right() }
+                    pos = pos.up();
+                    if chars.next() == Some('e') { pos = pos.right(); }
                 }
                 _ => unreachable!()
             }

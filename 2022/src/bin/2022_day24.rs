@@ -65,7 +65,7 @@ fn bfs(grids: &[Grid<u8>], start_step: usize, start_pos: Pos, target_pos: Pos) -
             if pos == target_pos {
                 return step;
             }
-            for new_pos in Dir::iter().filter_map(|d| pos.maybe_step(d, w, h)).chain(Some(pos)) {
+            for new_pos in Dir::iter().filter_map(|d| pos.maybe_to(d, w, h)).chain(Some(pos)) {
                 if grids[(step + 1) % ngrids][new_pos] == 0 {
                     queue.insert(new_pos);
                 }

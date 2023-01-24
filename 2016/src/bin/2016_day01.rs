@@ -10,7 +10,7 @@ fn main() {
     for instr in input::string().split(", ") {
         dir = if instr.starts_with('R') { dir.right() } else { dir.left() };
         for _ in 0..instr[1..].parse().unwrap() {
-            pos.step(dir);
+            pos = pos.to(dir);
             if visited_twice.is_none() && !visited.insert(pos) {
                 visited_twice = Some(pos);
             }

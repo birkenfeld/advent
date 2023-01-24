@@ -29,7 +29,7 @@ fn run<F>(n: u32, mut grid: Grid<State>, modify: F) -> u32 where F: Fn(State) ->
             infections += 1;
         }
         grid[pos] = new_state;
-        pos.step(dir);
+        pos = pos.to(dir);
     }
     infections
 }

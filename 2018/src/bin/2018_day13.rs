@@ -36,7 +36,7 @@ fn main() {
 
             // Remove cart from occupation map, and move it along one square.
             map[cart.pos].1 = 0;
-            cart.pos.step(cart.dir);
+            cart.pos = cart.pos.to(cart.dir);
             // If we have a cart already on the new square, a collision has
             // occurred, and we need to remove both carts.
             let (track, cur_cart) = &mut map[cart.pos];

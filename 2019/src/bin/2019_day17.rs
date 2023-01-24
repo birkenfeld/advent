@@ -7,7 +7,7 @@ use advent_2019::Machine;
 enum Instr { Fwd(usize), L, R, A, B, C }
 
 fn neighbor(grid: &Grid<bool>, pos: Pos<usize>, dir: Dir) -> Option<Pos<usize>> {
-    pos.maybe_step(dir, grid.width(), grid.height()).filter(|&p| grid[p])
+    pos.maybe_to(dir, grid.width(), grid.height()).filter(|&p| grid[p])
 }
 
 fn seq_len(seq: &[Instr]) -> usize {

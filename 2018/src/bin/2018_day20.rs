@@ -20,10 +20,10 @@ fn follow<'p>(grid: &mut Grid<Doors>, seen: &mut HashSet<(Pos, &'p str)>,
             // End of the full path, there's nowhere left to go.
             '$' => return vec![],
             // We have a direction where there must be a door.
-            'N' => { pos.step_up(); grid[pos].down = true }
-            'S' => { grid[pos].down = true; pos.step_down() }
-            'W' => { pos.step_left(); grid[pos].right = true }
-            'E' => { grid[pos].right = true; pos.step_right() }
+            'N' => { pos = pos.up(); grid[pos].down = true }
+            'S' => { grid[pos].down = true; pos = pos.down(); }
+            'W' => { pos = pos.left(); grid[pos].right = true }
+            'E' => { grid[pos].right = true; pos = pos.right(); }
             // Hit a branch.
             '(' => {
                 // Determine all of the branching sub-paths.  Need to keep track of the
