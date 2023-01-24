@@ -96,6 +96,19 @@ impl<N: Integer + Copy> std::ops::Mul<N> for Pos<N> {
     }
 }
 
+impl<N: Integer + Copy> std::ops::Add<Dir> for Pos<N> {
+    type Output = Self;
+    fn add(self, dir: Dir) -> Pos<N> {
+        self.to(dir)
+    }
+}
+
+impl<N: Integer + Copy> std::ops::AddAssign<Dir> for Pos<N> {
+    fn add_assign(&mut self, dir: Dir) {
+        *self = self.to(dir);
+    }
+}
+
 #[derive(Clone, PartialEq, Eq)]
 pub struct Grid<T> {
     w: usize,
@@ -282,7 +295,7 @@ impl<T> IndexMut<(usize, usize)> for Grid<T> {
 }
 
 
-#[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub enum Dir {
     U,
     D,

@@ -25,7 +25,7 @@ fn main() {
             tiles.insert(pos, paint);
             // Determine direction, turn and advance one step.
             dir = if machine.next().unwrap() == 0 { dir.left() } else { dir.right() };
-            pos = pos.to(dir);
+            pos += dir;
         }
     };
 

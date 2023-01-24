@@ -1,6 +1,6 @@
 use advtools::prelude::{HashSet, Itertools};
 use advtools::input;
-use advtools::grid::{Grid, Pos};
+use advtools::grid::{Grid, Pos, Dir};
 use std::cell::Cell;
 
 #[derive(PartialEq, Clone, Copy)]
@@ -29,12 +29,12 @@ impl Player {
 }
 
 
-const DIRECTIONS: [Pos; 4] = [Pos(0, -1), Pos(-1, 0), Pos(1, 0), Pos(0, 1)];
+const DIRECTIONS: [Dir; 4] = [Dir::U, Dir::L, Dir::R, Dir::D];
 
 // Find targets for a player using BFS.  We return a list of candidates, sorted
 // by reading order, and also the direction for the first step if that target is
 // selected.
-fn find_targets(player: &Player, map: &Grid<Square>) -> (i32, Vec<(Pos, Pos)>) {
+fn find_targets(player: &Player, map: &Grid<Square>) -> (i32, Vec<(Pos, Dir)>) {
     let mut positions = vec![(1, None, player.loc.get())];
     let mut seen = HashSet::with_capacity(1000);
     seen.insert(player.loc.get());
@@ -45,7 +45,7 @@ fn find_targets(player: &Player, map: &Grid<Square>) -> (i32, Vec<(Pos, Pos)>) {
         let seen_count = seen.len();
         let mut new_positions = vec![];
         for (steps, first, pos) in positions {
-            for &delta in &DIRECTIONS {
+            for delta in DIRECTIONS {
                 let new_pos = pos + delta;
                 let first = first.or(Some(delta));
                 if seen.insert(new_pos) {

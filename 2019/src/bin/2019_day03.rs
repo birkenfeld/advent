@@ -10,7 +10,7 @@ fn follow<F: FnMut(Pos, i32)>(instr: &str, mut visit: F) {
         let dir = Dir::from_str(&step[..1]);
         for _ in 0..step[1..].parse().unwrap() {
             s += 1;
-            pos = pos.to(dir);
+            pos += dir;
             visit(pos, s);
         }
     }
