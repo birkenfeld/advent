@@ -118,9 +118,8 @@ fn main() {
                 continue;
             }
             // We have a side! Parse its wall/open cells.
-            let grid = Grid::from_iter(
-                size,
-                chunk.iter().flat_map(|line| {
+            let grid = Grid::new(
+                chunk.iter().map(|line| {
                     // Take only the relevant part out of each line.
                     line.iter().map(|&b| b == b'.').skip(x*size).take(size)
                 })

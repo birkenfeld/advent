@@ -133,66 +133,27 @@ impl<T> Grid<T> {
         Self { w, h: v.len() / w, v }
     }
 
-    /// Construct a new grid from an iterator of cells, with the given width.
-    pub fn from_iter(w: usize, it: impl IntoIterator<Item=T>) -> Self {
-        let v = it.into_iter().collect_vec();
-        assert_eq!(v.len() % w, 0);
-        Self { w, h: v.len() / w, v }
-    }
-
+    /// Return the total number of cells.
     pub fn len(&self) -> usize {
         self.w * self.h
     }
 
+    /// Return the width of the grid.
     pub fn width(&self) -> usize {
         self.w
     }
 
+    /// Return the height of the grid.
     pub fn height(&self) -> usize {
         self.h
     }
 
-    pub fn center<N>(&self) -> Pos<N>
-    where N: Integer + Copy + FromPrimitive + ToPrimitive
-    {
-        Pos(N::from_usize(self.w / 2).unwrap(), N::from_usize(self.h / 2).unwrap())
-    }
-
-    pub fn positions<N>(&self) -> impl Iterator<Item=Pos<N>> + 'static
-    where N: Integer + Copy + FromPrimitive + ToPrimitive
-    {
-        (0..self.h).cartesian_product(0..self.w).map(|(y, x)| {
-            Pos(N::from_usize(x).unwrap(), N::from_usize(y).unwrap())
-        })
-    }
-
-    pub fn find_pos(&self, mut f: impl FnMut(&T) -> bool) -> Option<Pos<usize>> {
-        self.positions().find(|&p| f(&self[p]))
-    }
-
-    pub fn neighbors<N>(&self, pos: Pos<N>) -> impl Iterator<Item=Pos<N>> + 'static
-    where N: Integer + Copy + FromPrimitive + ToPrimitive + 'static
-    {
-        let (w, h) = (N::from_usize(self.w).expect("invalid width"),
-                      N::from_usize(self.h).expect("invalid height"));
-        Dir::iter().flat_map(move |d| pos.maybe_step(d, w, h))
-    }
-
-    pub fn neighbors_diag<N>(&self, pos: Pos<N>) -> impl Iterator<Item=Pos<N>> + 'static
-    where N: Integer + Copy + FromPrimitive + ToPrimitive + 'static
-    {
-        let (w, h) = (N::from_usize(self.w).expect("invalid width"),
-                      N::from_usize(self.h).expect("invalid height"));
-        Dir::iter().flat_map(move |d| pos.maybe_step(d, w, h)).chain(
-            Dir::iter().flat_map(move |d| pos.maybe_step(d, w, h)
-                .and_then(|p| p.maybe_step(d.left(), w, h)))
-        )
-    }
-
-    pub fn iter(&self) -> impl Iterator<Item=&[T]> {
+    /// Iterator over all rows of the grid.
+    pub fn rows(&self) -> impl Iterator<Item=&[T]> {
         self.v.chunks(self.w)
     }
 
+    /// Get a reference to the item at a given position.
     pub fn get<N: ToPrimitive>(&self, Pos { x, y }: Pos<N>) -> Option<&T> {
         if let Some(y) = y.to_usize() {
             if let Some(x) = x.to_usize() {
@@ -204,6 +165,7 @@ impl<T> Grid<T> {
         None
     }
 
+    /// Get a mutable reference to the item at a given position.
     pub fn get_mut<N: ToPrimitive>(&mut self, Pos { x, y }: Pos<N>) -> Option<&mut T> {
         if let Some(y) = y.to_usize() {
             if let Some(x) = x.to_usize() {
@@ -215,11 +177,57 @@ impl<T> Grid<T> {
         None
     }
 
-    pub fn count(&self, f: impl Fn(&T) -> bool) -> usize {
+    /// Return the position of the center cell of the grid (or, if width/height
+    /// are even, the cell just left/above of center).
+    pub fn center<N>(&self) -> Pos<N>
+    where N: Integer + Copy + FromPrimitive + ToPrimitive
+    {
+        Pos(N::from_usize(self.w / 2).unwrap(), N::from_usize(self.h / 2).unwrap())
+    }
+
+    /// Iterate over all positions in the grid.
+    pub fn positions<N>(&self) -> impl Iterator<Item=Pos<N>> + 'static
+    where N: Integer + Copy + FromPrimitive + ToPrimitive
+    {
+        (0..self.h).cartesian_product(0..self.w).map(|(y, x)| {
+            Pos(N::from_usize(x).unwrap(), N::from_usize(y).unwrap())
+        })
+    }
+
+    /// Find the position of the first cell (going by columns, then rows)
+    /// satisfying the predicate.
+    pub fn find_pos(&self, mut f: impl FnMut(&T) -> bool) -> Option<Pos<usize>> {
+        self.positions().find(|&p| f(&self[p]))
+    }
+
+    /// Count the number of cells satisfying the predicate.
+    pub fn count(&self, mut f: impl FnMut(&T) -> bool) -> usize {
         self.v.iter().filter(|t| f(*t)).count()
     }
 
-    pub fn map<U>(&self, f: impl Fn(&T) -> U) -> Grid<U> {
+    /// Iterate over all orthogonal neighbors of the cell.
+    pub fn neighbors<N>(&self, pos: Pos<N>) -> impl Iterator<Item=Pos<N>> + 'static
+    where N: Integer + Copy + FromPrimitive + ToPrimitive + 'static
+    {
+        let (w, h) = (N::from_usize(self.w).expect("invalid width"),
+                      N::from_usize(self.h).expect("invalid height"));
+        Dir::iter().flat_map(move |d| pos.maybe_step(d, w, h))
+    }
+
+    /// Iterate over all orthogonal and diagonal neighbors of the cell.
+    pub fn neighbors_diag<N>(&self, pos: Pos<N>) -> impl Iterator<Item=Pos<N>> + 'static
+    where N: Integer + Copy + FromPrimitive + ToPrimitive + 'static
+    {
+        let (w, h) = (N::from_usize(self.w).expect("invalid width"),
+                      N::from_usize(self.h).expect("invalid height"));
+        Dir::iter().flat_map(move |d| pos.maybe_step(d, w, h)).chain(
+            Dir::iter().flat_map(move |d| pos.maybe_step(d, w, h)
+                .and_then(|p| p.maybe_step(d.left(), w, h)))
+        )
+    }
+
+    /// Map the grid by applying a function to every cell.
+    pub fn map<U>(&self, f: impl FnMut(&T) -> U) -> Grid<U> {
         Grid {
             w: self.w,
             h: self.h,
@@ -227,8 +235,9 @@ impl<T> Grid<T> {
         }
     }
 
-    pub fn debug(&self, f: impl Fn(&T) -> char) {
-        for row in self.iter() {
+    /// Print the grid by formatting each cell with the given function.
+    pub fn debug(&self, mut f: impl FnMut(&T) -> char) {
+        for row in self.rows() {
             for item in row {
                 print!("{}", f(item));
             }
@@ -238,13 +247,16 @@ impl<T> Grid<T> {
 }
 
 impl<T: Clone> Grid<T> {
-    pub fn fill(v: T, w: usize, h: usize) -> Self {
-        Self::from_iter(w, (0..w*h).map(|_| v.clone()))
+    /// Create a new grid where every cell is the given value.
+    pub fn fill(value: T, w: usize, h: usize) -> Self {
+        let v = vec![value; w*h];
+        Self { w, h, v }
     }
 
+    /// Enlarge the grid by `n` cells on every side.
     pub fn enlarge(&mut self, n: usize, el: T) {
         let mut new_v = vec![el.clone(); (self.w + 2*n) * n];
-        for row in self.iter() {
+        for row in self.rows() {
             new_v.extend(repeat(el.clone()).take(n)
                          .chain(row.iter().cloned())
                          .chain(repeat(el.clone()).take(n)));
@@ -281,18 +293,6 @@ impl<T> Index<(usize, usize)> for Grid<T> {
 impl<T> IndexMut<(usize, usize)> for Grid<T> {
     fn index_mut(&mut self, (x, y): (usize, usize)) -> &mut T {
         &mut self[Pos(x, y)]
-    }
-}
-
-impl fmt::Display for Grid<bool> {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        for (i, val) in self.v.iter().enumerate() {
-            write!(f, "{}", if *val { "#" } else { "." })?;
-            if i % self.w == self.w-1 {
-                writeln!(f)?;
-            }
-        }
-        Ok(())
     }
 }
 

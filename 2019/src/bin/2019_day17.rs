@@ -38,7 +38,7 @@ fn main() {
                    robot_dir = Dir::from_char(ch as char);
                    Some(true) }
     }).collect_vec();
-    let grid = Grid::from_iter(width, grid);
+    let grid = Grid::new(&grid.into_iter().chunks(width));
 
     // Part 1: determine the sum of "alignment parameters" which are intersections
     // in the scaffold, i.e. all neighbors are present.

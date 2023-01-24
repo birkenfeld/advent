@@ -43,10 +43,10 @@ fn main() {
 
     // Multiply the grid for part two.
     let (w, h) = (grid.width(), grid.height());
-    let big_grid = Grid::from_iter(5*w, (0..5*w).cartesian_product(0..5*h).map(|(x, y)| {
+    let big_grid = Grid::new(&(0..5*w).cartesian_product(0..5*h).map(|(x, y)| {
         let new = grid[Pos(x % w, y % h)] + (x / w) as u8 + (y / h) as u8;
         (new - 1) % 9 + 1
-    }));
+    }).chunks(5*w));
 
     advtools::verify("Big grid", visit(&big_grid), 2998);
 }
