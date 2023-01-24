@@ -3,7 +3,7 @@ use advtools::grid::Grid;
 
 fn main() {
     let size = Grid::new(input::lines().map(|line| {
-        line.as_bytes().iter().map(|height| height - b'0').collect()
+        line.bytes().map(|height| height - b'0')
     }));
     let (nx, ny) = (size.width(), size.height());
 

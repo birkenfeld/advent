@@ -30,13 +30,13 @@ fn main() {
     let mut start = Pos(0, 0);
     let mut end = Pos(0, 0);
     let grid = Grid::new(input::lines().enumerate().map(|(y, line)| {
-        line.as_bytes().iter().enumerate().map(|(x, mut pos)| {
-            if pos == &b'S' {
+        line.bytes().enumerate().map(|(x, mut pos)| {
+            if pos == b'S' {
                 start = Pos(x as _, y as _);
-                pos = &b'a';
-            } else if pos == &b'E' {
+                pos = b'a';
+            } else if pos == b'E' {
                 end = Pos(x as _, y as _);
-                pos = &b'z';
+                pos = b'z';
             }
             pos - b'a'
         }).collect_vec()

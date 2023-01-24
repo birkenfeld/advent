@@ -18,7 +18,7 @@ fn get_size(grid: &mut Grid<(u32, bool)>, pos: Pos<u32>) -> u32 {
 fn main() {
     // Parse the initial grid.
     let mut grid = Grid::new(input::lines().map(|line| {
-        line.chars().map(|ch| ((ch as u8 - b'0') as u32, false)).collect()
+        line.chars().map(|ch| ((ch as u8 - b'0') as u32, false))
     }));
 
     let mut risk_level = 0;

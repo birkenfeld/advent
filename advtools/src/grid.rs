@@ -119,15 +119,16 @@ pub struct Grid<T> {
 }
 
 impl<T> Grid<T> {
-    pub fn new(it: impl IntoIterator<Item=Vec<T>>) -> Self {
+    /// Construct a new grid from a nested iterator of cells.
+    pub fn new<I: IntoIterator<Item=T>>(it: impl IntoIterator<Item=I>) -> Self {
         let mut v = Vec::new();
         let mut it = it.into_iter();
-        let mut first = it.next().unwrap();
-        let w = first.len();
-        v.append(&mut first);
-        for mut item in it {
-            assert_eq!(item.len(), w);
-            v.append(&mut item);
+        let first = it.next().unwrap();
+        v.extend(first);
+        let w = v.len();
+        for item in it {
+            v.extend(item);
+            assert_eq!(v.len() % w, 0);
         }
         Self { w, h: v.len() / w, v }
     }

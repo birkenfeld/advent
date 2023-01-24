@@ -40,7 +40,7 @@ fn run(mut grid: Grid<Tile>, dist_limit: i32, occ_limit: usize) -> usize {
 
 fn main() {
     let grid = Grid::new(input::lines().map(|line| {
-        line.chars().map(|ch| if ch == 'L' { Tile::Seat } else { Tile::Floor }).collect()
+        line.chars().map(|ch| if ch == 'L' { Tile::Seat } else { Tile::Floor })
     }));
 
     advtools::verify("Finally occupied, rule 1", run(grid.clone(), 1, 4), 2344);

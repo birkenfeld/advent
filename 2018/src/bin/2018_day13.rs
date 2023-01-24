@@ -1,4 +1,4 @@
-use advtools::prelude::HashSet;
+use advtools::prelude::{HashSet, Itertools};
 use advtools::input;
 use advtools::grid::{Grid, Pos, Dir, Dir::*};
 
@@ -23,7 +23,7 @@ fn main() {
                 '>' => { carts.push(Cart { id, pos, dir: R, turn: 0 }); ('-', id) }
                 ch  => { (ch, 0) }
             }
-        }).collect()
+        }).collect_vec()
     }));
 
     let mut first_collided = false;

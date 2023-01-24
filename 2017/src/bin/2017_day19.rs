@@ -2,7 +2,7 @@ use advtools::input;
 use advtools::grid::{Grid, Dir::*};
 
 fn main() {
-    let map = Grid::new(input::raw_string().lines().map(|s| s.as_bytes().to_vec()));
+    let map = Grid::new(input::raw_string().lines().map(|s| s.bytes()));
 
     let mut pos = map.find_pos(|&c| c == b'|').unwrap();
     let mut dir = D;

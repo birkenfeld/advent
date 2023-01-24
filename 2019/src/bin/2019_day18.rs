@@ -33,7 +33,7 @@ fn main() {
             }
             'A'..='Z' => Door(ch as u8 - b'A'),
             _ => panic!("invalid char in maze")
-        }).collect()
+        }).collect_vec()
     }));
     let center = Pos(maze.width() as i32/2, maze.height() as i32/2);
 

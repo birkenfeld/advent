@@ -14,7 +14,7 @@ fn main() {
         'v' => Tile::Down,
         '>' => Tile::Right,
         _ => unreachable!()
-    }).collect()));
+    })));
     let (w, h) = (grid.width(), grid.height());
 
     for i in 1.. {

@@ -3,7 +3,7 @@ use advtools::prelude::HashMap;
 use advtools::grid::{Dir, Grid};
 
 fn main() {
-    let mut grid = Grid::new(input::lines().map(|line| line.chars().map(|c| c == '#').collect()));
+    let mut grid = Grid::new(input::lines().map(|line| line.chars().map(|c| c == '#')));
     grid.enlarge(60, false);
 
     let mut dirs = [Dir::U, Dir::D, Dir::L, Dir::R];

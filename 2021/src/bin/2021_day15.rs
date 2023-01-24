@@ -36,7 +36,7 @@ fn visit(grid: &Grid<u8>) -> u32 {
 fn main() {
     // Parse the initial grid.
     let grid = Grid::new(input::lines().map(|line| {
-        line.chars().map(|ch| ch as u8 - b'0').collect()
+        line.chars().map(|ch| ch as u8 - b'0')
     }));
 
     advtools::verify("Small grid", visit(&grid), 790);

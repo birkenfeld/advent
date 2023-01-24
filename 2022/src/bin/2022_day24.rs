@@ -1,5 +1,5 @@
 use advtools::input;
-use advtools::prelude::{HashSet, Itertools};
+use advtools::prelude::HashSet;
 use advtools::grid::{Dir, Pos, Grid};
 
 const WALL: u8 = 255;
@@ -85,7 +85,7 @@ fn main() {
                 '^' => 1 << UP,
                 'v' => 1 << DOWN,
                 _ => 0
-            }).collect_vec()
+            })
         })
     );
     let w = grid.width() as i32;

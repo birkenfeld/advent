@@ -82,7 +82,7 @@ fn main() {
             'G' => { new_players.push(Player::new(false, y, x)); Goblin }
             'E' => { new_players.push(Player::new(true,  y, x)); starting_elves += 1; Elf }
             _ => unreachable!()
-        }).collect()
+        }).collect_vec()
     }));
 
     for elf_attack in 3.. {

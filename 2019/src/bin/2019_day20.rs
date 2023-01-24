@@ -49,7 +49,7 @@ fn main() {
                 Portal
             }
             _ => Wall,
-        }).collect()
+        }).collect_vec()
     }));
 
     // Connect same-name portals in a new mapping.

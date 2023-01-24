@@ -48,7 +48,7 @@ fn main() {
             '.' => Loc::Free,
             '0' ..= '7' => Loc::Poi((ch as u8) - b'0'),
             _ => panic!("invalid input: {}", ch)
-        }).collect()
+        })
     }));
 
     let initial = maze.find_pos(|p| p == &Loc::Poi(0)).unwrap();

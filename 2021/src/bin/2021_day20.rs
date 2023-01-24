@@ -14,7 +14,7 @@ fn main() {
     }
 
     // Read and enlarge grid by N on each side.
-    let mut grid = Grid::new(iter.map(|line| line.chars().map(|ch| ch == '#').collect()));
+    let mut grid = Grid::new(iter.map(|line| line.chars().map(|ch| ch == '#')));
     grid.enlarge(MAX_STEPS + 1, false);
 
     for step in 1..=MAX_STEPS {
