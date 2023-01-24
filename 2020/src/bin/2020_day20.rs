@@ -22,6 +22,7 @@ const TRANS: &[Trans] = &[
     |w, x, y| (w-y, w-x),
 ];
 
+#[derive(Clone)]
 struct Tile {
     index: u64,
     grid: Grid<bool>,
@@ -87,7 +88,7 @@ fn main() {
 
     // Create a grid of tiles and place an arbitrary tile in the middle; the grid is
     // large enough so that the starting tile can be anywhere
-    let mut grid = Grid::<Option<Tile>>::empty(2*nt+1, 2*nt+1);
+    let mut grid = Grid::fill(None, 2*nt+1, 2*nt+1);
     let middle = Pos(nt as i32, nt as i32);
     grid[middle] = Some(tiles.pop().unwrap());
 

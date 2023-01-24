@@ -87,11 +87,11 @@ fn main() {
     // Grid that records for each room whether there is a door to the south
     // and the east direction.  (The other doors are covered by the adjacent
     // rooms to the north and west.)
-    let mut grid = Grid::new(vec![vec![Doors { down: false, right: false }; N]; N]);
+    let mut grid = Grid::fill(Doors { down: false, right: false }, N, N);
 
     follow(&mut grid, &mut HashSet::new(), start, &full_path.trim()[1..]);
 
-    let mut doors = Grid::new(vec![vec![u16::max_value(); N]; N]);
+    let mut doors = Grid::fill(u16::max_value(), N, N);
     count_doors(&grid, &mut doors, start, 0);
 
     let max_doors = doors.iter().flat_map(|line| line.iter().max()).max().unwrap();

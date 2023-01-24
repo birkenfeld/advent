@@ -5,7 +5,7 @@ use advtools::grid::{Grid, Pos};
 const N: usize = 140;
 
 fn main() {
-    let mut tiles = Grid::<bool>::empty(N, N);
+    let mut tiles = Grid::fill(false, N, N);
     for line in input::lines() {
         let mut pos = tiles.center::<i32>();
         let mut chars = line.chars();

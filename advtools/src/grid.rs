@@ -133,8 +133,10 @@ impl<T> Grid<T> {
         Self { w, h: v.len() / w, v }
     }
 
+    /// Construct a new grid from an iterator of cells, with the given width.
     pub fn from_iter(w: usize, it: impl IntoIterator<Item=T>) -> Self {
         let v = it.into_iter().collect_vec();
+        assert_eq!(v.len() % w, 0);
         Self { w, h: v.len() / w, v }
     }
 
@@ -236,6 +238,10 @@ impl<T> Grid<T> {
 }
 
 impl<T: Clone> Grid<T> {
+    pub fn fill(v: T, w: usize, h: usize) -> Self {
+        Self::from_iter(w, (0..w*h).map(|_| v.clone()))
+    }
+
     pub fn enlarge(&mut self, n: usize, el: T) {
         let mut new_v = vec![el.clone(); (self.w + 2*n) * n];
         for row in self.iter() {
@@ -247,18 +253,6 @@ impl<T: Clone> Grid<T> {
         self.v = new_v;
         self.w += 2*n;
         self.h += 2*n;
-    }
-}
-
-impl<T> Grid<Option<T>> {
-    pub fn empty(w: usize, h: usize) -> Self {
-        Self::from_iter(w, (0..w*h).map(|_| None))
-    }
-}
-
-impl Grid<bool> {
-    pub fn empty(w: usize, h: usize) -> Self {
-        Self::from_iter(w, (0..w*h).map(|_| false))
     }
 }
 

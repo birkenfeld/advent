@@ -35,18 +35,17 @@ fn run<F>(n: u32, mut grid: Grid<State>, modify: F) -> u32 where F: Fn(State) ->
 }
 
 fn main() {
-    let mut grid = vec![vec![State::Clean; SIZE]; SIZE];
+    let mut grid = Grid::fill(State::Clean, SIZE, SIZE);
     let input = input::lines().collect_vec();
     let start_offset = input.len() / 2;
     let offset = SIZE/2 - start_offset;
     for (y, line) in input.into_iter().enumerate() {
         for (x, ch) in line.chars().enumerate() {
             if ch == '#' {
-                grid[y + offset][x + offset] = State::Infected;
+                grid[(x + offset, y + offset)] = State::Infected;
             }
         }
     }
-    let grid = Grid::new(grid);
 
     // Part 1: Run 10k iterations, only Clean <-> Infected.
     let part1 = run(10_000, grid.clone(), |state| match state {

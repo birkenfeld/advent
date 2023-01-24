@@ -33,7 +33,7 @@ fn run(grid: &mut Grid<bool>) -> usize {
 }
 
 fn main() {
-    let mut grid = Grid::<bool>::empty(1000, 200);
+    let mut grid = Grid::fill(false, 1000, 200);
     let mut max_y = 0;
 
     for line in input::lines() {

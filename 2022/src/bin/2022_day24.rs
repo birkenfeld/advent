@@ -11,7 +11,7 @@ const DOWN: u8 = 3;
 fn step(grid: &Grid<u8>) -> Grid<u8> {
     let xm = grid.width() as i32 - 1;
     let ym = grid.height() as i32 - 1;
-    let mut new_grid = Grid::from_iter(grid.width(), std::iter::repeat(0).take(grid.width()*grid.height()));
+    let mut new_grid = Grid::fill(0, grid.width(), grid.height());
     for pos in grid.positions::<i32>() {
         let cur = grid[pos];
         if cur == WALL {
