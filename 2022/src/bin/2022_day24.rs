@@ -3,47 +3,32 @@ use advtools::prelude::HashSet;
 use advtools::grid::{Dir, Pos, Grid};
 
 const WALL: u8 = 255;
-const LEFT: u8 = 0;
-const RIGHT: u8 = 1;
-const UP: u8 = 2;
-const DOWN: u8 = 3;
+const LEFT: u8 = 1;
+const RIGHT: u8 = 2;
+const UP: u8 = 4;
+const DOWN: u8 = 8;
 
+/// Advance the grid by one step.
 fn step(grid: &Grid<u8>) -> Grid<u8> {
-    let xm = grid.width() as i32 - 1;
-    let ym = grid.height() as i32 - 1;
+    let xmax = grid.width() - 2;
+    let ymax = grid.height() - 2;
     let mut new_grid = Grid::fill(0, grid.width(), grid.height());
-    for pos in grid.positions::<i32>() {
+    for pos in grid.positions() {
         let cur = grid[pos];
+        // Walls stay walls.
         if cur == WALL {
             new_grid[pos] = WALL;
             continue;
         }
-        if cur & (1 << LEFT) != 0 {
-            if pos.x > 1 {
-                new_grid[pos.left()] |= 1 << LEFT;
-            } else {
-                new_grid[Pos(xm - 1, pos.y)] |= 1 << LEFT;
-            }
-        }
-        if cur & (1 << RIGHT) != 0 {
-            if pos.x < xm - 1 {
-                new_grid[pos.right()] |= 1 << RIGHT;
-            } else {
-                new_grid[Pos(1, pos.y)] |= 1 << RIGHT;
-            }
-        }
-        if cur & (1 << UP) != 0 {
-            if pos.y > 1 {
-                new_grid[pos.up()] |= 1 << UP;
-            } else {
-                new_grid[Pos(pos.x, ym - 1)] |= 1 << UP;
-            }
-        }
-        if cur & (1 << DOWN) != 0 {
-            if pos.y < ym - 1 {
-                new_grid[pos.down()] |= 1 << DOWN;
-            } else {
-                new_grid[Pos(pos.x, 1)] |= 1 << DOWN;
+        // Advance blizzards.
+        for (bit, dir) in [(LEFT, Dir::L), (RIGHT, Dir::R), (UP, Dir::U), (DOWN, Dir::D)] {
+            if cur & bit != 0 {
+                let Pos { mut x, mut y } = pos + dir;
+                if x == 0 { x = xmax; }
+                else if x == xmax + 1 { x = 1; }
+                if y == 0 { y = ymax; }
+                else if y == ymax + 1 { y = 1; }
+                new_grid[Pos(x, y)] |= bit;
             }
         }
     }
@@ -80,10 +65,10 @@ fn main() {
         input::lines().map(|line| {
             line.chars().map(|ch| match ch {
                 '#' => WALL,
-                '<' => 1 << LEFT,
-                '>' => 1 << RIGHT,
-                '^' => 1 << UP,
-                'v' => 1 << DOWN,
+                '<' => LEFT,
+                '>' => RIGHT,
+                '^' => UP,
+                'v' => DOWN,
                 _ => 0
             })
         })
