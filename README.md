@@ -1,4 +1,4 @@
-## 🎄 Advent of Code 2015-2022 🎄
+## 🎄 Advent of Code 2015-2023 🎄
 
 These are Rust-language solutions for the [coding-challenge advent
 calendar](http://adventofcode.com/).  You'll need stable Rust 1.65 and Cargo to
