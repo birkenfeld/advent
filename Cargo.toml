@@ -1,4 +1,5 @@
 [workspace]
+resolver = "2"
 members = [
     "2015",
     "2016",
@@ -8,6 +9,7 @@ members = [
     "2020",
     "2021",
     "2022",
+    "2023",
 ]
 
 [workspace.package]
