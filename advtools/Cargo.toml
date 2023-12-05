@@ -8,8 +8,8 @@ repository = "https://github.com/birkenfeld/advent"
 edition = "2021"
 
 [dependencies]
-itertools = "0.10.1"
-hashbrown = "0.13.1"
+itertools = "0.12.0"
+hashbrown = "0.14.3"
 arrayvec = "0.7.1"
 cgmath = "0.18.0"
 rayon = "1.5.1"
