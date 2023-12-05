@@ -1,6 +1,9 @@
 use advtools::itertools::iterate;
 use advtools::input;
 
+const START_A: u64 = 16807;
+const START_B: u64 = 48271;
+
 /// Calculate a*b (mod 2^31-1) without doing a `%` operation, algorithm taken
 /// from http://www.firstpr.com.au/dsp/rand31/#Simpler.
 fn mult_mod(a: &u64, b: u64) -> u64 {
@@ -22,7 +25,8 @@ where FA: Fn(&u64) -> bool, FB: Fn(&u64) -> bool
 }
 
 fn main() {
-    let input = input::parse();
+    let mut starting = input::rx_lines::<u64>(r".* with (\d+)");
+    let input = (starting.next().unwrap(), START_A, starting.next().unwrap(), START_B);
 
     // Part 1: 40m numbers, all are accepted.
     advtools::verify("Accepted #1",

@@ -1,4 +1,2 @@
-699
-16807
-124
-48271
+Generator A starts with 699
+Generator B starts with 124

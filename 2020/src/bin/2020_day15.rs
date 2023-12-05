@@ -1,7 +1,8 @@
 use advtools::input;
 
 fn main() {
-    let input: Vec<usize> = input::parse();
+    let input: Vec<usize> =
+        input::string().split(',').map(|s| s.parse().unwrap()).collect();
     let mut turns = vec![0u32; 30000000];
 
     for (t, &n) in input.iter().enumerate() {
