@@ -341,7 +341,7 @@ impl Dir {
         }
     }
 
-    pub fn all() -> impl Iterator<Item=Self> {
+    pub fn all() -> std::array::IntoIter<Dir, 4> {
         [U, D, R, L].into_iter()
     }
 }
