@@ -6,6 +6,7 @@ use std::time::Instant;
 pub use rayon;
 pub use itertools;
 pub use petgraph;
+pub use memoize;
 
 pub mod input;
 pub mod grid;

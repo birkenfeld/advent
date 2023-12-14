@@ -109,7 +109,7 @@ impl<N: Integer + Copy> std::ops::AddAssign<Dir> for Pos<N> {
     }
 }
 
-#[derive(Clone, PartialEq, Eq)]
+#[derive(Clone, PartialEq, Eq, Hash)]
 pub struct Grid<T> {
     w: usize,
     h: usize,
