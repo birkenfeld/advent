@@ -204,6 +204,15 @@ impl<T> Grid<T> {
     }
 
     /// Iterate over all orthogonal neighbors of the cell.
+    pub fn neighbor<N>(&self, pos: Pos<N>, dir: Dir) -> Option<Pos<N>>
+    where N: Integer + Copy + FromPrimitive + ToPrimitive + 'static
+    {
+        let (w, h) = (N::from_usize(self.w).expect("invalid width"),
+                      N::from_usize(self.h).expect("invalid height"));
+        pos.maybe_to(dir, w, h)
+    }
+
+    /// Iterate over all orthogonal neighbors of the cell.
     pub fn neighbors<N>(&self, pos: Pos<N>) -> impl Iterator<Item=Pos<N>> + 'static
     where N: Integer + Copy + FromPrimitive + ToPrimitive + 'static
     {
