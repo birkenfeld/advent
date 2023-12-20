@@ -1,5 +1,5 @@
 use advtools::input;
-use advtools::prelude::{Uids, HashMap, Itertools};
+use advtools::prelude::{Uids, HashMap, Itertools, lcm};
 
 type Mod = usize;
 
@@ -9,8 +9,8 @@ enum Module {
     Conjunction(HashMap<Mod, bool>),
 }
 
-// Run a single pulse from the button.
-fn pulse(i: usize, modules: &mut HashMap<Mod, (Vec<Mod>, Module)>, pre_output: Mod,
+// Run pulses from a single button press.
+fn press(iter: usize, modules: &mut HashMap<Mod, (Vec<Mod>, Module)>, pre_output: Mod,
          cycles: &mut HashMap<Mod, usize>) -> (usize, usize) {
     let mut pulses = (0, 0);
     let mut queue = vec![(0, 0, false)];
@@ -29,8 +29,10 @@ fn pulse(i: usize, modules: &mut HashMap<Mod, (Vec<Mod>, Module)>, pre_output: M
                     }
                 }
                 Some((outputs, Module::Conjunction(inputs))) => {
+                    // If the conjunction before the "rx" output gets a high
+                    // pulse from one of its inputs, note the cycle number.
                     if target == pre_output && high {
-                        let _ = cycles.try_insert(source, i);
+                        let _ = cycles.try_insert(source, iter);
                     }
                     inputs.insert(source, high);
                     let all_high = inputs.values().all(|&v| v);
@@ -49,8 +51,17 @@ fn pulse(i: usize, modules: &mut HashMap<Mod, (Vec<Mod>, Module)>, pre_output: M
 }
 
 fn main() {
-    // There is one Conjunction module that outputs to the final node "rx", we need
-    // to remember that because it's important for part 2.
+    // This solution assumes the basic structure of the node graph to be as follows:
+    //
+    // - There are subgraphs that deliver a high pulse after each cycle of a
+    // certain number of presses.
+    //
+    // - There is one Conjunction module that collects a signal from each
+    // subgraph and outputs to the final node "rx", we need to remember that
+    // to determine each subgraph's cycle length.
+    //
+    // - The final iteration when the "rx" node gets its low signal is the LCM of
+    // all subgraph cycle lengths.
     let mut pre_output = 0;
 
     // Parse the input. First stage, collect modules and their inputs and outputs.
@@ -89,18 +100,20 @@ fn main() {
         }
     }
 
+    // Run button presses until we've found the cycle length for each subdivision
+    // of the machine.
     let mut cycles = HashMap::new();
     let mut pulses = (0, 0);
-    for i in 1.. {
-        let res = pulse(i, &mut modules, pre_output, &mut cycles);
+    for iter in 1.. {
+        let res = press(iter, &mut modules, pre_output, &mut cycles);
         pulses.0 += res.0;
         pulses.1 += res.1;
-        if i == 1000 {
+        if iter == 1000 {
             advtools::verify("Low*high after 1000 presses", pulses.0 * pulses.1, 839775244);
         }
         if cycles.len() == n_cycles {
-            advtools::verify("Presses for low to rx",
-                             cycles.values().product::<usize>(), 207787533680413_u64);
+            let min_presses = cycles.into_values().reduce(lcm).unwrap();
+            advtools::verify("Presses for low to rx", min_presses, 207787533680413_u64);
             break;
         }
     }

@@ -1,6 +1,5 @@
-use advtools::prelude::Itertools;
+use advtools::prelude::{Itertools, lcm};
 use advtools::input;
-use num::Integer;
 
 fn main() {
     let (earliest, buses) = input::rx_parse::<(i64, &str)>(r"(\d+)\n(.+)");
@@ -22,7 +21,7 @@ fn main() {
             .enumerate()
             .find(|(_, (_, dt1))| (dt1 - dt) % n == 0)
         {
-            groups[i] = (n1.lcm(&n), dt1);
+            groups[i] = (lcm(n1, n), dt1);
         } else {
             groups.push((n, dt));
         }

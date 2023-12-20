@@ -1,6 +1,5 @@
 use advtools::input;
-use advtools::prelude::HashMap;
-use num::integer::lcm;
+use advtools::prelude::{HashMap, lcm};
 
 // Walk the graph until an end position matching the condition is reached.
 fn walk<'a>(path: &str, maze: &HashMap<&'a str, (&'a str, &'a str)>,

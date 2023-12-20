@@ -1,6 +1,5 @@
-use advtools::prelude::HashSet;
+use advtools::prelude::{HashSet, lcm};
 use advtools::input;
-use num::Integer;
 
 const N: usize = 4;
 
@@ -58,7 +57,7 @@ fn main() {
 
         // If all three cycles are now known, we are done.
         if dirs.iter().all(|d| d.cycle > 0) {
-            let big_cycle = dirs.iter().fold(1, |a, d| a.lcm(&d.cycle));
+            let big_cycle = dirs.iter().fold(1, |a, d| lcm(a, d.cycle));
             advtools::verify("Repeating after", big_cycle, 362336016722948_u64);
             return;
         }

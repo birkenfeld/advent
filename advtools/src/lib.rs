@@ -7,6 +7,7 @@ pub use rayon;
 pub use itertools;
 pub use petgraph;
 pub use memoize;
+pub use num;
 
 pub mod input;
 pub mod grid;
@@ -21,6 +22,7 @@ pub mod prelude {
     pub use itertools::{Itertools, iproduct};
     pub use regex::{Regex, Captures};
     pub use arrayvec::ArrayVec;
+    pub use num::integer::lcm;
 
     #[derive(Default)]
     pub struct Uids<T> {
