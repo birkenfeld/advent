@@ -68,4 +68,3 @@ fn main() {
     let accepted = count_accepted(&flows, "in", 0, [(1, 4000); 4]);
     advtools::verify("All accepted in range", accepted, 124078207789312_u64);
 }
-
