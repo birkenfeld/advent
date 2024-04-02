@@ -1,5 +1,7 @@
 // Type-specific re-exports of cgmath and added utilities.
 
+pub use cgmath;
+
 pub trait VecExt<T> {
     fn splat(v: T) -> Self;
     fn manhattan(self) -> T;
