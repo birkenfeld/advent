@@ -61,6 +61,14 @@ impl<N: Integer + Copy> Pos<N> {
                        .chain(once(self.left()))
                        .chain(once(self.right()))
     }
+
+    pub fn dir_from(self, other: Self) -> Dir {
+        if self.x == other.x {
+            if self.y < other.y { U } else { D }
+        } else {
+            if self.x < other.x { L } else { R }
+        }
+    }
 }
 
 impl<N: Integer + Signed> Pos<N> {
