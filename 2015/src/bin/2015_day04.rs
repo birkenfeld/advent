@@ -6,11 +6,10 @@ use advtools::input;
 const N: u64 = 10_000_000;
 
 fn check(input: &[u8], i: u64, tx: &mpsc::SyncSender<(u64, bool)>) {
-    let mut ibuf = [0u8; 16];
+    let mut ibuf = itoa::Buffer::new();
     let mut hash = Md5::new();
-    let n = itoa::write(&mut ibuf[..], i).unwrap();
     hash.update(input);
-    hash.update(&ibuf[..n]);
+    hash.update(&ibuf.format(i));
     let buf = hash.finalize();
     if (buf[0] | buf[1] == 0) && (buf[2] & 0xF0 == 0) {
         tx.send((i, buf[2] == 0)).unwrap();

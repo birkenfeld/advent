@@ -20,12 +20,11 @@ fn digit(ch: u8) -> u8 {
 }
 
 fn find_multiples(input: &[u8], i: usize, n: usize) -> Option<(usize, u32)> {
-    let mut ibuf = [0; 16];
+    let mut ibuf = itoa::Buffer::new();
     let mut sbuf = [0; 32];
     let mut hash = Md5::new();
-    let m = itoa::write(&mut ibuf[..], i).unwrap();
     hash.update(input);
-    hash.update(&ibuf[..m]);
+    hash.update(&ibuf.format(i));
     hash_to_hex(hash, &mut sbuf);
     for _ in 0..n {
         let mut hash = Md5::new();

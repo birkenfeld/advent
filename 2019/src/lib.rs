@@ -22,7 +22,7 @@ impl Machine {
     /// Parse stringified intcode.
     pub fn parse(code: &str) -> Arc<[i64]> {
         code.split(',').map(|v| v.parse().expect("invalid memory"))
-                       .collect::<Box<_>>().into()
+                       .collect::<Box<[i64]>>().into()
     }
 
     /// Create a new machine with given memory cells and initial input.

@@ -7,11 +7,10 @@ const LEN: usize = 8;
 const BATCH: usize = 1_000_000;
 
 fn check(input: &[u8], i: usize) -> Option<(usize, u8, u8)> {
-    let mut ibuf = [0u8; 16];
+    let mut ibuf = itoa::Buffer::new();
     let mut hash = Md5::new();
-    let n = itoa::write(&mut ibuf[..], i).unwrap();
     hash.update(input);
-    hash.update(&ibuf[..n]);
+    hash.update(&ibuf.format(i));
     let buf = hash.finalize();
     if buf[0] | buf[1] == 0 && buf[2] & 0xF0 == 0 {
         Some((i, buf[2], buf[3] >> 4))
