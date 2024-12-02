@@ -94,7 +94,7 @@ fn main() {
     let (cells, instr) = input::string().split("\n\n").collect_tuple().unwrap();
 
     // Parse the moves.
-    let moves = instr.chars().group_by(|ch| ch.is_numeric()).into_iter()
+    let moves = instr.chars().chunk_by(|ch| ch.is_numeric()).into_iter()
         .map(|(num, mut ch)| if num {
             Move::Go(ch.fold(0, |n, ch| n*10 + ch as i32 - b'0' as i32))
         } else {

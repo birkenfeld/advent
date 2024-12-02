@@ -13,7 +13,7 @@ type Spans = Vec<(usize, usize)>;
 
 // Find all spans of empty or round-stone tiles in a row or column.
 fn find_spans(input: impl Iterator<Item=Tile>) -> Spans {
-    input.enumerate().group_by(|&(_, t)| t != Tile::Cube)
+    input.enumerate().chunk_by(|&(_, t)| t != Tile::Cube)
                      .into_iter()
                      .filter(|&(ok, _)| ok)
                      .map(|(_, mut group)| (group.next().unwrap().0, group.count() + 1))
