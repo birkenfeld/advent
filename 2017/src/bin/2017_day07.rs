@@ -10,7 +10,7 @@ fn main() {
     // Parse input into a directed graph.  The node weight is the weight of the program.
     // The edge weights are later used for cumulative weights of program + children.
     // `name2ix` maps program names to graph Index values.
-    for (name, weight, children) in input::rx_lines::<(&str, i32, input::Csv<&str>)>(FORMAT) {
+    for (name, weight, children) in input::rx_lines::<(&str, i32, input::Sep<&str>)>(FORMAT) {
         // Since some nodes are mentioned first as children and some as parents,
         // we must check if we need to insert them as a new node.
         let ix = *name2ix.entry(name).or_insert_with(|| graph.add_node(0));

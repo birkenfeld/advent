@@ -27,7 +27,7 @@ fn main() {
     }
 
     let mut haystack = Vec::new();
-    for tok in input::rx_lines::<Vec<(&str, i32)>>(FORMAT) {
+    for tok in input::rx_lines::<[(&str, i32); 3]>(FORMAT) {
         haystack.push(HashSet::from_iter(tok.into_iter()));
     }
 

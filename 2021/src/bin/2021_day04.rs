@@ -4,7 +4,7 @@ use advtools::input;
 
 fn main() {
     // Read first line with the drawn numbers.
-    let draws = input::parse_lines::<input::Csv<i32>>().next().unwrap().vec;
+    let draws = input::parse_lines::<input::Sep<i32>>().next().unwrap().vec;
 
     // Read the boards.
     let mut input = input::parse_lines::<Option<[i32; 5]>>().skip(1).peekable();

@@ -26,8 +26,8 @@ pub mod $ty {
         fn manhattan(self) -> $ty { self.x.abs() + self.y.abs() }
     }
 
-    impl crate::input::InputItem for Vec2 {
-        fn read_part(tok: &mut impl Iterator<Item=&'static str>) -> Option<Self> {
+    impl<'a> crate::input::InputItem<'a> for Vec2 {
+        fn read_part(tok: &mut impl Iterator<Item=&'a str>) -> Option<Self> {
             let x = tok.next()?.parse().ok()?;
             let y = tok.next()?.parse().ok()?;
             Some(vec2(x, y))
@@ -51,8 +51,8 @@ pub mod $ty {
         fn manhattan(self) -> $ty { self.x.abs() + self.y.abs() + self.z.abs() }
     }
 
-    impl crate::input::InputItem for Vec3 {
-        fn read_part(tok: &mut impl Iterator<Item=&'static str>) -> Option<Self> {
+    impl<'a> crate::input::InputItem<'a> for Vec3 {
+        fn read_part(tok: &mut impl Iterator<Item=&'a str>) -> Option<Self> {
             let x = tok.next()?.parse().ok()?;
             let y = tok.next()?.parse().ok()?;
             let z = tok.next()?.parse().ok()?;

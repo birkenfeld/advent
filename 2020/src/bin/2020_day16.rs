@@ -14,18 +14,14 @@ fn main() {
         if line == "your ticket:" {
             break;
         }
-        let split = line.split_whitespace().collect_vec();
-        let r1 = split[split.len() - 3].split('-').filter_map(|p| p.parse().ok())
-                                                  .collect_tuple().unwrap();
-        let r2 = split[split.len() - 1].split('-').filter_map(|p| p.parse().ok())
-                                                  .collect_tuple().unwrap();
-        ranges.push([r1, r2]);
+        let range = input::rx_parse_str::<[(u32, u32); 2]>(r"(\d+)-(\d+) or (\d+)-(\d+)", line);
+        ranges.push(range);
     }
 
-    let my_ticket: Vec<i32> = iter.next().unwrap().split(',').filter_map(|p| p.parse().ok()).collect();
+    let my_ticket = input::parse_str::<input::Sep<u32>>(iter.next().unwrap()).vec;
 
     for line in iter.skip(1) {
-        tickets.push(line.split(',').filter_map(|p| p.parse().ok()).collect_vec());
+        tickets.push(input::parse_str::<input::Sep<u32>>(line).vec);
     }
 
     let mut error_rate = 0;
