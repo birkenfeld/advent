@@ -1,7 +1,9 @@
 use advtools::input;
 use advtools::prelude::Itertools;
 
+/// Evaluate if a report is safe, optionally skipping one value.
 fn safe(report: &[i32], skip: Option<usize>) -> bool {
+    // get the min and max differences between two items
     let (min, max) = report.iter()
                            .enumerate()
                            .filter(|&(i, _)| Some(i) != skip)
@@ -9,6 +11,8 @@ fn safe(report: &[i32], skip: Option<usize>) -> bool {
                            .map(|((_, a), (_, b))| b - a)
                            .minmax()
                            .into_option().unwrap();
+    // to be safe, the differences must be either all negative or all positive
+    // in the right range
     (min >= -3 && max <= -1) || (min >= 1 && max <= 3)
 }
 

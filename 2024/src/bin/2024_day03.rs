@@ -7,6 +7,8 @@ fn main() {
     let mut sum1 = 0;
     let mut sum2 = 0;
     let mut enable = true;
+
+    // find all matches in the input string and process enables for part 2
     for m in Regex::new(RX).unwrap().captures_iter(input::string()) {
         if &m[0] == "do()" {
             enable = true;
