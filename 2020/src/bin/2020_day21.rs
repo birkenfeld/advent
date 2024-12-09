@@ -2,24 +2,22 @@ use advtools::prelude::{HashMap, HashSet, Itertools};
 use advtools::input;
 
 fn main() {
-    let mut prods: Vec<(HashSet<_>, HashSet<_>)> = vec![];
+    // Parse input
+    let prods = input::rx_lines::<(input::Set<&str, ' '>, input::Set<&str>)>(
+        r"(.+) \(contains (.+)\)").collect_vec();
+
     let mut allg_map = HashMap::new();
     let mut candidates: HashMap<_, HashSet<_>> = HashMap::new();
 
-    // Parse input
-    for (ingrs, allgs) in input::rx_lines::<(&str, &str)>(r"(.+) \(contains (.+)\)") {
-        prods.push((ingrs.split_whitespace().collect(), allgs.split(", ").collect()));
-    }
-
     // For every ingredient, find the possible allergens
     for (ingrs, allgs) in &prods {
-        for &ingr in ingrs {
+        for &ingr in &ingrs.set {
             let for_ingr = candidates.entry(ingr).or_default();
-            for &allg in allgs {
+            for &allg in &allgs.set {
                 // To be a candidate, for all other products, the ingredient
                 // must be present, or the allergen must NOT be present
                 if prods.iter().all(|(other_ingrs, other_allgs)| {
-                    other_ingrs.contains(ingr) || !other_allgs.contains(allg)
+                    other_ingrs.set.contains(ingr) || !other_allgs.set.contains(allg)
                 }) {
                     for_ingr.insert(allg);
                 }
@@ -30,7 +28,7 @@ fn main() {
     let count = candidates
         .iter()
         .filter(|(_, cand)| cand.is_empty())
-        .map(|(ingr, _)| prods.iter().filter(|(ingrs, _)| ingrs.contains(ingr)).count())
+        .map(|(ingr, _)| prods.iter().filter(|(ingrs, _)| ingrs.set.contains(ingr)).count())
         .sum::<usize>();
     advtools::verify("Occurrence of non-allergics", count, 2627);
 

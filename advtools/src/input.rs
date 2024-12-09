@@ -1,5 +1,6 @@
 use std::{any, path::Path};
 use regex::Regex;
+use super::prelude::HashSet;
 
 // Main input API
 
@@ -39,9 +40,6 @@ pub fn string() -> &'static str {
 
 pub fn parse<T: InputItem<'static>>() -> T {
     parse_str(string())
-    // T::read_part(&mut string().split_whitespace())
-    //     .unwrap_or_else(|| panic!("input {:?} failed to convert to {}",
-    //                               string(), any::type_name::<T>()))
 }
 
 pub fn rx_parse<T: InputItem<'static>>(regex: &str) -> T {
@@ -234,7 +232,28 @@ impl<'a, T: InputItem<'a>, const SEP: char> InputItem<'a> for Sep<T, SEP> {
             if let Some(res) = <Vec<T>>::read_part(&mut parts) {
                 vec.extend(res);
             }
+            break;
         }
         Some(Sep { vec })
+    }
+}
+
+pub struct Set<T, const SEP: char = ','> {
+    pub set: HashSet<T>
+}
+
+impl<'a, T: InputItem<'a>, const SEP: char> InputItem<'a> for Set<T, SEP>
+    where T: Eq + std::hash::Hash
+{
+    fn read_part(tok: &mut impl Iterator<Item=&'a str>) -> Option<Self> {
+        let mut set = HashSet::new();
+        for item in tok {
+            let mut parts = item.split(SEP).map(|t| t.trim()).filter(|c| !c.is_empty());
+            if let Some(res) = <Vec<T>>::read_part(&mut parts) {
+                set.extend(res);
+            }
+            break;
+        }
+        Some(Set { set })
     }
 }
