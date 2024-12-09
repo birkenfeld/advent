@@ -28,7 +28,7 @@ fn main() {
 
     let mut haystack = Vec::new();
     for tok in input::rx_lines::<[(&str, i32); 3]>(FORMAT) {
-        haystack.push(HashSet::from_iter(tok.into_iter()));
+        haystack.push(HashSet::from(tok));
     }
 
     let mut real_aunt = 0;
