@@ -21,6 +21,11 @@ pub const fn Pos<N>(x: N, y: N) -> Pos<N> {
     Pos { x, y }
 }
 
+pub trait DirLike {
+    fn apply<N: Integer + Copy>(self, pos: Pos<N>) -> Pos<N>;
+    fn maybe_apply<N: Integer + Copy>(self, pos: Pos<N>, w: N, h: N) -> Option<Pos<N>>;
+}
+
 impl<N: Integer + Copy> Pos<N> {
     pub fn up(self) -> Self {
         Pos(self.x, self.y - N::one())
@@ -38,22 +43,12 @@ impl<N: Integer + Copy> Pos<N> {
         Pos(self.x + N::one(), self.y)
     }
 
-    pub fn to(self, dir: Dir) -> Self {
-        match dir {
-            U => self.up(),
-            D => self.down(),
-            L => self.left(),
-            R => self.right()
-        }
+    pub fn to(self, dir: impl DirLike) -> Self {
+        dir.apply(self)
     }
 
-    pub fn maybe_to(&self, dir: Dir, w: N, h: N) -> Option<Self> {
-        match dir {
-            U => if self.y > N::zero()  { Some(self.up()) } else { None },
-            D => if self.y < h-N::one() { Some(self.down()) } else { None },
-            L => if self.x > N::zero()  { Some(self.left()) } else { None },
-            R => if self.x < w-N::one() { Some(self.right()) } else { None },
-        }
+    pub fn maybe_to(&self, dir: impl DirLike, w: N, h: N) -> Option<Self> {
+        dir.maybe_apply(*self, w, h)
     }
 
     pub fn neighbors(&self) -> impl Iterator<Item=Self> {
@@ -104,16 +99,16 @@ impl<N: Integer + Copy> std::ops::Mul<N> for Pos<N> {
     }
 }
 
-impl<N: Integer + Copy> std::ops::Add<Dir> for Pos<N> {
+impl<N: Integer + Copy, D: DirLike> std::ops::Add<D> for Pos<N> {
     type Output = Self;
-    fn add(self, dir: Dir) -> Pos<N> {
-        self.to(dir)
+    fn add(self, dir: D) -> Pos<N> {
+        dir.apply(self)
     }
 }
 
-impl<N: Integer + Copy> std::ops::AddAssign<Dir> for Pos<N> {
-    fn add_assign(&mut self, dir: Dir) {
-        *self = self.to(dir);
+impl<N: Integer + Copy, D: DirLike> std::ops::AddAssign<D> for Pos<N> {
+    fn add_assign(&mut self, dir: D) {
+        *self = dir.apply(*self);
     }
 }
 
@@ -211,8 +206,8 @@ impl<T> Grid<T> {
         self.v.iter().filter(|t| f(*t)).count()
     }
 
-    /// Iterate over all orthogonal neighbors of the cell.
-    pub fn neighbor<N>(&self, pos: Pos<N>, dir: Dir) -> Option<Pos<N>>
+    /// Get the given of the cell.
+    pub fn neighbor<N>(&self, pos: Pos<N>, dir: impl DirLike) -> Option<Pos<N>>
     where N: Integer + Copy + FromPrimitive + ToPrimitive + 'static
     {
         let (w, h) = (N::from_usize(self.w).expect("invalid width"),
@@ -235,10 +230,7 @@ impl<T> Grid<T> {
     {
         let (w, h) = (N::from_usize(self.w).expect("invalid width"),
                       N::from_usize(self.h).expect("invalid height"));
-        Dir::all().flat_map(move |d| pos.maybe_to(d, w, h)).chain(
-            Dir::all().flat_map(move |d| pos.maybe_to(d, w, h)
-                .and_then(|p| p.maybe_to(d.left(), w, h)))
-        )
+        DiagDir::all().flat_map(move |d| pos.maybe_to(d, w, h))
     }
 
     /// Map the grid by applying a function to every cell.
@@ -360,5 +352,74 @@ impl Dir {
 
     pub fn all() -> std::array::IntoIter<Dir, 4> {
         [U, D, R, L].into_iter()
+    }
+}
+
+impl DirLike for Dir {
+    fn apply<N: Integer + Copy>(self, pos: Pos<N>) -> Pos<N> {
+        match self {
+            U => pos.up(),
+            D => pos.down(),
+            L => pos.left(),
+            R => pos.right(),
+        }
+    }
+
+    fn maybe_apply<N: Integer + Copy>(self, pos: Pos<N>, w: N, h: N) -> Option<Pos<N>> {
+        match self {
+            U => if pos.y > N::zero()  { Some(pos.up()) } else { None },
+            D => if pos.y < h-N::one() { Some(pos.down()) } else { None },
+            L => if pos.x > N::zero()  { Some(pos.left()) } else { None },
+            R => if pos.x < w-N::one() { Some(pos.right()) } else { None },
+        }
+    }
+}
+
+
+#[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub enum DiagDir {
+    UU,
+    DD,
+    LL,
+    RR,
+    UL,
+    UR,
+    DL,
+    DR,
+}
+
+use DiagDir::*;
+
+impl DiagDir {
+    pub fn all() -> std::array::IntoIter<DiagDir, 8> {
+        [UU, DD, LL, RR, UL, UR, DL, DR].into_iter()
+    }
+}
+
+impl DirLike for DiagDir {
+    fn apply<N: Integer + Copy>(self, pos: Pos<N>) -> Pos<N> {
+        match self {
+            UU => pos.up(),
+            DD => pos.down(),
+            LL => pos.left(),
+            RR => pos.right(),
+            UL => pos.up().left(),
+            UR => pos.up().right(),
+            DL => pos.down().left(),
+            DR => pos.down().right(),
+        }
+    }
+
+    fn maybe_apply<N: Integer + Copy>(self, pos: Pos<N>, w: N, h: N) -> Option<Pos<N>> {
+        match self {
+            UU => if pos.y > N::zero()  { Some(pos.up()) } else { None },
+            DD => if pos.y < h-N::one() { Some(pos.down()) } else { None },
+            LL => if pos.x > N::zero()  { Some(pos.left()) } else { None },
+            RR => if pos.x < w-N::one() { Some(pos.right()) } else { None },
+            UL => if pos.y > N::zero() && pos.x > N::zero() { Some(pos.up().left()) } else { None },
+            UR => if pos.y > N::zero() && pos.x < w-N::one() { Some(pos.up().right()) } else { None },
+            DL => if pos.y < h-N::one() && pos.x > N::zero() { Some(pos.down().left()) } else { None },
+            DR => if pos.y < h-N::one() && pos.x < w-N::one() { Some(pos.down().right()) } else { None },
+        }
     }
 }
