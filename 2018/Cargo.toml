@@ -7,8 +7,8 @@ edition.workspace = true
 
 [dependencies]
 advtools.workspace = true
-strum = "0.26.3"
-strum_macros = "0.26.4"
+strum = "0.27.1"
+strum_macros = "0.27.1"
 priority-queue = "2.1"
 
 [dev-dependencies]

@@ -2,7 +2,7 @@ use std::convert::TryFrom;
 use advtools::input;
 use advent_2019::Machine;
 use num_enum::TryFromPrimitive;
-use rand::{Rng, thread_rng};
+use rand::{Rng, rng};
 
 /// Total size of the springscript population we're observing.
 const TOTAL: usize = 20000;
@@ -31,7 +31,7 @@ type Script = Vec<Instr>;
 
 /// Generate a random number from 0 up to n-1.
 fn rand_n(n: usize) -> usize {
-    thread_rng().gen_range(0..n)
+    rng().random_range(0..n)
 }
 
 /// Generate a random source register

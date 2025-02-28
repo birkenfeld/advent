@@ -1,6 +1,6 @@
 use advtools::prelude::{HashMap, HashSet};
 use advtools::input;
-use rand::{thread_rng, prelude::SliceRandom};
+use rand::{rng, prelude::SliceRandom};
 
 fn make_one_replacement(initial: &str, trans: &HashMap<&str, Vec<&str>>) -> HashSet<String> {
     let mut variants = HashSet::new();
@@ -16,7 +16,7 @@ fn make_one_replacement(initial: &str, trans: &HashMap<&str, Vec<&str>>) -> Hash
 
 fn find_steps(initial: &str, target: &str, rtbl: &HashMap<&str, &str>) -> Option<usize> {
     let mut repls: Vec<_> = rtbl.keys().collect();
-    repls.shuffle(&mut thread_rng());
+    repls.shuffle(&mut rng());
     let mut steps = 0;
     let mut cur = initial.to_owned();
     loop {
