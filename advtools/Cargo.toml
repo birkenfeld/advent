@@ -5,7 +5,7 @@ version = "0.9.0"
 authors = ["Georg Brandl <georg@python.org>"]
 license = "MIT/Apache-2.0"
 repository = "https://github.com/birkenfeld/advent"
-edition = "2021"
+edition = "2024"
 
 [dependencies]
 itertools = "0.13.0"

@@ -15,7 +15,7 @@ fn winnings(values: &[char], jokers: Option<usize>) -> u64 {
         ).collect_vec();
         // Count and sort occurrences of each card, without jokers.
         let counts = hand.iter().counts().into_iter()
-                                         .filter(|(&c, _)| Some(c) != jokers)
+                                         .filter(|&(&c, _)| Some(c) != jokers)
                                          .sorted_by_key(|&(_, c)| c)
                                          .rev()
                                          .collect_vec();

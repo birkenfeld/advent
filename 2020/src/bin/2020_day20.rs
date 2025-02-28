@@ -115,7 +115,7 @@ fn main() {
 
     // Search for monsters, we can reuse the same transformations
     let monsters = iproduct!(TRANS, 0..nf-20, 0..nf-3).filter(
-        |(&t, x, y)| MONSTER.iter().all(|(dx, dy)| pixel(t(nf-1, x+dx, y+dy)))
+        |&(t, x, y)| MONSTER.iter().all(|(dx, dy)| pixel(t(nf-1, x+dx, y+dy)))
     ).count();
     let total = iproduct!(0..nf, 0..nf).filter(|&pos| pixel(pos)).count();
 
